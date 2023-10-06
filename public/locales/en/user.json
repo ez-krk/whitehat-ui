@@ -1,0 +1,10 @@
+{
+  "menuNav": {
+    "chat": "Open AI Chat",
+    "vertexAi": "Vertex AI Chat",
+    "settings": "Settings"
+  },
+  "headerNav": {
+    "settings": "Settings"
+  }
+}
