@@ -1,24 +1,44 @@
 {
-  "title": "Doc Home",
+  "title": "whitehat docs",
   "body": "You can start creating documents compatible with syntax highlights immediately",
   "previousPage": "Previous page",
   "nextPage": "Next page",
   "actions": {
     "motivation": {
-      "title": "Motivation",
+      "title": "motivation",
       "body": "Skeet allows you to get your app up and running quickly and maintain it for the long term at a low cost."
     },
     "quickstart": {
-      "title": "Quickstart",
+      "title": "quickstart",
+      "body": "Describes the setup for getting started with the Skeet framework."
+    },
+    "protocols": {
+      "title": "protocols",
+      "body": "Describes the setup for getting started with the Skeet framework."
+    },
+    "hackers": {
+      "title": "hackers",
       "body": "Describes the setup for getting started with the Skeet framework."
     }
   },
   "menuNav": {
-    "home": "Doc Home",
+    "home": "docs home",
     "general": {
-      "groupTitle": "General",
-      "motivation": "Motivation",
-      "quickstart": "Quickstart",
+      "groupTitle": "general",
+      "motivation": "motivation",
+      "quickstart": "quickstart",
+      "readme": "README"
+    },
+    "protocols": {
+      "groupTitle": "protocols",
+      "motivation": "motivation",
+      "quickstart": "quickstart",
+      "readme": "README"
+    },
+    "hackers": {
+      "groupTitle": "hackers",
+      "motivation": "motivation",
+      "quickstart": "quickstart",
       "readme": "README"
     }
   },

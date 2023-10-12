@@ -1,7 +1,6 @@
 import Link from '@/components/routing/Link'
 import Image from 'next/image'
-import logoHorizontal from '@/assets/img/logo/SkeetLogoHorizontal.svg'
-import logoHorizontalInvert from '@/assets/img/logo/SkeetLogoHorizontalInvert.svg'
+import logoHorizontal from '@/assets/img/logo/whitehat.webp'
 import clsx from 'clsx'
 
 type Props = {
@@ -18,16 +17,16 @@ export default function LogoHorizontalLink({
   return (
     <>
       <Link href={href} {...rest}>
-        <span className="sr-only">Skeet</span>
+        <span className="sr-only">whitehat</span>
         <Image
           src={logoHorizontal}
-          alt="Skeet Framework"
+          alt="whitehat"
           className={clsx('dark:hidden ', className)}
           unoptimized
         />
         <Image
-          src={logoHorizontalInvert}
-          alt="Skeet Framework"
+          src={logoHorizontal}
+          alt="whitehat"
           className={clsx('hidden dark:block', className)}
           unoptimized
         />

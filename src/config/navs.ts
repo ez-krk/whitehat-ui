@@ -3,9 +3,12 @@ import {
   BookOpenIcon,
   ChatBubbleLeftRightIcon,
   Cog8ToothIcon,
+  CommandLineIcon,
   HeartIcon,
   HomeIcon,
+  PresentationChartLineIcon,
   RocketLaunchIcon,
+  ShieldExclamationIcon,
 } from '@heroicons/react/24/outline'
 
 export const defaultMainNav = [
@@ -56,6 +59,46 @@ export const docMenuNav = [
       },
     ],
   },
+  {
+    name: 'doc:menuNav.protocols.groupTitle',
+    children: [
+      {
+        name: 'doc:menuNav.general.motivation',
+        href: '/doc/general/motivation/',
+        icon: HeartIcon,
+      },
+      {
+        name: 'doc:menuNav.general.quickstart',
+        href: '/doc/general/quickstart/',
+        icon: RocketLaunchIcon,
+      },
+      {
+        name: 'doc:menuNav.general.readme',
+        href: '/doc/general/readme/',
+        icon: BookOpenIcon,
+      },
+    ],
+  },
+  {
+    name: 'doc:menuNav.hackers.groupTitle',
+    children: [
+      {
+        name: 'doc:menuNav.general.motivation',
+        href: '/doc/general/motivation/',
+        icon: HeartIcon,
+      },
+      {
+        name: 'doc:menuNav.general.quickstart',
+        href: '/doc/general/quickstart/',
+        icon: RocketLaunchIcon,
+      },
+      {
+        name: 'doc:menuNav.general.readme',
+        href: '/doc/general/readme/',
+        icon: BookOpenIcon,
+      },
+    ],
+  },
 ]
 
 export const docHeaderNav = [
@@ -71,15 +114,30 @@ export const docHeaderNav = [
 
 export const userMenuNav = [
   {
-    name: 'user:menuNav.vertexAi',
-    href: '/user/vertex-ai/',
-    icon: AcademicCapIcon,
+    name: 'user:menuNav.dashboard',
+    href: '/user/dashboard/',
+    icon: PresentationChartLineIcon,
   },
   {
-    name: 'user:menuNav.chat',
-    href: '/user/chat/',
-    icon: ChatBubbleLeftRightIcon,
+    name: 'user:menuNav.vulnerabilities',
+    href: '/user/vulnerabilities/',
+    icon: ShieldExclamationIcon,
   },
+  {
+    name: 'user:menuNav.hacks',
+    href: '/user/hacks/',
+    icon: CommandLineIcon,
+  },
+  // {
+  //   name: 'user:menuNav.vertexAi',
+  //   href: '/user/vertex-ai/',
+  //   icon: AcademicCapIcon,
+  // },
+  // {
+  //   name: 'user:menuNav.chat',
+  //   href: '/user/chat/',
+  //   icon: ChatBubbleLeftRightIcon,
+  // },
   {
     name: 'user:menuNav.settings',
     href: '/user/settings/',

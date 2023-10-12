@@ -5,6 +5,8 @@ import {
   HeartIcon,
   RocketLaunchIcon,
   ArrowUpRightIcon,
+  ShieldCheckIcon,
+  CommandLineIcon,
 } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 
@@ -24,6 +26,22 @@ const actions = [
     icon: RocketLaunchIcon,
     iconForeground: 'text-green-700',
     iconBackground: 'bg-green-50',
+  },
+  {
+    title: 'doc:actions.protocols.title',
+    body: 'doc:actions.quickstart.body',
+    href: '/doc/general/quickstart',
+    icon: ShieldCheckIcon,
+    iconForeground: 'text-blue-700',
+    iconBackground: 'bg-blue-50',
+  },
+  {
+    title: 'doc:actions.hackers.title',
+    body: 'doc:actions.quickstart.body',
+    href: '/doc/general/quickstart',
+    icon: CommandLineIcon,
+    iconForeground: 'text-red-700',
+    iconBackground: 'bg-red-50',
   },
 ]
 

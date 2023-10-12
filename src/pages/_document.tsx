@@ -14,7 +14,7 @@ export default class MyDocument extends Document {
             crossOrigin="anonymous"
           />
           <meta name="format-detection" content="telephone=no" />
-          <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+          <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
           <link
             rel="apple-touch-icon"
             sizes="180x180"

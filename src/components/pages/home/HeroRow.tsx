@@ -2,13 +2,18 @@ import Container from '@/components/common/atoms/Container'
 import { useTranslation } from 'next-i18next'
 import Image from 'next/image'
 import nextjsLogo from '@/assets/img/logo/projects/nextjs.svg'
-import i18nextLogo from '@/assets/img/logo/projects/i18next.webp'
-import recoilLogo from '@/assets/img/logo/projects/recoil.svg'
-import eslintLogo from '@/assets/img/logo/projects/eslint.svg'
-import prettierLogo from '@/assets/img/logo/projects/prettier.png'
+// import i18nextLogo from '@/assets/img/logo/projects/i18next.webp'
+// import recoilLogo from '@/assets/img/logo/projects/recoil.svg'
+// import eslintLogo from '@/assets/img/logo/projects/eslint.svg'
+// import prettierLogo from '@/assets/img/logo/projects/prettier.png'
 import firebaseLogo from '@/assets/img/logo/projects/Firebase.svg'
 import tailwindcssLogo from '@/assets/img/logo/projects/tailwindcss.svg'
-import typescriptLogo from '@/assets/img/logo/projects/TypeScriptHorizontal.svg'
+// import typescriptLogo from '@/assets/img/logo/projects/TypeScriptHorizontal.svg'
+import solanaLogo from '@/assets/img/logo/projects/solana.svg'
+import rustLogo from '@/assets/img/logo/projects/rust.svg'
+import skeetLogo from '@/assets/img/logo/projects/skeet.svg'
+import anchorLogo from '@/assets/img/logo/projects/anchor.png'
+import heliusLogo from '@/assets/img/logo/projects/helius.png'
 import Button from '@/components/common/atoms/Button'
 import clsx from 'clsx'
 
@@ -19,7 +24,7 @@ export default function HomeHeroRow() {
     <>
       <Container className="pb-40 pt-24 text-center lg:pb-64 lg:pt-40">
         <h1 className="font-display mx-auto max-w-4xl text-5xl font-bold tracking-tight text-gray-900 dark:text-gray-50 sm:text-7xl">
-          WebApp Boilerplate
+          whitehat.
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-lg tracking-tight text-gray-700 dark:text-gray-200">
           {t('home:HeroRow.body')}
@@ -35,7 +40,7 @@ export default function HomeHeroRow() {
             target="_blank"
             rel="noreferrer"
           >
-            GitHub
+            gitHub
           </Button>
         </div>
         <div className="mt-36 lg:mt-48">
@@ -46,6 +51,33 @@ export default function HomeHeroRow() {
             {[
               [
                 {
+                  name: 'Solana',
+                  logo: solanaLogo,
+                  link: 'https://solana.com/',
+                },
+                {
+                  name: 'Anchorlang',
+                  logo: anchorLogo,
+                  link: 'https://anchor-lang.com/',
+                },
+                {
+                  name: 'Helius',
+                  logo: heliusLogo,
+                  link: 'https://helius.xyz/',
+                },
+                {
+                  name: 'Rust',
+                  logo: rustLogo,
+                  link: 'https://nextjs.org/',
+                },
+              ],
+              [
+                {
+                  name: 'Skeet',
+                  logo: skeetLogo,
+                  link: 'https://skeet.dev/',
+                },
+                {
                   name: 'Next.js',
                   logo: nextjsLogo,
                   link: 'https://nextjs.org/',
@@ -55,37 +87,15 @@ export default function HomeHeroRow() {
                   logo: firebaseLogo,
                   link: 'https://firebase.google.com/',
                 },
-                {
-                  name: 'TypeScript',
-                  logo: typescriptLogo,
-                  link: 'https://www.typescriptlang.org/',
-                },
+                // {
+                //   name: 'TypeScript',
+                //   logo: typescriptLogo,
+                //   link: 'https://www.typescriptlang.org/',
+                // },
                 {
                   name: 'Tailwind',
                   logo: tailwindcssLogo,
                   link: 'https://tailwindcss.com/',
-                },
-              ],
-              [
-                {
-                  name: 'ESLint',
-                  logo: eslintLogo,
-                  link: 'https://eslint.org/',
-                },
-                {
-                  name: 'Prettier',
-                  logo: prettierLogo,
-                  link: 'https://prettier.io/',
-                },
-                {
-                  name: 'Recoil',
-                  logo: recoilLogo,
-                  link: 'https://recoiljs.org/',
-                },
-                {
-                  name: 'i18next',
-                  logo: i18nextLogo,
-                  link: 'https://www.i18next.com/',
                 },
               ],
             ].map((group, groupIndex) => (

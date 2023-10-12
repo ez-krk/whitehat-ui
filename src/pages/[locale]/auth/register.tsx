@@ -8,7 +8,7 @@ const seo = {
   pathname: '/auth/register',
   title: {
     ja: 'アカウント登録',
-    en: 'Register an account',
+    en: 'register',
   },
   description: {
     ja: siteConfig.descriptionJA,

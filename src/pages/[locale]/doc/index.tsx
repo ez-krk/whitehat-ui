@@ -11,11 +11,11 @@ const seo = {
   pathname: `/${articleDirName}`,
   title: {
     ja: 'ドキュメントトップページ',
-    en: 'Doc top page',
+    en: 'docs',
   },
   description: {
     ja: 'Next.js Template ドキュメントトップページ',
-    en: 'Next.js Doc top page',
+    en: 'whitehat docs home',
   },
   img: null,
 }

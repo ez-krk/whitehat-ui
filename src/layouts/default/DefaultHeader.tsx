@@ -5,12 +5,12 @@ import { useTranslation } from 'next-i18next'
 import LanguageChanger from '@/components/utils/LanguageChanger'
 import ColorModeChanger from '@/components/utils/ColorModeChanger'
 import Link from '@/components/routing/Link'
-import LogoHorizontalLink from '@/components/common/atoms/LogoHorizontalLink'
 import { defaultMainNav } from '@/config/navs'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDiscord, faGithub } from '@fortawesome/free-brands-svg-icons'
 import siteConfig from '@/config/site'
 import Button from '@/components/common/atoms/Button'
+import LogoNavbar from '@/components/common/atoms/LogoNavbar'
 
 export default function DefaultHeader() {
   const { t } = useTranslation()
@@ -57,7 +57,7 @@ export default function DefaultHeader() {
             <>
               <div className="flex items-center justify-between p-6 md:justify-start md:space-x-10">
                 <div className="flex justify-start lg:w-0 lg:flex-1">
-                  <LogoHorizontalLink className="h-8 w-auto sm:h-10" />
+                  <LogoNavbar className="h-8 w-auto sm:h-10" />
                 </div>
                 <div className="-my-2 -mr-2 md:hidden">
                   <Popover.Button className="inline-flex items-center justify-center  p-2 text-gray-700 hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-500  dark:text-gray-50 dark:hover:bg-gray-700 dark:hover:text-gray-200">
@@ -104,7 +104,7 @@ export default function DefaultHeader() {
                     <div className="px-5 pt-5">
                       <div className="flex items-center justify-between">
                         <div>
-                          <LogoHorizontalLink
+                          <LogoNavbar
                             className="h-8 w-auto sm:h-10"
                             onClick={() => close()}
                           />

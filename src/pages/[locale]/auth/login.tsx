@@ -8,7 +8,7 @@ const seo = {
   pathname: '/auth/login',
   title: {
     ja: 'ログイン',
-    en: 'Sign in',
+    en: 'sign in',
   },
   description: {
     ja: siteConfig.descriptionJA,

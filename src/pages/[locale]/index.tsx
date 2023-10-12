@@ -15,7 +15,7 @@ const seo = {
   pathname: '/',
   title: {
     ja: 'トップページ',
-    en: 'Top page',
+    en: 'home',
   },
   description: {
     ja: siteConfig.descriptionJA,

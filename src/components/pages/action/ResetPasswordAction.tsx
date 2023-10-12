@@ -11,6 +11,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import useToastMessage from '@/hooks/useToastMessage'
 import { useRouter } from 'next/router'
+import LogoNavbar from '@/components/common/atoms/LogoNavbar'
 
 const schema = z.object({
   password: passwordSchema,
@@ -111,7 +112,7 @@ export default function ResetPasswordAction({ oobCode }: Props) {
     <>
       <div className="h-full w-full flex-col items-center justify-center">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
-          <LogoHorizontal className="mx-auto w-24" />
+          <LogoNavbar className="mx-auto w-24" />
           <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
             {t('inputNewPassword')}
           </h2>

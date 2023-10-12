@@ -8,7 +8,7 @@ const seo = {
   pathname: '/auth/reset-password',
   title: {
     ja: 'パスワードリセット',
-    en: 'Reset your password',
+    en: 'reset your password',
   },
   description: {
     ja: siteConfig.descriptionJA,

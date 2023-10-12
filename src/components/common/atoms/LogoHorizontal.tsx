@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import logoHorizontal from '@/assets/img/logo/SkeetLogoHorizontal.svg'
+import logoHorizontal from '@/assets/img/logo/whitehat.webp'
 import logoHorizontalInvert from '@/assets/img/logo/SkeetLogoHorizontalInvert.svg'
 import clsx from 'clsx'
 
@@ -12,16 +12,16 @@ export default function LogoHorizontal({ className, ...rest }: Props) {
   return (
     <>
       <div {...rest}>
-        <span className="sr-only">Skeet</span>
+        <span className="sr-only">whitehat</span>
         <Image
           src={logoHorizontal}
-          alt="Skeet Framework"
+          alt="whitehat"
           className={clsx('dark:hidden ', className)}
           unoptimized
         />
         <Image
-          src={logoHorizontalInvert}
-          alt="Skeet Framework"
+          src={logoHorizontal}
+          alt="whitehat"
           className={clsx('hidden dark:block', className)}
           unoptimized
         />

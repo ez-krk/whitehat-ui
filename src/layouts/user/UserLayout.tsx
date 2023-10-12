@@ -139,7 +139,7 @@ export default function UserLayout({ children }: Props) {
                         className="ml-1 flex h-10 w-10 items-center justify-center focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
                         onClick={() => setSidebarOpen(false)}
                       >
-                        <span className="sr-only">Close sidebar</span>
+                        <span className="sr-only">close sidebar</span>
                         <XMarkIcon
                           className="h-6 w-6 text-white"
                           aria-hidden="true"
@@ -229,7 +229,7 @@ export default function UserLayout({ children }: Props) {
               className="px-4 text-gray-500 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-500 dark:text-gray-50 dark:hover:text-gray-200 lg:hidden"
               onClick={() => setSidebarOpen(true)}
             >
-              <span className="sr-only">Open sidebar</span>
+              <span className="sr-only">open sidebar</span>
               <Bars3BottomLeftIcon className="h-6 w-6" aria-hidden="true" />
             </button>
 
@@ -242,7 +242,7 @@ export default function UserLayout({ children }: Props) {
 
               <Menu as="div" className="lg:mt-2">
                 <Menu.Button className="flex max-w-xs items-center text-sm text-gray-700 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:text-gray-50 dark:hover:text-gray-200">
-                  <span className="sr-only">Open other menu</span>
+                  <span className="sr-only">open other menu</span>
                   {user.iconUrl && (
                     <Image
                       src={user.iconUrl}

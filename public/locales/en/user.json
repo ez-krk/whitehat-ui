@@ -1,5 +1,8 @@
 {
   "menuNav": {
+    "dashboard": "dashboard",
+    "vulnerabilities": "vulnerabilities",
+    "hacks": "hacks",
     "chat": "Open AI Chat",
     "vertexAi": "Vertex AI Chat",
     "settings": "Settings"

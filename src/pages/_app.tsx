@@ -1,5 +1,5 @@
 import '@/lib/firebase'
-import type { ReactElement, ReactNode } from 'react'
+import { useMemo, type ReactElement, type ReactNode } from 'react'
 import type { NextPage } from 'next'
 import type { AppProps } from 'next/app'
 import { appWithTranslation } from 'next-i18next'
@@ -10,6 +10,12 @@ import type { SeoData } from '@/lib/getStatic'
 import 'highlight.js/styles/github-dark.css'
 import '@/assets/styles/globals.css'
 import { ThemeProvider } from 'next-themes'
+import { WalletContextProvider } from '@/contexts/WalletContextProvider'
+// solana
+import { WalletAdapterNetwork } from '@solana/wallet-adapter-base'
+import { PhantomWalletAdapter } from '@solana/wallet-adapter-wallets'
+import { clusterApiUrl } from '@solana/web3.js'
+require('@solana/wallet-adapter-react-ui/styles.css')
 
 export type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode
@@ -20,6 +26,19 @@ export type AppPropsWithLayout = AppProps & {
 }
 
 function MyApp({ Component, pageProps, router }: AppProps) {
+  const cluster =
+    (process.env.NEXT_PUBLIC_SOLANA_NETWORK as 'devnet' | 'mainnet-beta') ||
+    'devnet'
+  const network = useMemo(
+    () =>
+      cluster === 'mainnet-beta'
+        ? WalletAdapterNetwork.Mainnet
+        : WalletAdapterNetwork.Devnet,
+    [cluster]
+  )
+  const endpoint =
+    process.env.NEXT_PUBLIC_SOLANA_ENDPOINT || clusterApiUrl(network)
+  const wallets = useMemo(() => [new PhantomWalletAdapter()], [network])
   return (
     <>
       <Head>
@@ -28,17 +47,23 @@ function MyApp({ Component, pageProps, router }: AppProps) {
           <meta {...seo} key={`metaSeo${index}`} />
         ))}
       </Head>
-      <RecoilRoot>
-        <ThemeProvider attribute="class">
-          <main className="min-h-screen scroll-smooth font-sans antialiased">
-            <Layout
-              Component={Component}
-              pageProps={pageProps}
-              router={router}
-            />
-          </main>
-        </ThemeProvider>
-      </RecoilRoot>
+      <WalletContextProvider
+        endpoint={endpoint}
+        network={network}
+        wallets={wallets}
+      >
+        <RecoilRoot>
+          <ThemeProvider attribute="class">
+            <main className="min-h-screen scroll-smooth font-sans antialiased">
+              <Layout
+                Component={Component}
+                pageProps={pageProps}
+                router={router}
+              />
+            </main>
+          </ThemeProvider>
+        </RecoilRoot>
+      </WalletContextProvider>
     </>
   )
 }
