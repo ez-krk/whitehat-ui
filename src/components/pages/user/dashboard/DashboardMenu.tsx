@@ -24,6 +24,8 @@ import {
   temperatureSchema,
   maxTokensSchema,
   systemContentSchema,
+  titleSchema,
+  percentSchema,
 } from '@/utils/form'
 
 import {
@@ -57,10 +59,8 @@ export type ChatRoom = {
 }
 
 const schema = z.object({
-  model: gptModelSchema,
-  maxTokens: maxTokensSchema,
-  temperature: temperatureSchema,
-  systemContent: systemContentSchema,
+  name: titleSchema,
+  percent: percentSchema,
 })
 
 type Inputs = z.infer<typeof schema>
@@ -106,12 +106,12 @@ export default function DashboardMenu({
   } = useForm<Inputs>({
     resolver: zodResolver(schema),
     defaultValues: {
-      model: allowedGPTModel[0],
-      maxTokens: 1000,
-      temperature: 1,
-      systemContent: isJapanese
-        ? 'あなたは、親切で、創造的で、賢く、とてもフレンドリーなアシスタントです。'
-        : 'You are the assistant who is helpful, creative, clever, and very friendly.',
+      name: '',
+      percent: 10,
+      // temperature: 1,
+      // systemContent: isJapanese
+      //   ? 'あなたは、親切で、創造的で、賢く、とてもフレンドリーなアシスタントです。'
+      //   : 'You are the assistant who is helpful, creative, clever, and very friendly.',
     },
   })
 
@@ -196,44 +196,32 @@ export default function DashboardMenu({
   }, [queryMore, chatMenuRefMobile, reachLast])
 
   const isDisabled = useMemo(() => {
-    return (
-      isCreateLoading ||
-      errors.model != null ||
-      errors.systemContent != null ||
-      errors.maxTokens != null ||
-      errors.temperature != null
-    )
-  }, [
-    isCreateLoading,
-    errors.model,
-    errors.systemContent,
-    errors.maxTokens,
-    errors.temperature,
-  ])
+    return isCreateLoading || errors.name != null || errors.percent != null
+  }, [isCreateLoading, errors.name, errors.percent])
 
   const onSubmit = useCallback(
     async (data: Inputs) => {
       try {
         setCreateLoading(true)
         if (!isDisabled && db) {
-          const docRef = await add<UserChatRoom>(
-            db,
-            genUserChatRoomPath(user.uid),
-            {
-              title: '',
-              model: data.model,
-              context: data.systemContent,
-              maxTokens: data.maxTokens,
-              temperature: data.temperature,
-              stream: true,
-            }
-          )
+          // const docRef = await add<UserChatRoom>(
+          //   db,
+          //   genUserChatRoomPath(user.uid),
+          //   {
+          //     title: '',
+          //     model: data.name,
+          //     context: data.systemContent,
+          //     maxTokens: data.maxTokens,
+          //     temperature: data.temperature,
+          //     stream: true,
+          //   }
+          // )
           addToast({
             type: 'success',
             title: t('chat:chatRoomCreatedSuccessTitle'),
             description: t('chat:chatRoomCreatedSuccessBody'),
           })
-          setCurrentChatRoomId(docRef.id)
+          // setCurrentChatRoomId(docRef.id)
         }
       } catch (err) {
         console.error(err)
@@ -265,10 +253,8 @@ export default function DashboardMenu({
       t,
       setCreateLoading,
       isDisabled,
-      setCurrentChatRoomId,
       addToast,
       getChatRooms,
-      user.uid,
     ]
   )
 
@@ -415,7 +401,7 @@ export default function DashboardMenu({
                   </div>
                   <div className="flex flex-grow flex-col gap-2">
                     <p className="text-center text-lg font-bold">
-                      {t('chat:newChat')}
+                      {t('dashboard:addProgram')}
                     </p>
                     <div className="w-full sm:mx-auto sm:max-w-xl">
                       <div className="gap-6  sm:px-10">
@@ -423,8 +409,8 @@ export default function DashboardMenu({
                           <div className="flex flex-col gap-6  py-6 sm:px-10">
                             <div>
                               <p className="text-sm font-medium leading-6 text-gray-900 dark:text-gray-50">
-                                {t('chat:model')}
-                                {errors.model && (
+                                {t('dashboard:protocolName')}
+                                {errors.name && (
                                   <span className="text-xs text-red-500 dark:text-red-300">
                                     {' : '}
                                     {t('chat:modelErrorText')}
@@ -433,118 +419,10 @@ export default function DashboardMenu({
                               </p>
                               <div className="mt-2">
                                 <Controller
-                                  name="model"
+                                  name="name"
                                   control={control}
                                   render={({ field }) => (
-                                    <select
-                                      {...field}
-                                      className="w-full border-2 border-gray-900 p-3 text-lg font-bold text-gray-900 dark:border-gray-50 dark:bg-gray-800 dark:text-white sm:leading-6"
-                                    >
-                                      {allowedGPTModel.map((model) => (
-                                        <option key={model} value={model}>
-                                          {model}
-                                        </option>
-                                      ))}
-                                    </select>
-                                  )}
-                                />
-                              </div>
-                            </div>
-                            <div>
-                              <p className="text-sm font-medium leading-6 text-gray-900 dark:text-gray-50">
-                                {t('chat:maxTokens')}
-                                {errors.maxTokens && (
-                                  <span className="text-xs text-red-500 dark:text-red-300">
-                                    {' : '}
-                                    {t('chat:maxTokensErrorText')}
-                                  </span>
-                                )}
-                              </p>
-                              <div className="mt-2">
-                                <Controller
-                                  name="maxTokens"
-                                  control={control}
-                                  render={({ field }) => (
-                                    <>
-                                      <input
-                                        {...field}
-                                        type="range"
-                                        min={100}
-                                        max={4096}
-                                        step={4}
-                                        className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 dark:bg-gray-700"
-                                        onChange={(e) =>
-                                          field.onChange(
-                                            e.target.value
-                                              ? parseFloat(e.target.value)
-                                              : 0
-                                          )
-                                        }
-                                      />
-                                      <p className="text-bold text-gray-900 dark:text-white">
-                                        {field.value}
-                                      </p>
-                                    </>
-                                  )}
-                                />
-                              </div>
-                            </div>
-                            <div>
-                              <p className="text-sm font-medium leading-6 text-gray-900 dark:text-gray-50">
-                                {t('chat:temperature')}
-                                {errors.temperature && (
-                                  <span className="text-xs text-red-500 dark:text-red-300">
-                                    {' : '}
-                                    {t('chat:temperatureErrorText')}
-                                  </span>
-                                )}
-                              </p>
-                              <div className="mt-2">
-                                <Controller
-                                  name="temperature"
-                                  control={control}
-                                  render={({ field }) => (
-                                    <>
-                                      <input
-                                        {...field}
-                                        type="range"
-                                        min={0}
-                                        max={2.0}
-                                        step={0.01}
-                                        className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 dark:bg-gray-700"
-                                        onChange={(e) =>
-                                          field.onChange(
-                                            e.target.value
-                                              ? parseFloat(e.target.value)
-                                              : 0
-                                          )
-                                        }
-                                      />
-                                      <p className="text-bold text-gray-900 dark:text-white">
-                                        {field.value}
-                                      </p>
-                                    </>
-                                  )}
-                                />
-                              </div>
-                            </div>
-
-                            <div>
-                              <p className="text-sm font-medium leading-6 text-gray-900 dark:text-gray-50">
-                                {t('chat:systemContent')}
-                                {errors.systemContent && (
-                                  <span className="text-xs text-red-500 dark:text-red-300">
-                                    {' : '}
-                                    {t('chat:systemContentErrorText')}
-                                  </span>
-                                )}
-                              </p>
-                              <div className="mt-2">
-                                <Controller
-                                  name="systemContent"
-                                  control={control}
-                                  render={({ field }) => (
-                                    <textarea
+                                    <input
                                       {...field}
                                       onKeyDown={onKeyDown}
                                       className="w-full border-2 border-gray-900 p-3 text-lg font-bold text-gray-900 dark:border-gray-50 dark:bg-gray-800 dark:text-white sm:leading-6"
@@ -553,7 +431,46 @@ export default function DashboardMenu({
                                 />
                               </div>
                             </div>
-
+                            <div>
+                              <p className="text-sm font-medium leading-6 text-gray-900 dark:text-gray-50">
+                                {t('dashboard:percent')}
+                                {errors.percent && (
+                                  <span className="text-xs text-red-500 dark:text-red-300">
+                                    {' : '}
+                                    {t('dashboard:errorPercent')}
+                                  </span>
+                                )}
+                              </p>
+                              <div className="mt-2">
+                                <Controller
+                                  name="percent"
+                                  control={control}
+                                  render={({ field }) => (
+                                    <>
+                                      <input
+                                        {...field}
+                                        type="range"
+                                        min={0}
+                                        max={100}
+                                        step={1}
+                                        className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 dark:bg-gray-700"
+                                        onChange={(e) =>
+                                          field.onChange(
+                                            e.target.value
+                                              ? parseFloat(e.target.value)
+                                              : 0
+                                          )
+                                        }
+                                      />
+                                      <p className="text-bold text-gray-900 dark:text-white">
+                                        {field.value} %
+                                      </p>
+                                    </>
+                                  )}
+                                />
+                              </div>
+                            </div>
+                            <div></div>
                             <div>
                               <button
                                 type="submit"
@@ -565,7 +482,7 @@ export default function DashboardMenu({
                                   'w-full px-3 py-2 text-center text-lg font-bold'
                                 )}
                               >
-                                {t('chat:createChatRoom')}
+                                {t('dashboard:addProgram')}
                               </button>
                             </div>
                           </div>

@@ -2,8 +2,11 @@ import { z } from 'zod'
 
 export const emailSchema = z.string().email()
 export const passwordSchema = z.string().min(8)
+export const titleSchema = z.string().min(1).max(50)
 export const usernameSchema = z.string().min(1).max(20)
 export const privacySchema = z.boolean().refine((v) => v === true)
+
+export const percentSchema = z.number().int().min(0).max(100)
 
 export type GPTModel = 'gpt-4' | 'gpt-3.5-turbo'
 export const allowedGPTModel: GPTModel[] = ['gpt-4', 'gpt-3.5-turbo']
