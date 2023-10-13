@@ -345,7 +345,9 @@ export default function DashboardBox({
                     <Link href="/user/programs">
                       <div className="flex w-72 items-center justify-center rounded-sm border p-4">
                         <div className="flex grow flex-col">
-                          <span className="grow">programs</span>
+                          <span className="grow">
+                            {t('dashboard:programs')}
+                          </span>
                           <span className="mb-[16px]">0</span>
                         </div>
                         <CpuChipIcon className="h-8 w-8" />
@@ -354,9 +356,13 @@ export default function DashboardBox({
                     <Link href="/user/vulnerabilities">
                       <div className="flex w-72 items-center justify-center rounded-sm border p-4">
                         <div className="flex grow flex-col">
-                          <span className="">vulnerabilities</span>
+                          <span className="">
+                            {t('dashboard:vulnerabilities')}
+                          </span>
                           <span>0</span>
-                          <span className="text-xs">pending review : 0</span>
+                          <span className="text-xs">
+                            {t('dashboard:pendingReview')} : 0
+                          </span>
                         </div>
                         <ShieldExclamationIcon className="h-8 w-8" />
                       </div>
@@ -364,9 +370,11 @@ export default function DashboardBox({
                     <Link href="/user/hacks">
                       <div className="flex w-72 items-center justify-center rounded-sm border p-4">
                         <div className="flex grow flex-col">
-                          <span className="grow">hacks</span>
+                          <span className="grow">{t('dashboard:hacks')}</span>
                           <span>0</span>
-                          <span className="text-xs">pending review : 0</span>
+                          <span className="text-xs">
+                            {t('dashboard:pendingReview')} : 0
+                          </span>
                         </div>
                         <CommandLineIcon className="h-8 w-8" />
                       </div>
@@ -375,13 +383,13 @@ export default function DashboardBox({
                   <div className="mx-auto my-8 flex">
                     <div className="h-96 w-96">
                       <p className="w-[100%] text-center">
-                        all time funds returned
+                        {t('dashboard:fundsReturned')}
                       </p>
                       <FundsReturns data={MOCK_DATA} />
                     </div>
                     <div className="h-96 w-96">
                       <p className="w-[100%] text-center">
-                        all time paid to hackers
+                        {t('dashboard:paidToHackers')}
                       </p>
                       <FundsReturns data={MOCK_DATA} />
                     </div>
