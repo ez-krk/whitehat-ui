@@ -49,6 +49,8 @@ import { Timestamp } from '@skeet-framework/firestore'
 import { get, query } from '@/lib/skeet/firestore'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
+import { FundsReturns } from '@/components/charts/FundsReturned'
+import { MOCK_DATA } from '@/constants'
 
 type ChatMessage = {
   id: string
@@ -321,6 +323,50 @@ export default function DashboardBox({
     },
     [handleSubmit, onSubmit]
   )
+  const data = [
+    {
+      name: 'Page A',
+      uv: 4000,
+      pv: 2400,
+      amt: 2400,
+    },
+    {
+      name: 'Page B',
+      uv: 3000,
+      pv: 1398,
+      amt: 2210,
+    },
+    {
+      name: 'Page C',
+      uv: 2000,
+      pv: 9800,
+      amt: 2290,
+    },
+    {
+      name: 'Page D',
+      uv: 2780,
+      pv: 3908,
+      amt: 2000,
+    },
+    {
+      name: 'Page E',
+      uv: 1890,
+      pv: 4800,
+      amt: 2181,
+    },
+    {
+      name: 'Page F',
+      uv: 2390,
+      pv: 3800,
+      amt: 2500,
+    },
+    {
+      name: 'Page G',
+      uv: 3490,
+      pv: 4300,
+      amt: 2100,
+    },
+  ]
 
   return (
     <>
@@ -336,27 +382,44 @@ export default function DashboardBox({
                   <WalletMultiButton />
                 </>
               ) : (
-                <div className="flex space-x-4">
-                  <div className="flex w-72 items-center justify-center rounded-sm border p-4">
-                    <div className="flex grow flex-col">
-                      <span className="grow">programs</span>
-                      <span>0</span>
+                <div className="flex flex-col">
+                  {/* HEADER */}
+                  <div className="flex space-x-4">
+                    <div className="flex w-72 items-center justify-center rounded-sm border p-4">
+                      <div className="flex grow flex-col">
+                        <span className="grow">programs</span>
+                        <span>0</span>
+                      </div>
+                      <CpuChipIcon className="h-8 w-8" />
                     </div>
-                    <CpuChipIcon className="h-8 w-8" />
+                    <div className="flex w-72 items-center justify-center rounded-sm border p-4">
+                      <div className="flex grow flex-col">
+                        <span className="">vulnerabilities</span>
+                        <span>0</span>
+                      </div>
+                      <ShieldExclamationIcon className="h-8 w-8" />
+                    </div>
+                    <div className="flex w-72 items-center justify-center rounded-sm border p-4">
+                      <div className="flex grow flex-col">
+                        <span className="grow">hacks</span>
+                        <span>0</span>
+                      </div>
+                      <CommandLineIcon className="h-8 w-8" />
+                    </div>
                   </div>
-                  <div className="flex w-72 items-center justify-center rounded-sm border p-4">
-                    <div className="flex grow flex-col">
-                      <span className="">vulnerabilities</span>
-                      <span>0</span>
+                  <div className="mx-auto my-8 flex">
+                    <div className="h-96 w-96">
+                      <p className="w-[100%] text-center">
+                        all time funds returned
+                      </p>
+                      <FundsReturns data={MOCK_DATA} />
                     </div>
-                    <ShieldExclamationIcon className="h-8 w-8" />
-                  </div>
-                  <div className="flex w-72 items-center justify-center rounded-sm border p-4">
-                    <div className="flex grow flex-col">
-                      <span className="grow">hacks</span>
-                      <span>0</span>
+                    <div className="h-96 w-96">
+                      <p className="w-[100%] text-center">
+                        all time paid to hackers
+                      </p>
+                      <FundsReturns data={MOCK_DATA} />
                     </div>
-                    <CommandLineIcon className="h-8 w-8" />
                   </div>
                 </div>
               )}
