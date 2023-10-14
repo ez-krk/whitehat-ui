@@ -9,16 +9,18 @@
   "openMenu": "Open menu",
   "closeMenu": "Close menu",
   "aiChat": "AI Chat",
+  "getStarted": "get started",
   "login": "Sign in",
   "register": "Sign up",
   "navs": {
     "defaultMainNav": {
-      "news": "News",
-      "doc": "Doc"
+      "news": "news",
+      "explore": "explore",
+      "docs": "docs"
     },
     "commonFooterNav": {
-      "news": "News",
-      "doc": "Doc",
+      "news": "news",
+      "docs": "docs",
       "privacy": "Privacy"
     }
   },

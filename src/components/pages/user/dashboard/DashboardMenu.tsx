@@ -33,6 +33,7 @@ import {
   QueryDocumentSnapshot,
   Timestamp,
   collection,
+  doc,
   limit,
   orderBy,
   startAfter,
@@ -45,7 +46,12 @@ import { z } from 'zod'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { UserChatRoom, genUserChatRoomPath } from '@/types/models'
-import { add, query } from '@/lib/skeet/firestore'
+import { add, get, query } from '@/lib/skeet/firestore'
+import { registerProtocol } from '@/utils/api/instructions/registerProtocol'
+import { useConnection, useWallet } from '@solana/wallet-adapter-react'
+import { sendTx } from '@/utils/api/send'
+import { SOLANA_RPC_ENDPOINT } from '@/constants'
+import { Connection, TransactionSignature } from '@solana/web3.js'
 
 export type ChatRoom = {
   id: string
@@ -98,6 +104,8 @@ export default function DashboardMenu({
   const [isChatListModalOpen, setChatListModalOpen] = useState(false)
   const addToast = useToastMessage()
   const [reachLast, setReachLast] = useState(false)
+  const { publicKey, sendTransaction } = useWallet()
+  const connection = useConnection()
 
   const {
     handleSubmit,
@@ -203,7 +211,21 @@ export default function DashboardMenu({
     async (data: Inputs) => {
       try {
         setCreateLoading(true)
-        if (!isDisabled && db) {
+        if (!isDisabled && db && publicKey) {
+          const docSnap = await get(db, 'users', user.uid)
+          console.log(docSnap)
+          const tx = await registerProtocol(
+            publicKey,
+            docSnap.publicKey,
+            data.name,
+            data.percent,
+            connection
+          )
+
+          const cnx = new Connection(SOLANA_RPC_ENDPOINT)
+          let signature: TransactionSignature = ''
+          signature = await sendTransaction(tx, cnx)
+          await cnx.confirmTransaction(signature, 'confirmed')
           // const docRef = await add<UserChatRoom>(
           //   db,
           //   genUserChatRoomPath(user.uid),
@@ -248,14 +270,7 @@ export default function DashboardMenu({
         await getChatRooms()
       }
     },
-    [
-      setNewChatModalOpen,
-      t,
-      setCreateLoading,
-      isDisabled,
-      addToast,
-      getChatRooms,
-    ]
+    [isDisabled, publicKey, addToast, t, setNewChatModalOpen, getChatRooms]
   )
 
   const onKeyDown = useCallback(

@@ -16,6 +16,7 @@ import { UserChatRoom, genUserChatRoomPath } from '@/types/models'
 import { query } from '@/lib/skeet/firestore'
 import DashboardMenu from './DashboardMenu'
 import DashboardBox from './DashboardBox'
+import { PROTOCOL_PDA } from '@/types'
 
 export default function DashboardScreen() {
   const { t } = useTranslation()
@@ -26,7 +27,9 @@ export default function DashboardScreen() {
 
   const user = useRecoilValue(userState)
 
+  const [programs, setPrograms] = useState<PROTOCOL_PDA[]>([])
   const [chatList, setChatList] = useState<ChatRoom[]>([])
+
   const [lastChat, setLastChat] =
     useState<QueryDocumentSnapshot<DocumentData> | null>(null)
   const [isDataLoading, setDataLoading] = useState(false)
@@ -47,7 +50,7 @@ export default function DashboardScreen() {
           const data = doc.data()
           list.push({ id: doc.id, ...data } as ChatRoom)
         })
-        console.log(list)
+        // console.log(list)
         setChatList(list)
         setLastChat(querySnapshot.docs[querySnapshot.docs.length - 1])
       } catch (err) {

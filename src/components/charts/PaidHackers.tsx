@@ -19,7 +19,7 @@ type Props = {
   }[]
 }
 
-export const FundsReturns: FC<Props> = ({ data }) => {
+export const PaidHackers: FC<Props> = ({ data }) => {
   return (
     <ResponsiveContainer width="100%" height="100%">
       <LineChart
@@ -41,7 +41,7 @@ export const FundsReturns: FC<Props> = ({ data }) => {
         <Line
           type="monotone"
           dataKey="pv"
-          stroke="#14F195"
+          stroke="#9945FF"
           activeDot={{ r: 8 }}
         />
       </LineChart>

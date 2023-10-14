@@ -47,11 +47,22 @@ import {
 } from '@/types/models'
 import { Timestamp } from '@skeet-framework/firestore'
 import { get, query } from '@/lib/skeet/firestore'
-import { useWallet } from '@solana/wallet-adapter-react'
+import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import { FundsReturns } from '@/components/charts/FundsReturned'
-import { MOCK_DATA } from '@/constants'
+import { MOCK_DATA, PROGRAM_ID, SOLANA_RPC_ENDPOINT } from '@/constants'
 import Link from '@/components/routing/Link'
+import {
+  PublicKey,
+  TransactionSignature,
+  Connection,
+  SystemProgram,
+} from '@solana/web3.js'
+import { IDL } from '@/idl'
+import { Address, Program } from '@coral-xyz/anchor'
+import type { PROTOCOL_PDA, SOL_HACK_PDA, VULNERABILITY_PDA } from '@/types'
+import { initialize } from '@/utils/api/instructions/initialize'
+import { PaidHackers } from '@/components/charts/PaidHackers'
 
 type ChatMessage = {
   id: string
@@ -80,10 +91,114 @@ export default function DashboardBox({
 }: Props) {
   const { t } = useTranslation()
   const user = useRecoilValue(userState)
-  const { publicKey } = useWallet()
+  const { publicKey, sendTransaction } = useWallet()
+  const connection = useConnection()
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([])
   const [chatRoom, setChatRoom] = useState<ChatRoom | null>(null)
+  const [programs, setPrograms] = useState<PROTOCOL_PDA[] | null>(null)
+  const [vulnerabilities, setVulnerabilities] = useState<
+    VULNERABILITY_PDA[] | null
+  >(null)
+  const [pendingVulnerabilities, setPendingVulnerabilities] =
+    useState<number>(0)
+  const [solHacks, setSolHacks] = useState<SOL_HACK_PDA[] | null>(null)
+  const [pendingHacks, setPendingHacks] = useState<number>(0)
+
   const addToast = useToastMessage()
+
+  const program = useMemo(
+    () => new Program(IDL, PROGRAM_ID as Address, connection),
+    [connection]
+  )
+
+  useEffect(() => {
+    if (publicKey && !programs) {
+      const fetchPrograms = async () => {
+        // @ts-ignore
+        return await program.account.protocol.all([
+          {
+            memcmp: {
+              offset: 8,
+              bytes: publicKey.toBase58(),
+            },
+          },
+        ])
+      }
+      fetchPrograms()
+        .then((response) => {
+          console.log(response)
+          // @ts-ignore
+          const programsMap = response.map(({ account, publicKey }) => {
+            const result = account
+            account.pubkey = publicKey
+            return result
+          })
+          console.log(programsMap)
+          setPrograms(programsMap)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    }
+  }, [publicKey])
+
+  useEffect(() => {
+    if (publicKey && programs) {
+      const fetchVulnerabilities = async () => {
+        // @ts-ignore
+        return await program.account.vulnerability.all([
+          {
+            memcmp: {
+              offset: 8,
+              bytes: programs[0].pubkey.toBase58(),
+            },
+          },
+        ])
+      }
+      fetchVulnerabilities()
+        .then((response) => {
+          console.log(response)
+          // @ts-ignore
+          const vulnerabilitiesMap = response.map(({ account, publicKey }) => {
+            const result = account
+            account.pubkey = publicKey
+            return result
+          })
+          console.log('vulnerabilities', vulnerabilitiesMap)
+          setVulnerabilities(vulnerabilitiesMap)
+        })
+        .catch((error) => console.log(error))
+    }
+  }, [publicKey, connection])
+
+  useEffect(() => {
+    if (publicKey && programs) {
+      const fetchHacks = async () => {
+        // @ts-ignore
+        return await program.account.solHack.all([
+          {
+            memcmp: {
+              offset: 8,
+              bytes: programs[0].pubkey.toBase58(),
+            },
+          },
+        ])
+      }
+      fetchHacks()
+        .then((response) => {
+          console.log(response)
+          // @ts-ignore
+          const hacksMap = response.map(({ account, publicKey }) => {
+            const result = account
+            account.pubkey = publicKey
+            return result
+          })
+          console.log('sol hacks', hacksMap)
+          setSolHacks(hacksMap)
+        })
+        .catch((error) => console.log(error))
+    }
+  }, [publicKey, connection])
 
   const chatContentRef = useRef<HTMLDivElement>(null)
   const scrollToEnd = useCallback(() => {
@@ -348,7 +463,9 @@ export default function DashboardBox({
                           <span className="grow">
                             {t('dashboard:programs')}
                           </span>
-                          <span className="mb-[16px]">0</span>
+                          <span className="mb-[16px]">
+                            {programs && programs.length ? programs.length : 0}
+                          </span>
                         </div>
                         <CpuChipIcon className="h-8 w-8" />
                       </div>
@@ -359,7 +476,11 @@ export default function DashboardBox({
                           <span className="">
                             {t('dashboard:vulnerabilities')}
                           </span>
-                          <span>0</span>
+                          <span>
+                            {programs && programs[0].vulnerabilities.toNumber()
+                              ? programs[0].vulnerabilities.toNumber()
+                              : 0}
+                          </span>
                           <span className="text-xs">
                             {t('dashboard:pendingReview')} : 0
                           </span>
@@ -371,7 +492,11 @@ export default function DashboardBox({
                       <div className="flex w-72 items-center justify-center rounded-sm border p-4">
                         <div className="flex grow flex-col">
                           <span className="grow">{t('dashboard:hacks')}</span>
-                          <span>0</span>
+                          <span>
+                            {programs && programs[0].hacks.toNumber()
+                              ? programs[0].hacks.toNumber()
+                              : 0}
+                          </span>
                           <span className="text-xs">
                             {t('dashboard:pendingReview')} : 0
                           </span>
@@ -382,16 +507,16 @@ export default function DashboardBox({
                   </div>
                   <div className="mx-auto my-8 flex">
                     <div className="h-96 w-96">
-                      <p className="w-[100%] text-center">
+                      <p className="my-4 w-[100%] text-center">
                         {t('dashboard:fundsReturned')}
                       </p>
                       <FundsReturns data={MOCK_DATA} />
                     </div>
                     <div className="h-96 w-96">
-                      <p className="w-[100%] text-center">
+                      <p className="my-4 w-[100%] text-center">
                         {t('dashboard:paidToHackers')}
                       </p>
-                      <FundsReturns data={MOCK_DATA} />
+                      <PaidHackers data={MOCK_DATA} />
                     </div>
                   </div>
                 </div>

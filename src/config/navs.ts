@@ -17,8 +17,12 @@ export const defaultMainNav = [
     href: '/news/',
   },
   {
-    name: 'navs.defaultMainNav.doc',
-    href: '/doc/',
+    name: 'navs.defaultMainNav.explore',
+    href: '/explore/',
+  },
+  {
+    name: 'navs.defaultMainNav.docs',
+    href: '/docs/',
   },
 ]
 

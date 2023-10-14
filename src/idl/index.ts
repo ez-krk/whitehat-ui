@@ -69,6 +69,11 @@ export type IDL = {
           isSigner: true
         },
         {
+          name: 'encryption'
+          isMut: false
+          isSigner: false
+        },
+        {
           name: 'protocol'
           isMut: true
           isSigner: false
@@ -645,6 +650,10 @@ export type IDL = {
             type: 'publicKey'
           },
           {
+            name: 'encryption'
+            type: 'publicKey'
+          },
+          {
             name: 'vault'
             type: 'publicKey'
           },
@@ -693,12 +702,16 @@ export type IDL = {
         kind: 'struct'
         fields: [
           {
+            name: 'protocol'
+            type: 'publicKey'
+          },
+          {
             name: 'payout'
             type: 'publicKey'
           },
           {
-            name: 'protocol'
-            type: 'publicKey'
+            name: 'reviewed'
+            type: 'bool'
           },
           {
             name: 'amount'
@@ -721,15 +734,15 @@ export type IDL = {
         kind: 'struct'
         fields: [
           {
+            name: 'protocol'
+            type: 'publicKey'
+          },
+          {
             name: 'id'
             type: 'u64'
           },
           {
             name: 'payout'
-            type: 'publicKey'
-          },
-          {
-            name: 'protocol'
             type: 'publicKey'
           },
           {
@@ -799,7 +812,7 @@ export type IDL = {
     }
   ]
   metadata: {
-    address: 'WHATz4jFpiMbaz578KCU8188Ni3AT5ktxqqFLn4CTkd'
+    address: 'WHATtP4qZ6GCva5NafqLaTKozQqr9VjL6SXWwCFvvyp'
   }
 }
 
@@ -872,6 +885,11 @@ export const IDL: IDL = {
           name: 'owner',
           isMut: true,
           isSigner: true,
+        },
+        {
+          name: 'encryption',
+          isMut: false,
+          isSigner: false,
         },
         {
           name: 'protocol',
@@ -1450,6 +1468,10 @@ export const IDL: IDL = {
             type: 'publicKey',
           },
           {
+            name: 'encryption',
+            type: 'publicKey',
+          },
+          {
             name: 'vault',
             type: 'publicKey',
           },
@@ -1498,12 +1520,16 @@ export const IDL: IDL = {
         kind: 'struct',
         fields: [
           {
+            name: 'protocol',
+            type: 'publicKey',
+          },
+          {
             name: 'payout',
             type: 'publicKey',
           },
           {
-            name: 'protocol',
-            type: 'publicKey',
+            name: 'reviewed',
+            type: 'bool',
           },
           {
             name: 'amount',
@@ -1526,15 +1552,15 @@ export const IDL: IDL = {
         kind: 'struct',
         fields: [
           {
+            name: 'protocol',
+            type: 'publicKey',
+          },
+          {
             name: 'id',
             type: 'u64',
           },
           {
             name: 'payout',
-            type: 'publicKey',
-          },
-          {
-            name: 'protocol',
             type: 'publicKey',
           },
           {
@@ -1604,6 +1630,6 @@ export const IDL: IDL = {
     },
   ],
   metadata: {
-    address: 'WHATz4jFpiMbaz578KCU8188Ni3AT5ktxqqFLn4CTkd',
+    address: 'WHATtP4qZ6GCva5NafqLaTKozQqr9VjL6SXWwCFvvyp',
   },
 }

@@ -15,6 +15,7 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm, Controller } from 'react-hook-form'
 import Link from '@/components/routing/Link'
+import { createUserDocumentFromAuth } from '@/components/utils/CreateUserDocumentFromAuth'
 
 const schema = z.object({
   email: emailSchema,
@@ -55,6 +56,9 @@ export default function RegisterScreen() {
             data.email,
             data.password
           )
+          console.log(userCredential)
+          const { user } = userCredential
+          await createUserDocumentFromAuth(user)
           await sendEmailVerification(userCredential.user)
           await signOut(auth)
 

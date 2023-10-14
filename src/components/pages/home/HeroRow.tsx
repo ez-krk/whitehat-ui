@@ -31,7 +31,7 @@ export default function HomeHeroRow() {
         </p>
         <div className="mt-10 flex justify-center gap-x-6">
           <Button href="/auth/login" className="">
-            {t('aiChat')}
+            {t('getStarted')}
           </Button>
           <Button
             href="https://github.com/elsoul/skeet-cli"
@@ -70,34 +70,35 @@ export default function HomeHeroRow() {
                   logo: rustLogo,
                   link: 'https://nextjs.org/',
                 },
-              ],
-              [
                 {
                   name: 'Skeet',
                   logo: skeetLogo,
                   link: 'https://skeet.dev/',
                 },
-                {
-                  name: 'Next.js',
-                  logo: nextjsLogo,
-                  link: 'https://nextjs.org/',
-                },
-                {
-                  name: 'Firebase',
-                  logo: firebaseLogo,
-                  link: 'https://firebase.google.com/',
-                },
-                // {
-                //   name: 'TypeScript',
-                //   logo: typescriptLogo,
-                //   link: 'https://www.typescriptlang.org/',
-                // },
-                {
-                  name: 'Tailwind',
-                  logo: tailwindcssLogo,
-                  link: 'https://tailwindcss.com/',
-                },
               ],
+              // [
+
+              //   {
+              //     name: 'Next.js',
+              //     logo: nextjsLogo,
+              //     link: 'https://nextjs.org/',
+              //   },
+              //   {
+              //     name: 'Firebase',
+              //     logo: firebaseLogo,
+              //     link: 'https://firebase.google.com/',
+              //   },
+              //   {
+              //     name: 'TypeScript',
+              //     logo: typescriptLogo,
+              //     link: 'https://www.typescriptlang.org/',
+              //   },
+              //   {
+              //     name: 'Tailwind',
+              //     logo: tailwindcssLogo,
+              //     link: 'https://tailwindcss.com/',
+              //   },
+              // ],
             ].map((group, groupIndex) => (
               <li key={`HeroRowLogoCloudList${groupIndex}`}>
                 <ul

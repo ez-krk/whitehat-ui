@@ -1,4 +1,8 @@
-export const PROGRAM_ID = 'WHATz4jFpiMbaz578KCU8188Ni3AT5ktxqqFLn4CTkd'
+export const PROGRAM_ID = 'WHATtP4qZ6GCva5NafqLaTKozQqr9VjL6SXWwCFvvyp'
+
+export const SOLANA_RPC_ENDPOINT =
+  (process.env.NEXT_PUBLIC_SOLANA_RPC_ENDPOINT as string) ||
+  'https://api.devnet.solana.com'
 
 export const MOCK_DATA = [
   {
