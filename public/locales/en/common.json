@@ -14,6 +14,7 @@
   "register": "Sign up",
   "navs": {
     "defaultMainNav": {
+      "home": "home",
       "news": "news",
       "explore": "explore",
       "docs": "docs"

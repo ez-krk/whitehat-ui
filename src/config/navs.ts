@@ -13,9 +13,13 @@ import {
 
 export const defaultMainNav = [
   {
-    name: 'navs.defaultMainNav.news',
-    href: '/news/',
+    name: 'navs.defaultMainNav.home',
+    href: '/',
   },
+  // {
+  //   name: 'navs.defaultMainNav.news',
+  //   href: '/news/',
+  // },
   {
     name: 'navs.defaultMainNav.explore',
     href: '/explore/',

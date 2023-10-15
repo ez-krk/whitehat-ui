@@ -1,5 +1,17 @@
 {
   "HeroRow": {
-    "body": "get hacked, get it back: dynamic bug bounties protocol for hassle-free fund recovery and fast iteration"
+    "line": "get hacked, get it back !",
+    "body": "dynamic bug bounty protocol for faster fund recovery and iteration."
+  },
+  "Analytics": {
+    "help": "we helped",
+    "protocols": "protocols",
+    "recover": "recover",
+    "across": "across",
+    "hacks": "hacks",
+    "flag": "flag",
+    "vulnerabilities": "vulnerabilities",
+    "hackers": "hackers received",
+    "safer": "for making the ecosystem safer 🙌"
   }
 }

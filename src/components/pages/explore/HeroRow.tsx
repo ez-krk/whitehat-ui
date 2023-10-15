@@ -71,6 +71,7 @@ export default function HomeHeroRow() {
                     <tr>
                       <th className="text-center">%</th>
                       <th className="text-center">protocol name</th>
+                      <th className="text-center">pda address</th>
                       <th className="text-center">deposit vault</th>
                       <th className="text-center">encryption pubkey</th>
                       <th className="text-center">vulnerabilities</th>
@@ -88,7 +89,18 @@ export default function HomeHeroRow() {
                           </th>
                           <td className="text-center">{program.name}</td>
                           <td
-                            className="cursor-pointe text-center"
+                            className="cursor-pointer text-center"
+                            onClick={async () => {
+                              await navigator.clipboard.writeText(
+                                program.pubkey.toString()
+                              )
+                              alert('Text copied')
+                            }}
+                          >
+                            {ellipsis(program.pubkey.toString())}
+                          </td>
+                          <td
+                            className="cursor-pointer text-center"
                             onClick={async () => {
                               await navigator.clipboard.writeText(
                                 program.encryption.toString()

@@ -4,6 +4,8 @@ export const SOLANA_RPC_ENDPOINT =
   (process.env.NEXT_PUBLIC_SOLANA_RPC_ENDPOINT as string) ||
   'https://api.devnet.solana.com'
 
+export const ANALYTICS_PUBKEY = 'DoW9fvxcmKmNCsLTCf9HCzDhU4hR6xTPtXDpis66CdwL'
+
 export const MOCK_DATA = [
   {
     name: 'Page A',
