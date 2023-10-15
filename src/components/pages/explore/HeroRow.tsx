@@ -49,7 +49,6 @@ export default function HomeHeroRow() {
     }
   }, [publicKey])
 
-  const copy = async () => {}
   return (
     <>
       <Container className="pb-40 pt-24 text-center lg:pb-64 lg:pt-40">

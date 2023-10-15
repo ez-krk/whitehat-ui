@@ -1,10 +1,7 @@
 import clsx from 'clsx'
 import { useTranslation } from 'next-i18next'
 import {
-  CommandLineIcon,
-  CpuChipIcon,
   PaperAirplaneIcon,
-  PlusCircleIcon,
   ShieldCheckIcon,
   ShieldExclamationIcon,
 } from '@heroicons/react/24/outline'
@@ -21,14 +18,11 @@ import { userState } from '@/store/user'
 import { db } from '@/lib/firebase'
 import { orderBy } from 'firebase/firestore'
 import { chatContentSchema } from '@/utils/form'
-import { fetchSkeetFunctions } from '@/lib/skeet/functions'
 import Image from 'next/image'
 import { ChatRoom } from './DashboardMenu'
-import { AddStreamUserChatRoomMessageParams } from '@/types/http/skeet/addStreamUserChatRoomMessageParams'
 import { z } from 'zod'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { TextDecoder } from 'text-encoding'
 import useToastMessage from '@/hooks/useToastMessage'
 import { unified } from 'unified'
 import remarkParse from 'remark-parse'
@@ -40,17 +34,11 @@ import remarkSlug from 'remark-slug'
 import remarkGfm from 'remark-gfm'
 import remarkDirective from 'remark-directive'
 import remarkExternalLinks from 'remark-external-links'
-import {
-  UserChatRoom,
-  UserChatRoomMessage,
-  genUserChatRoomMessagePath,
-  genUserChatRoomPath,
-} from '@/types/models'
+import { UserChatRoomMessage, genUserChatRoomMessagePath } from '@/types/models'
 import { Timestamp } from '@skeet-framework/firestore'
 import { get, query } from '@/lib/skeet/firestore'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
-import { FundsReturns } from '@/components/charts/FundsReturned'
 import { MOCK_DATA, PROGRAM_ID, SOLANA_RPC_ENDPOINT } from '@/constants'
 import Link from '@/components/routing/Link'
 import {
@@ -60,10 +48,9 @@ import {
   SystemProgram,
 } from '@solana/web3.js'
 import { IDL } from '@/idl'
-import { Address, Program } from '@coral-xyz/anchor'
+import { Address, Program, BN } from '@coral-xyz/anchor'
 import type { PROTOCOL_PDA, SOL_HACK_PDA, VULNERABILITY_PDA } from '@/types'
-import { initialize } from '@/utils/api/instructions/initialize'
-import { PaidHackers } from '@/components/charts/PaidHackers'
+import { approveVulnerability } from '@/utils/api/instructions/approveVulnerability'
 
 type ChatMessage = {
   id: string
@@ -173,6 +160,18 @@ export default function DashboardBox({
   }, [publicKey, programs])
 
   useEffect(() => {
+    if (vulnerabilities && vulnerabilities.length > 0) {
+      console.log('hi there !')
+      const pendingMap = vulnerabilities.map(({ reviewed }) => {
+        if (reviewed == true) {
+          return reviewed
+        } else return false
+      })
+      setPendingVulnerabilities(pendingMap.length)
+    }
+  }, [vulnerabilities])
+
+  useEffect(() => {
     if (publicKey && programs) {
       const fetchHacks = async () => {
         // @ts-ignore
@@ -228,81 +227,7 @@ export default function DashboardBox({
 
   const [isFirstMessage, setFirstMessage] = useState(true)
 
-  const getChatRoom = useCallback(async () => {
-    if (db && user.uid && currentChatRoomId) {
-      try {
-        const data = await get<UserChatRoom>(
-          db,
-          genUserChatRoomPath(user.uid),
-          currentChatRoomId
-        )
-        if (data.title !== '') {
-          setFirstMessage(false)
-        }
-        setChatRoom(data as ChatRoom)
-      } catch (e) {
-        console.error(e)
-      }
-    }
-  }, [currentChatRoomId, user.uid])
-
-  useEffect(() => {
-    void (async () => {
-      try {
-        await getChatRoom()
-      } catch (e) {
-        console.error(e)
-      }
-    })()
-  }, [getChatRoom])
-
   const [isSending, setSending] = useState(false)
-
-  const getUserChatRoomMessage = useCallback(async () => {
-    if (db && user.uid && currentChatRoomId) {
-      const querySnapshot = await query<UserChatRoomMessage>(
-        db,
-        genUserChatRoomMessagePath(user.uid, currentChatRoomId),
-        [orderBy('createdAt', 'asc')]
-      )
-      const messages: ChatMessage[] = []
-      for await (const qs of querySnapshot.docs) {
-        const data = qs.data()
-        const html = await unified()
-          .use(remarkParse)
-          .use(remarkDirective)
-          .use(remarkGfm)
-          .use(remarkSlug)
-          .use(remarkExternalLinks, {
-            target: '_blank',
-            rel: ['noopener noreferrer'],
-          })
-          .use(remark2Rehype)
-          .use(rehypeCodeTitles)
-          .use(rehypeHighlight)
-          .use(rehypeStringify)
-          .process(data.content as string)
-
-        messages.push({
-          id: qs.id,
-          ...data,
-          content: html.value,
-        } as ChatMessage)
-      }
-
-      setChatMessages(messages)
-    }
-  }, [currentChatRoomId, user.uid])
-
-  useEffect(() => {
-    void (async () => {
-      try {
-        await getUserChatRoomMessage()
-      } catch (e) {
-        console.error(e)
-      }
-    })()
-  }, [getUserChatRoomMessage])
 
   useEffect(() => {
     if (chatMessages.length > 0) {
@@ -319,77 +244,9 @@ export default function DashboardBox({
       try {
         setSending(true)
         if (!isDisabled && user.uid && currentChatRoomId) {
-          setChatMessages((prev) => {
-            return [
-              ...prev,
-              {
-                id: `UserSendingMessage${new Date().toISOString()}`,
-                role: 'user',
-                createdAt: undefined,
-                updatedAt: undefined,
-                content: data.chatContent,
-              },
-              {
-                id: `AssistantAnsweringMessage${new Date().toISOString()}`,
-                role: 'assistant',
-                createdAt: undefined,
-                updatedAt: undefined,
-                content: '',
-              },
-            ]
-          })
-          const res =
-            await fetchSkeetFunctions<AddStreamUserChatRoomMessageParams>(
-              'skeet',
-              'addStreamUserChatRoomMessage',
-              {
-                userChatRoomId: currentChatRoomId,
-                content: data.chatContent,
-                isFirstMessage,
-              }
-            )
-          const reader = await res?.body?.getReader()
-          const decoder = new TextDecoder('utf-8')
-
-          while (true && reader) {
-            const { value, done } = await reader.read()
-            if (done) break
-            try {
-              const dataString = decoder.decode(value)
-              if (dataString != 'Stream done') {
-                const data = JSON.parse(dataString)
-                setChatMessages((prev) => {
-                  try {
-                    const chunkSize = data?.text?.length
-                    if (prev[prev.length - 1].content.length === 0) {
-                      prev[prev.length - 1].content =
-                        prev[prev.length - 1].content + data.text
-                    }
-                    if (
-                      !prev[prev.length - 1].content
-                        .slice(chunkSize * -1)
-                        .includes(data.text)
-                    ) {
-                      prev[prev.length - 1].content =
-                        prev[prev.length - 1].content + data.text
-                    }
-                  } catch (e) {
-                    console.log(e)
-                  }
-
-                  return [...prev]
-                })
-              }
-            } catch (e) {
-              console.log(e)
-            }
-          }
-
           if (chatRoom && chatRoom.title == '') {
-            await getChatRoom()
             await getChatRooms()
           }
-          await getUserChatRoomMessage()
           reset()
           setFirstMessage(false)
         }
@@ -422,10 +279,7 @@ export default function DashboardBox({
       currentChatRoomId,
       user.uid,
       setFirstMessage,
-      isFirstMessage,
       chatRoom,
-      getChatRoom,
-      getUserChatRoomMessage,
       addToast,
       reset,
       getChatRooms,
@@ -440,6 +294,27 @@ export default function DashboardBox({
     },
     [handleSubmit, onSubmit]
   )
+
+  const onClick = async (id: BN, seed: BN) => {
+    if (publicKey)
+      try {
+        const tx = await approveVulnerability(publicKey, id, seed, connection)
+
+        const cnx = new Connection(SOLANA_RPC_ENDPOINT)
+        let signature: TransactionSignature = ''
+        signature = await sendTransaction(tx, cnx)
+        await cnx.confirmTransaction(signature, 'confirmed')
+        addToast({
+          type: 'success',
+          title: t('vulnerabilities:vulnerabilityVerificationSuccessTitle'),
+          description:
+            t('vulnerabilities:vulnerabilityVerificationSuccessBody') +
+            `https://explorer.solana.com/tx/${signature}?cluster=devnet`,
+        })
+      } catch (error) {
+        console.log(error)
+      }
+  }
 
   return (
     <>
@@ -456,83 +331,62 @@ export default function DashboardBox({
                 </>
               ) : (
                 <div className="flex flex-col">
-                  {/* HEADER */}
-                  <div className="flex space-x-4">
-                    {/* <Link href="/user/programs">
-                      <div className="flex w-72 items-center justify-center rounded-sm border p-4">
-                        <div className="flex grow flex-col">
-                          <span className="grow">
-                            {t('vulnerabilities:programs')}
-                          </span>
-                          <span className="mb-[16px]">
-                            {programs && programs.length ? programs.length : 0}
-                          </span>
-                        </div>
-                        <CpuChipIcon className="h-8 w-8" />
-                      </div>
-                    </Link>
-                    <Link href="/user/vulnerabilities">
-                      <div className="flex w-72 items-center justify-center rounded-sm border p-4">
-                        <div className="flex grow flex-col">
-                          <span className="">
-                            {t('vulnerabilities:vulnerabilities')}
-                          </span>
-                          <span>
-                            {programs && programs[0].vulnerabilities.toNumber()
-                              ? programs[0].vulnerabilities.toNumber()
-                              : 0}
-                          </span>
-                          <span className="text-xs">
-                            {t('vulnerabilities:pendingReview')} : 0
-                          </span>
-                        </div>
-                        <ShieldExclamationIcon className="h-8 w-8" />
-                      </div>
-                    </Link>
-                    <Link href="/user/hacks">
-                      <div className="flex w-72 items-center justify-center rounded-sm border p-4">
-                        <div className="flex grow flex-col">
-                          <span className="grow">{t('dashboard:hacks')}</span>
-                          <span>
-                            {programs && programs[0].hacks.toNumber()
-                              ? programs[0].hacks.toNumber()
-                              : 0}
-                          </span>
-                          <span className="text-xs">
-                            {t('dashboard:pendingReview')} : 0
-                          </span>
-                        </div>
-                        <CommandLineIcon className="h-8 w-8" />
-                      </div>
-                    </Link> */}
-                  </div>
                   <div className="mx-auto my-8 flex flex-col">
                     {vulnerabilities && vulnerabilities.length > 0 ? (
-                      vulnerabilities.map((vulnerability) => {
-                        console.log(vulnerability)
-                        return (
-                          <div
-                            className="w-96 bg-[#000]"
-                            key={vulnerability.id}
-                          ></div>
-                        )
-                      })
+                      <>
+                        {pendingVulnerabilities == 0 ? (
+                          <p className="mb-2 flex w-full items-center justify-center text-center">
+                            {t('vulnerabilities:pleaseReview')}{' '}
+                            <ShieldExclamationIcon className="ml-1 h-8 w-8" />
+                          </p>
+                        ) : (
+                          <p className="flex w-full items-center justify-center text-center">
+                            {t('vulnerabilities:allClear')}{' '}
+                            <ShieldCheckIcon className="h-8 w-8" />
+                          </p>
+                        )}
+
+                        {vulnerabilities.map((vulnerability) => {
+                          console.log(vulnerability)
+                          if (!vulnerability.reviewed)
+                            return (
+                              <div
+                                className="card w-96 bg-base-100 shadow-xl"
+                                key={vulnerability.id}
+                              >
+                                <div className="card-body w-full">
+                                  <p className="text-center">
+                                    {vulnerability.message.toString()}
+                                  </p>
+                                  <div className="card-actions justify-center">
+                                    <button
+                                      className="btn-success btn-sm"
+                                      onClick={() =>
+                                        onClick(
+                                          vulnerability.id,
+                                          vulnerability.seed
+                                        )
+                                      }
+                                    >
+                                      approve
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            )
+                        })}
+                      </>
                     ) : (
                       <p className="flex w-full items-center justify-center text-center">
-                        no vulnerability yet, all clear{' '}
+                        {t('vulnerabilities:allClear')}{' '}
                         <ShieldCheckIcon className="h-8 w-8" />
                       </p>
                     )}
                     <div className="w-96">
-                      <p className="my-4 w-[100%] text-center">
-                        {t('vulnerabilities:fundsReturned')}
-                      </p>
+                      <p className="my-4 w-[100%] text-center"></p>
                       {/* <FundsReturns data={MOCK_DATA} /> */}
                     </div>
                     <div className="w-96">
-                      <p className="my-4 w-[100%] text-center">
-                        {t('vulnerabilities:paidToHackers')}
-                      </p>
                       {/* <PaidHackers data={MOCK_DATA} /> */}
                     </div>
                   </div>

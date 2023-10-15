@@ -75,7 +75,7 @@ const schema = z.object({
 type Inputs = z.infer<typeof schema>
 
 type Props = {
-  programs: PROTOCOL_PDA[] | []
+  programs: PROTOCOL_PDA[] | null
   setSelectedProgram: React.Dispatch<React.SetStateAction<PROTOCOL_PDA | null>>
   isNewChatModalOpen: boolean
   setNewChatModalOpen: (_value: boolean) => void
@@ -87,7 +87,6 @@ type Props = {
   setLastChat: (_value: QueryDocumentSnapshot<DocumentData> | null) => void
   isDataLoading: boolean
   setDataLoading: (_value: boolean) => void
-  getChatRooms: () => void
 }
 
 export default function DashboardMenu({
@@ -102,7 +101,6 @@ export default function DashboardMenu({
   lastChat,
   setLastChat,
   setDataLoading,
-  getChatRooms,
 }: Props) {
   const { t, i18n } = useTranslation()
   const isJapanese = useMemo(() => i18n.language === 'ja', [i18n])
@@ -243,7 +241,7 @@ export default function DashboardMenu({
 
           addToast({
             type: 'success',
-            title: t('dashboard:programCreatedSuccessTitle'),
+            title: t(':programCreatedSuccessTitle'),
             description: t('dashboard:programCreatedSuccessBody'),
           })
           // setCurrentChatRoomId(docRef.id)
@@ -270,10 +268,9 @@ export default function DashboardMenu({
       } finally {
         setNewChatModalOpen(false)
         setCreateLoading(false)
-        await getChatRooms()
       }
     },
-    [isDisabled, publicKey, addToast, t, setNewChatModalOpen, getChatRooms]
+    [isDisabled, publicKey, addToast, t, setNewChatModalOpen]
   )
 
   const onKeyDown = useCallback(
@@ -363,45 +360,46 @@ export default function DashboardMenu({
               </span>
             </button>
             <div className="flex flex-col gap-3 pb-20">
-              {programs.map((program) => (
-                <div
-                  onClick={() => {
-                    setCurrentChatRoomId(program.pubkey.toString())
-                    setSelectedProgram(program)
-                  }}
-                  key={`ChatMenu Desktop ${program.pubkey.toString()}`}
-                  className={clsx(
-                    currentChatRoomId === program.pubkey.toString() &&
-                      'border-2 border-gray-900 dark:border-gray-50',
-                    'flex flex-row items-center justify-center gap-2 bg-gray-50 p-2 text-center hover:cursor-pointer dark:bg-gray-800'
-                  )}
-                >
-                  {/* <ChatBubbleLeftIcon
+              {programs &&
+                programs.map((program) => (
+                  <div
+                    onClick={() => {
+                      setCurrentChatRoomId(program.pubkey.toString())
+                      setSelectedProgram(program)
+                    }}
+                    key={`ChatMenu Desktop ${program.pubkey.toString()}`}
+                    className={clsx(
+                      currentChatRoomId === program.pubkey.toString() &&
+                        'border-2 border-gray-900 dark:border-gray-50',
+                      'flex flex-row items-center justify-center gap-2 bg-gray-50 p-2 text-center hover:cursor-pointer dark:bg-gray-800'
+                    )}
+                  >
+                    {/* <ChatBubbleLeftIcon
                     className={clsx(
                       'h-5 w-5 flex-shrink-0 text-gray-900 dark:text-white'
                     )}
                   /> */}
-                  <div className="flex flex-col gap-2">
-                    {program.name !== '' ? (
-                      <p className="font-medium text-gray-900 dark:text-white">
-                        {program.name.length > 20
-                          ? `${program.name.slice(0, 20)} ...`
-                          : program.name}
-                      </p>
-                    ) : (
-                      <p className="font-light italic text-gray-600 dark:text-gray-300">
-                        {t('noTitle')}
-                      </p>
-                    )}
-                    <p className="text-sm font-light text-gray-700 dark:text-gray-200">
-                      {format(
-                        new Date(program.createdAt * 1000),
-                        'yyyy-MM-dd HH:mm'
+                    <div className="flex flex-col gap-2">
+                      {program.name !== '' ? (
+                        <p className="font-medium text-gray-900 dark:text-white">
+                          {program.name.length > 20
+                            ? `${program.name.slice(0, 20)} ...`
+                            : program.name}
+                        </p>
+                      ) : (
+                        <p className="font-light italic text-gray-600 dark:text-gray-300">
+                          {t('noTitle')}
+                        </p>
                       )}
-                    </p>
+                      <p className="text-sm font-light text-gray-700 dark:text-gray-200">
+                        {format(
+                          new Date(program.createdAt * 1000),
+                          'yyyy-MM-dd HH:mm'
+                        )}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </div>
           </div>
         </div>

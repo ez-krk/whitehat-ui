@@ -5,6 +5,7 @@ import {
   CpuChipIcon,
   PaperAirplaneIcon,
   PlusCircleIcon,
+  ShieldCheckIcon,
   ShieldExclamationIcon,
 } from '@heroicons/react/24/outline'
 import {
@@ -90,8 +91,10 @@ const schema = z.object({
 type Inputs = z.infer<typeof schema>
 
 type Props = {
-  programs: PROTOCOL_PDA[] | []
+  programs: PROTOCOL_PDA[] | null
   selectedProgram: PROTOCOL_PDA | null
+  vulnerabilities: VULNERABILITY_PDA[] | null
+  pendingVulnerabilities: number
   setNewChatModalOpen: (_value: boolean) => void
   currentChatRoomId: string | null
 }
@@ -99,6 +102,8 @@ type Props = {
 export default function DashboardBox({
   programs,
   selectedProgram,
+  vulnerabilities,
+  pendingVulnerabilities,
   setNewChatModalOpen,
   currentChatRoomId,
 }: Props) {
@@ -108,12 +113,9 @@ export default function DashboardBox({
   const connection = useConnection()
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([])
   const [chatRoom, setChatRoom] = useState<ChatRoom | null>(null)
-  const [vulnerabilities, setVulnerabilities] = useState<
-    VULNERABILITY_PDA[] | null
-  >(null)
-  const [pendingVulnerabilities, setPendingVulnerabilities] =
-    useState<number>(0)
+
   const [solHacks, setSolHacks] = useState<SOL_HACK_PDA[] | null>(null)
+
   const [pendingHacks, setPendingHacks] = useState<number>(0)
 
   const addToast = useToastMessage()
@@ -141,38 +143,6 @@ export default function DashboardBox({
   //       .catch((error) => console.log(error))
   //   }
   // }, [publicKey])
-
-  useEffect(() => {
-    if (publicKey && programs) {
-      const fetchVulnerabilities = async () => {
-        // @ts-ignore
-        return await program.account.vulnerability.all()
-        //   [
-        //   {
-        //     memcmp: {
-        //       offset: 8,
-        //       bytes: programs[0].pubkey.toBase58(),
-        //     },
-        //   },
-        // ]
-        // ()
-      }
-      fetchVulnerabilities()
-        .then((response) => {
-          console.log(response)
-          // @ts-ignore
-          const vulnerabilitiesMap = response.map(({ account, publicKey }) => {
-            const result = account.data
-            account.pubkey = publicKey
-            console.log(result)
-            return result
-          })
-          console.log('vulnerabilities', vulnerabilitiesMap)
-          setVulnerabilities(vulnerabilitiesMap)
-        })
-        .catch((error) => console.log(error))
-    }
-  }, [programs, publicKey])
 
   useEffect(() => {
     if (publicKey && programs) {
@@ -511,16 +481,20 @@ export default function DashboardBox({
                             {t('dashboard:vulnerabilities')}
                           </span>
                           <span>
-                            {/* {programs && programs[0].vulnerabilities.toNumber()
+                            {programs && programs[0].vulnerabilities.toNumber()
                               ? programs[0].vulnerabilities.toNumber()
-                              : 0} */}{' '}
-                            0
+                              : 0}
                           </span>
                           <span className="text-xs">
-                            {t('dashboard:pendingReview')} : 0
+                            {t('dashboard:pendingReview')} :{' '}
+                            {pendingVulnerabilities}
                           </span>
                         </div>
-                        <ShieldExclamationIcon className="h-8 w-8" />
+                        {pendingVulnerabilities > 0 ? (
+                          <ShieldExclamationIcon className="h-8 w-8" />
+                        ) : (
+                          <ShieldCheckIcon className="h-8 w-8" />
+                        )}
                       </div>
                     </Link>
                     <Link href="/user/hacks">
@@ -643,7 +617,8 @@ export default function DashboardBox({
                               : 0}
                           </span>
                           <span className="text-xs">
-                            {t('dashboard:pendingReview')} : 0
+                            {t('dashboard:pendingReview')} :{' '}
+                            {pendingVulnerabilities}
                           </span>
                         </div>
                         <ShieldExclamationIcon className="h-8 w-8" />

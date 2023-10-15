@@ -16,7 +16,7 @@ import { UserChatRoom, genUserChatRoomPath } from '@/types/models'
 import { query } from '@/lib/skeet/firestore'
 import DashboardMenu from './DashboardMenu'
 import DashboardBox from './DashboardBox'
-import { PROTOCOL_PDA } from '@/types'
+import { PROTOCOL_PDA, VULNERABILITY_PDA } from '@/types'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { Address, Program } from '@coral-xyz/anchor'
 import { IDL } from '@/idl'
@@ -34,10 +34,18 @@ export default function DashboardScreen() {
     null
   )
 
-  const [programs, setPrograms] = useState<PROTOCOL_PDA[]>([])
+  const [programs, setPrograms] = useState<PROTOCOL_PDA[] | null>(null)
   const [selectedProgram, setSelectedProgram] = useState<PROTOCOL_PDA | null>(
     null
   )
+
+  const [vulnerabilities, setVulnerabilities] = useState<
+    VULNERABILITY_PDA[] | null
+  >(null)
+
+  const [pendingVulnerabilities, setPendingVulnerabilities] =
+    useState<number>(0)
+
   const [chatList, setChatList] = useState<ChatRoom[]>([])
 
   const [lastChat, setLastChat] =
@@ -48,56 +56,6 @@ export default function DashboardScreen() {
     () => new Program(IDL, PROGRAM_ID as Address, connection),
     [connection]
   )
-
-  const getChatRooms = useCallback(async () => {
-    if (db && user.uid) {
-      try {
-        setDataLoading(true)
-
-        const querySnapshot = await query<UserChatRoom>(
-          db,
-          genUserChatRoomPath(user.uid),
-          [orderBy('createdAt', 'desc'), limit(15)]
-        )
-        const list: ChatRoom[] = []
-        querySnapshot.forEach((doc) => {
-          const data = doc.data()
-          list.push({ id: doc.id, ...data } as ChatRoom)
-        })
-        // console.log(list)
-        setChatList(list)
-        setLastChat(querySnapshot.docs[querySnapshot.docs.length - 1])
-      } catch (err) {
-        console.log(err)
-        if (err instanceof Error && err.message.includes('permission-denied')) {
-          addToast({
-            type: 'error',
-            title: t('errorTokenExpiredTitle') ?? 'Token Expired.',
-            description: t('errorTokenExpiredBody') ?? 'Please sign in again.',
-          })
-        } else {
-          addToast({
-            type: 'error',
-            title: t('errorTitle') ?? 'Error',
-            description:
-              t('errorBody') ?? 'Something went wrong... Please try it again.',
-          })
-        }
-      } finally {
-        setDataLoading(false)
-      }
-    }
-  }, [user.uid, setDataLoading, addToast, t])
-
-  useEffect(() => {
-    void (async () => {
-      try {
-        await getChatRooms()
-      } catch (e) {
-        console.error(e)
-      }
-    })()
-  }, [getChatRooms])
 
   useEffect(() => {
     if (publicKey) {
@@ -130,6 +88,50 @@ export default function DashboardScreen() {
     }
   }, [publicKey])
 
+  useEffect(() => {
+    if (publicKey && programs && programs.length > 0) {
+      const fetchVulnerabilities = async () => {
+        // @ts-ignore
+        return await program.account.vulnerability.all([
+          {
+            memcmp: {
+              offset: 8,
+              bytes: programs[0].pubkey.toBase58(),
+            },
+          },
+        ])
+        //
+        // ()
+      }
+      fetchVulnerabilities()
+        .then((response) => {
+          console.log(response)
+          // @ts-ignore
+          const vulnerabilitiesMap = response.map(({ account, publicKey }) => {
+            const result = account
+            account.pubkey = publicKey
+            console.log(result)
+            return result
+          })
+          console.log('vulnerabilities', vulnerabilitiesMap)
+          setVulnerabilities(vulnerabilitiesMap)
+        })
+        .catch((error) => console.log(error))
+    }
+  }, [programs, publicKey])
+
+  useEffect(() => {
+    if (vulnerabilities && vulnerabilities.length > 0) {
+      console.log('hi there !')
+      const pendingMap = vulnerabilities.map(({ reviewed }) => {
+        if (reviewed == true) {
+          return reviewed
+        } else return false
+      })
+      setPendingVulnerabilities(pendingMap.length)
+    }
+  }, [vulnerabilities])
+
   return (
     <>
       <div className="content-height flex w-full flex-col items-start justify-start overflow-auto sm:flex-row">
@@ -146,11 +148,12 @@ export default function DashboardScreen() {
           setLastChat={setLastChat}
           isDataLoading={isDataLoading}
           setDataLoading={setDataLoading}
-          getChatRooms={getChatRooms}
         />
         <DashboardBox
           programs={programs}
           selectedProgram={selectedProgram}
+          vulnerabilities={vulnerabilities}
+          pendingVulnerabilities={pendingVulnerabilities}
           setNewChatModalOpen={setNewChatModalOpen}
           currentChatRoomId={currentChatRoomId}
         />

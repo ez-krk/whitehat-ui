@@ -77,7 +77,7 @@ export type VULNERABILITY_PDA = {
   id: number
   payout: PublicKey
   message: PublicKey
-  reviewd: boolean
+  reviewed: boolean
   createdAt: number
   bump: number
   seed: number
