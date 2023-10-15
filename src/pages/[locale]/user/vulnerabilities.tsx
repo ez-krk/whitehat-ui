@@ -2,10 +2,10 @@ import { ReactElement } from 'react'
 import UserLayout from '@/layouts/user/UserLayout'
 import siteConfig from '@/config/site'
 import { getStaticPaths, makeStaticProps } from '@/lib/getStatic'
-import DashboardScreen from '@/components/pages/user/dashboard/DashboardScreen'
+import Vulnerabilitiescreen from '@/components/pages/user/vulnerabilities/Vulnerabilitiescreen'
 
 const seo = {
-  pathname: '/user/dashboard',
+  pathname: '/user/vulnerabilities',
   title: {
     ja: 'AIチャット',
     en: 'dashboard',
@@ -17,13 +17,16 @@ const seo = {
   img: null,
 }
 
-const getStaticProps = makeStaticProps(['common', 'user', 'dashboard'], seo)
+const getStaticProps = makeStaticProps(
+  ['common', 'user', 'vulnerabilities'],
+  seo
+)
 export { getStaticPaths, getStaticProps }
 
 export default function Dashboard() {
   return (
     <>
-      <DashboardScreen />
+      <Vulnerabilitiescreen />
     </>
   )
 }

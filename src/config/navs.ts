@@ -32,8 +32,8 @@ export const commonFooterNav = [
     href: '/news/',
   },
   {
-    name: 'navs.commonFooterNav.doc',
-    href: '/doc/',
+    name: 'navs.commonFooterNav.docs',
+    href: '/docs/',
   },
   {
     name: 'navs.commonFooterNav.privacy',

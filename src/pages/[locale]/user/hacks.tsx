@@ -5,7 +5,7 @@ import { getStaticPaths, makeStaticProps } from '@/lib/getStatic'
 import DashboardScreen from '@/components/pages/user/dashboard/DashboardScreen'
 
 const seo = {
-  pathname: '/user/dashboard',
+  pathname: '/user/hacks',
   title: {
     ja: 'AIチャット',
     en: 'dashboard',
@@ -17,7 +17,7 @@ const seo = {
   img: null,
 }
 
-const getStaticProps = makeStaticProps(['common', 'user', 'dashboard'], seo)
+const getStaticProps = makeStaticProps(['common', 'user', 'hacks'], seo)
 export { getStaticPaths, getStaticProps }
 
 export default function Dashboard() {
