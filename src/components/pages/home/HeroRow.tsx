@@ -151,21 +151,24 @@ export default function HomeHeroRow() {
             <span className="bg-gradient-to-tr from-[#9945FF] to-[#14F195] bg-clip-text font-bold text-transparent">
               {hacks}
             </span>{' '}
-            {t('home:Analytics.hacks')}.
+            {t('home:Analytics.hacks')} *
           </p>
           <p className="mx-auto mt-1 max-w-2xl text-lg tracking-tight text-gray-700 dark:text-gray-200">
             {t('home:Analytics.help')} {t('home:Analytics.flag')}{' '}
             <span className="bg-gradient-to-tr from-[#9945FF] to-[#14F195] bg-clip-text font-bold text-transparent">
               {vulnerabilities}
             </span>{' '}
-            {t('home:Analytics.vulnerabilities')}.
+            {t('home:Analytics.vulnerabilities')} *
           </p>
           <p className="mx-auto mt-1 max-w-2xl text-lg tracking-tight text-gray-700 dark:text-gray-200">
             {t('home:Analytics.hackers')}{' '}
             <span className="bg-gradient-to-tr from-[#9945FF] to-[#14F195] bg-clip-text font-bold text-transparent">
               {solPaid}
             </span>{' '}
-            sol {t('home:Analytics.safer')}
+            sol {t('home:Analytics.safer')} *
+          </p>
+          <p className="mx-auto mt-2 max-w-2xl text-sm tracking-tight text-gray-700 dark:text-gray-200">
+            * devnet numbers for demonstration purposes
           </p>
         </div>
         <div className="mt-36 lg:mt-48">
