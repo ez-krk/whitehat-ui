@@ -636,6 +636,90 @@ export type IDL = {
         }
       ]
       args: []
+    },
+    {
+      name: 'deleteVulnerability'
+      accounts: [
+        {
+          name: 'admin'
+          isMut: true
+          isSigner: true
+        },
+        {
+          name: 'protocol'
+          isMut: true
+          isSigner: false
+          pda: {
+            seeds: [
+              {
+                kind: 'const'
+                type: 'string'
+                value: 'protocol'
+              },
+              {
+                kind: 'account'
+                type: 'publicKey'
+                account: 'Protocol'
+                path: 'protocol.owner'
+              }
+            ]
+          }
+        },
+        {
+          name: 'vulnerability'
+          isMut: true
+          isSigner: false
+          pda: {
+            seeds: [
+              {
+                kind: 'const'
+                type: 'string'
+                value: 'vulnerability'
+              },
+              {
+                kind: 'account'
+                type: 'publicKey'
+                account: 'Protocol'
+                path: 'protocol'
+              },
+              {
+                kind: 'account'
+                type: 'u64'
+                account: 'Vulnerability'
+                path: 'vulnerability.id'
+              },
+              {
+                kind: 'account'
+                type: 'u64'
+                account: 'Vulnerability'
+                path: 'vulnerability.seed'
+              }
+            ]
+          }
+          relations: ['protocol']
+        },
+        {
+          name: 'analytics'
+          isMut: true
+          isSigner: false
+          pda: {
+            seeds: [
+              {
+                kind: 'const'
+                type: 'string'
+                value: 'analytics'
+              }
+            ]
+          }
+          relations: ['admin']
+        },
+        {
+          name: 'systemProgram'
+          isMut: false
+          isSigner: false
+        }
+      ]
+      args: []
     }
   ]
   accounts: [
@@ -862,6 +946,9 @@ export type IDL = {
       msg: 'Message empty.'
     }
   ]
+  metadata: {
+    address: 'HATNBZtwk8uLUZeSuYK8QYwWzk1kT5didcGFs9a6GtTW'
+  }
 }
 
 export const IDL: IDL = {
@@ -1503,6 +1590,90 @@ export const IDL: IDL = {
       ],
       args: [],
     },
+    {
+      name: 'deleteVulnerability',
+      accounts: [
+        {
+          name: 'admin',
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: 'protocol',
+          isMut: true,
+          isSigner: false,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                type: 'string',
+                value: 'protocol',
+              },
+              {
+                kind: 'account',
+                type: 'publicKey',
+                account: 'Protocol',
+                path: 'protocol.owner',
+              },
+            ],
+          },
+        },
+        {
+          name: 'vulnerability',
+          isMut: true,
+          isSigner: false,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                type: 'string',
+                value: 'vulnerability',
+              },
+              {
+                kind: 'account',
+                type: 'publicKey',
+                account: 'Protocol',
+                path: 'protocol',
+              },
+              {
+                kind: 'account',
+                type: 'u64',
+                account: 'Vulnerability',
+                path: 'vulnerability.id',
+              },
+              {
+                kind: 'account',
+                type: 'u64',
+                account: 'Vulnerability',
+                path: 'vulnerability.seed',
+              },
+            ],
+          },
+          relations: ['protocol'],
+        },
+        {
+          name: 'analytics',
+          isMut: true,
+          isSigner: false,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                type: 'string',
+                value: 'analytics',
+              },
+            ],
+          },
+          relations: ['admin'],
+        },
+        {
+          name: 'systemProgram',
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [],
+    },
   ],
   accounts: [
     {
@@ -1728,4 +1899,7 @@ export const IDL: IDL = {
       msg: 'Message empty.',
     },
   ],
+  metadata: {
+    address: 'HATNBZtwk8uLUZeSuYK8QYwWzk1kT5didcGFs9a6GtTW',
+  },
 }

@@ -125,6 +125,8 @@ export default function DashboardScreen() {
           })
           console.log('vulnerabilities', vulnerabilitiesMap)
           setVulnerabilities(vulnerabilitiesMap)
+        })
+        .finally(() => {
           if (vulnerabilities) {
             const pendingMap = vulnerabilities.map(({ reviewed }) => {
               if (reviewed == true) {
@@ -162,6 +164,8 @@ export default function DashboardScreen() {
           })
           console.log('sol hacks', hacksMap)
           setSolHacks(hacksMap)
+        })
+        .finally(() => {
           if (solHacks) {
             const pendingMap = solHacks.map(({ reviewed }) => {
               if (reviewed == true) {

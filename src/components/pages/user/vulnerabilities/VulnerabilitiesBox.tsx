@@ -51,6 +51,7 @@ import { Address, Program, BN } from '@coral-xyz/anchor'
 import type { PROTOCOL_PDA, SOL_HACK_PDA, VULNERABILITY_PDA } from '@/types'
 import { approveVulnerability } from '@/utils/api/instructions/approveVulnerability'
 import Spinner from '@/components/utils/Spinner'
+import { deleteVulnerability } from '@/utils/api/instructions/deleteVulnerability'
 
 type ChatMessage = {
   id: string
@@ -256,6 +257,33 @@ export default function VulnerabilitiesBox({ currentChatRoomId }: Props) {
       }
   }
 
+  const onClickClose = async (vulnerability: VULNERABILITY_PDA) => {
+    if (publicKey)
+      try {
+        const tx = await deleteVulnerability(
+          new PublicKey('7sydHcmax59DZJ523tFQEakwkJ3vBDWUE64auHy7yn1N'),
+          vulnerability.protocol,
+          vulnerability.pubkey,
+          connection
+        )
+
+        const cnx = new Connection(SOLANA_RPC_ENDPOINT)
+        let signature: TransactionSignature = ''
+        signature = await sendTransaction(tx, cnx)
+        await cnx.confirmTransaction(signature, 'confirmed')
+        addToast({
+          type: 'success',
+          title: t('vulnerabilities:vulnerabilityVerificationSuccessTitle'),
+          description:
+            t('vulnerabilities:vulnerabilityVerificationSuccessBody') +
+            `https://explorer.solana.com/tx/${signature}?cluster=devnet`,
+        })
+        // handleDelete(vulnerability)
+      } catch (error) {
+        console.log(error)
+      }
+  }
+
   const handleDelete = (pda: VULNERABILITY_PDA) => {
     setVulnerabilities(
       vulnerabilities && vulnerabilities.filter((item) => item.id !== pda.id)
@@ -279,7 +307,7 @@ export default function VulnerabilitiesBox({ currentChatRoomId }: Props) {
                 <div className="mx-auto my-8 flex flex-col">
                   {vulnerabilities && vulnerabilities.length > 0 ? (
                     <>
-                      {pendingVulnerabilities == 0 ? (
+                      {pendingVulnerabilities > 0 ? (
                         <p className="mb-2 flex w-full items-center justify-center text-center text-gray-700 dark:text-gray-200">
                           {t('vulnerabilities:pleaseReview')}{' '}
                           <ShieldExclamationIcon className="ml-1 h-8 w-8" />
@@ -297,7 +325,7 @@ export default function VulnerabilitiesBox({ currentChatRoomId }: Props) {
                         if (!vulnerability.reviewed)
                           return (
                             <div
-                              className="card w-96 bg-base-100 shadow-xl"
+                              className="card mt-2 w-96 bg-base-100 shadow-xl"
                               key={vulnerability.id}
                             >
                               <div className="card-body w-full">
@@ -305,6 +333,12 @@ export default function VulnerabilitiesBox({ currentChatRoomId }: Props) {
                                   {vulnerability.message.toString()}
                                 </p>
                                 <div className="card-actions justify-center">
+                                  <button
+                                    className="btn-error btn-sm"
+                                    onClick={() => onClickClose(vulnerability)}
+                                  >
+                                    dispute
+                                  </button>
                                   <button
                                     className="btn-success btn-sm"
                                     onClick={() =>
