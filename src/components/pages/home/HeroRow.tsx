@@ -88,7 +88,7 @@ export default function HomeHeroRow() {
           setSolRecovered(
             parseInt(
               response.data.readBigInt64LE(8 + 32 + 8 + 8 + 8).toString()
-            )
+            ) / LAMPORTS_PER_SOL
           )
           console.log(
             'sol paid : ',
@@ -99,7 +99,7 @@ export default function HomeHeroRow() {
           setSolPaid(
             parseInt(
               response.data.readBigInt64LE(8 + 32 + 8 + 8 + 8 + 8).toString()
-            )
+            ) / LAMPORTS_PER_SOL
           )
         }
         // const analyticsMap = response.map(({ account }) => {
@@ -146,7 +146,7 @@ export default function HomeHeroRow() {
             </span>{' '}
             {t('home:Analytics.protocols')} {t('home:Analytics.recover')}{' '}
             <span className="bg-gradient-to-tr from-[#9945FF] to-[#14F195] bg-clip-text font-bold text-transparent">
-              {solRecovered / LAMPORTS_PER_SOL}
+              {solRecovered}
             </span>{' '}
             sol {t('home:Analytics.across')}{' '}
             <span className="bg-gradient-to-tr from-[#9945FF] to-[#14F195] bg-clip-text font-bold text-transparent">
@@ -164,7 +164,7 @@ export default function HomeHeroRow() {
           <p className="mx-auto mt-1 max-w-2xl text-lg tracking-tight text-gray-700 dark:text-gray-200">
             {t('home:Analytics.hackers')}{' '}
             <span className="bg-gradient-to-tr from-[#9945FF] to-[#14F195] bg-clip-text font-bold text-transparent">
-              {solPaid / LAMPORTS_PER_SOL - solPaid / LAMPORTS_PER_SOL / 100}
+              {solPaid - solRecovered / 100}
             </span>{' '}
             sol {t('home:Analytics.safer')} *
           </p>

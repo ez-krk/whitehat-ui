@@ -59,6 +59,8 @@ export default function AgreeToPolicy() {
                   {t('AgreeToPolicy.title')}
                 </p>
                 <p className="mt-2 text-sm">{t('AgreeToPolicy.body')}</p>
+                <p className="mt-2 text-sm">{t('AgreeToPolicy.hacker')}</p>
+                <p className="mt-2 text-sm">{t('AgreeToPolicy.protocol')}</p>
                 <Link
                   href="/legal/privacy-policy"
                   className="text-xs text-gray-700 underline hover:text-gray-900 dark:text-gray-50 dark:hover:text-gray-200"

@@ -26,8 +26,10 @@
     }
   },
   "AgreeToPolicy": {
-    "title": "Your Choices Regarding Cookies",
-    "body": "We and our third party partners use cookies and similar technologies to process certain information, such as your IP address and digital identifiers, to analyze site usage and provide you better experiences. Please read our privacy policy for the detail.",
+    "title": "terms of use",
+    "body": "by using our protocol, you agree to the followings :",
+    "hacker": "as a hacker, you agree to return all funds hacked through our protocol.",
+    "protocol": "as a protocol, you agree to legally discharge hackers returning all funds through our protocol.",
     "yes": "Yes, I Accept",
     "no": "No, I Do Not Accept"
   },
