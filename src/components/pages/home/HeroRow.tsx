@@ -17,7 +17,7 @@ import skeetLogo from '@/assets/img/logo/projects/skeet.svg'
 import Button from '@/components/common/atoms/Button'
 import clsx from 'clsx'
 import { useEffect, useState } from 'react'
-import { Connection, PublicKey } from '@solana/web3.js'
+import { Connection, LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js'
 import { ANALYTICS_PUBKEY, PROGRAM_ID, SOLANA_RPC_ENDPOINT } from '@/constants'
 import { useWallet } from '@solana/wallet-adapter-react'
 
@@ -146,7 +146,7 @@ export default function HomeHeroRow() {
             </span>{' '}
             {t('home:Analytics.protocols')} {t('home:Analytics.recover')}{' '}
             <span className="bg-gradient-to-tr from-[#9945FF] to-[#14F195] bg-clip-text font-bold text-transparent">
-              {solRecovered}
+              {solRecovered / LAMPORTS_PER_SOL}
             </span>{' '}
             sol {t('home:Analytics.across')}{' '}
             <span className="bg-gradient-to-tr from-[#9945FF] to-[#14F195] bg-clip-text font-bold text-transparent">
@@ -164,7 +164,7 @@ export default function HomeHeroRow() {
           <p className="mx-auto mt-1 max-w-2xl text-lg tracking-tight text-gray-700 dark:text-gray-200">
             {t('home:Analytics.hackers')}{' '}
             <span className="bg-gradient-to-tr from-[#9945FF] to-[#14F195] bg-clip-text font-bold text-transparent">
-              {solPaid}
+              {solPaid / LAMPORTS_PER_SOL}
             </span>{' '}
             sol {t('home:Analytics.safer')} *
           </p>
