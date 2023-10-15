@@ -170,7 +170,7 @@ export default function DashboardBox({
         })
         .catch((error) => console.log(error))
     }
-  }, [publicKey, connection])
+  }, [publicKey, programs])
 
   useEffect(() => {
     if (publicKey && programs) {

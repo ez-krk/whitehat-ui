@@ -45,6 +45,7 @@ export default function HomeHeroRow() {
     fetchAnalytics()
       .then((response) => {
         if (response) {
+          console.log(response.data)
           // pub admin: Pubkey, // 32
           // pub protocols: u64,
           // pub vulnerabilities: u64,
@@ -171,7 +172,7 @@ export default function HomeHeroRow() {
             * devnet numbers for demonstration purposes
           </p>
         </div>
-        <div className="mt-36 lg:mt-48">
+        <div className="mt-8 lg:mt-10">
           <p className="mx-auto mt-1 max-w-2xl text-lg tracking-tight text-gray-700 dark:text-gray-200">
             our tech stack :
           </p>

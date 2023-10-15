@@ -146,22 +146,25 @@ export default function DashboardBox({
     if (publicKey && programs) {
       const fetchVulnerabilities = async () => {
         // @ts-ignore
-        return await program.account.vulnerability.all([
-          {
-            memcmp: {
-              offset: 8,
-              bytes: programs[0].pubkey.toBase58(),
-            },
-          },
-        ])
+        return await program.account.vulnerability.all()
+        //   [
+        //   {
+        //     memcmp: {
+        //       offset: 8,
+        //       bytes: programs[0].pubkey.toBase58(),
+        //     },
+        //   },
+        // ]
+        // ()
       }
       fetchVulnerabilities()
         .then((response) => {
           console.log(response)
           // @ts-ignore
           const vulnerabilitiesMap = response.map(({ account, publicKey }) => {
-            const result = account
+            const result = account.data
             account.pubkey = publicKey
+            console.log(result)
             return result
           })
           console.log('vulnerabilities', vulnerabilitiesMap)
@@ -169,7 +172,7 @@ export default function DashboardBox({
         })
         .catch((error) => console.log(error))
     }
-  }, [publicKey, connection])
+  }, [programs, publicKey])
 
   useEffect(() => {
     if (publicKey && programs) {
