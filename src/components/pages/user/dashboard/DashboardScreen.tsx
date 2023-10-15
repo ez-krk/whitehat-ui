@@ -178,35 +178,29 @@ export default function DashboardScreen() {
   return (
     <>
       <div className="content-height flex w-full flex-col items-start justify-start overflow-auto sm:flex-row">
-        {!loading ? (
-          <>
-            <DashboardMenu
-              program={program}
-              programs={programs}
-              setPrograms={setPrograms}
-              setSelectedProgram={setSelectedProgram}
-              isNewChatModalOpen={isNewChatModalOpen}
-              setNewChatModalOpen={setNewChatModalOpen}
-              currentChatRoomId={currentChatRoomId}
-              setCurrentChatRoomId={setCurrentChatRoomId}
-              chatList={chatList}
-              setChatList={setChatList}
-              lastChat={lastChat}
-              setLastChat={setLastChat}
-              isDataLoading={isDataLoading}
-              setDataLoading={setDataLoading}
-            />
-            <DashboardBox
-              programs={programs}
-              selectedProgram={selectedProgram}
-              pendingVulnerabilities={pendingVulnerabilities}
-              pendingHacks={pendingHacks}
-              currentChatRoomId={currentChatRoomId}
-            />
-          </>
-        ) : (
-          <Spinner />
-        )}
+        <DashboardMenu
+          program={program}
+          programs={programs}
+          setPrograms={setPrograms}
+          setSelectedProgram={setSelectedProgram}
+          isNewChatModalOpen={isNewChatModalOpen}
+          setNewChatModalOpen={setNewChatModalOpen}
+          currentChatRoomId={currentChatRoomId}
+          setCurrentChatRoomId={setCurrentChatRoomId}
+          chatList={chatList}
+          setChatList={setChatList}
+          lastChat={lastChat}
+          setLastChat={setLastChat}
+          isDataLoading={isDataLoading}
+          setDataLoading={setDataLoading}
+        />
+        <DashboardBox
+          programs={programs}
+          selectedProgram={selectedProgram}
+          pendingVulnerabilities={pendingVulnerabilities}
+          pendingHacks={pendingHacks}
+          currentChatRoomId={currentChatRoomId}
+        />
       </div>
     </>
   )
