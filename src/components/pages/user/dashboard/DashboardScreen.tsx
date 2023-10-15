@@ -16,11 +16,12 @@ import { UserChatRoom, genUserChatRoomPath } from '@/types/models'
 import { query } from '@/lib/skeet/firestore'
 import DashboardMenu from './DashboardMenu'
 import DashboardBox from './DashboardBox'
-import { PROTOCOL_PDA, VULNERABILITY_PDA } from '@/types'
+import { PROTOCOL_PDA, SOL_HACK_PDA, VULNERABILITY_PDA } from '@/types'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { Address, Program } from '@coral-xyz/anchor'
 import { IDL } from '@/idl'
 import { PROGRAM_ID } from '@/constants'
+import Spinner from '@/components/utils/Spinner'
 
 export default function DashboardScreen() {
   const { t } = useTranslation()
@@ -28,6 +29,8 @@ export default function DashboardScreen() {
   const connection = useConnection()
   const user = useRecoilValue(userState)
   const addToast = useToastMessage()
+
+  const [loading, setLoading] = useState(true)
 
   const [isNewChatModalOpen, setNewChatModalOpen] = useState(false)
   const [currentChatRoomId, setCurrentChatRoomId] = useState<string | null>(
@@ -43,8 +46,12 @@ export default function DashboardScreen() {
     VULNERABILITY_PDA[] | null
   >(null)
 
+  const [solHacks, setSolHacks] = useState<SOL_HACK_PDA[] | null>(null)
+
   const [pendingVulnerabilities, setPendingVulnerabilities] =
     useState<number>(0)
+
+  const [pendingHacks, setPendingHacks] = useState<number>(0)
 
   const [chatList, setChatList] = useState<ChatRoom[]>([])
 
@@ -82,6 +89,9 @@ export default function DashboardScreen() {
           console.log(programsMap)
           setPrograms(programsMap)
         })
+        .finally(() => {
+          setLoading(false)
+        })
         .catch((error) => {
           console.log(error)
         })
@@ -115,48 +125,88 @@ export default function DashboardScreen() {
           })
           console.log('vulnerabilities', vulnerabilitiesMap)
           setVulnerabilities(vulnerabilitiesMap)
+          if (vulnerabilities) {
+            const pendingMap = vulnerabilities.map(({ reviewed }) => {
+              if (reviewed == true) {
+                return reviewed
+              } else return false
+            })
+            setPendingVulnerabilities(pendingMap.length)
+          }
         })
         .catch((error) => console.log(error))
     }
   }, [programs, publicKey])
 
   useEffect(() => {
-    if (vulnerabilities && vulnerabilities.length > 0) {
-      console.log('hi there !')
-      const pendingMap = vulnerabilities.map(({ reviewed }) => {
-        if (reviewed == true) {
-          return reviewed
-        } else return false
-      })
-      setPendingVulnerabilities(pendingMap.length)
+    if (publicKey && programs) {
+      const fetchHacks = async () => {
+        // @ts-ignore
+        return await program.account.solHack.all([
+          {
+            memcmp: {
+              offset: 8,
+              bytes: programs[0].pubkey.toBase58(),
+            },
+          },
+        ])
+      }
+      fetchHacks()
+        .then((response) => {
+          console.log(response)
+          // @ts-ignore
+          const hacksMap = response.map(({ account, publicKey }) => {
+            const result = account
+            account.pubkey = publicKey
+            return result
+          })
+          console.log('sol hacks', hacksMap)
+          setSolHacks(hacksMap)
+          if (solHacks) {
+            const pendingMap = solHacks.map(({ reviewed }) => {
+              if (reviewed == true) {
+                return reviewed
+              } else return false
+            })
+            setPendingHacks(pendingMap.length)
+          }
+        })
+        .catch((error) => console.log(error))
     }
-  }, [vulnerabilities])
+  }, [publicKey, connection])
 
   return (
     <>
       <div className="content-height flex w-full flex-col items-start justify-start overflow-auto sm:flex-row">
-        <DashboardMenu
-          programs={programs}
-          setSelectedProgram={setSelectedProgram}
-          isNewChatModalOpen={isNewChatModalOpen}
-          setNewChatModalOpen={setNewChatModalOpen}
-          currentChatRoomId={currentChatRoomId}
-          setCurrentChatRoomId={setCurrentChatRoomId}
-          chatList={chatList}
-          setChatList={setChatList}
-          lastChat={lastChat}
-          setLastChat={setLastChat}
-          isDataLoading={isDataLoading}
-          setDataLoading={setDataLoading}
-        />
-        <DashboardBox
-          programs={programs}
-          selectedProgram={selectedProgram}
-          vulnerabilities={vulnerabilities}
-          pendingVulnerabilities={pendingVulnerabilities}
-          setNewChatModalOpen={setNewChatModalOpen}
-          currentChatRoomId={currentChatRoomId}
-        />
+        {!loading ? (
+          <>
+            <DashboardMenu
+              program={program}
+              programs={programs}
+              setPrograms={setPrograms}
+              setSelectedProgram={setSelectedProgram}
+              isNewChatModalOpen={isNewChatModalOpen}
+              setNewChatModalOpen={setNewChatModalOpen}
+              currentChatRoomId={currentChatRoomId}
+              setCurrentChatRoomId={setCurrentChatRoomId}
+              chatList={chatList}
+              setChatList={setChatList}
+              lastChat={lastChat}
+              setLastChat={setLastChat}
+              isDataLoading={isDataLoading}
+              setDataLoading={setDataLoading}
+            />
+            <DashboardBox
+              programs={programs}
+              selectedProgram={selectedProgram}
+              pendingVulnerabilities={pendingVulnerabilities}
+              pendingHacks={pendingHacks}
+              currentChatRoomId={currentChatRoomId}
+            />
+          </>
+        ) : (
+          <Spinner />
+        )}
       </div>
     </>
   )

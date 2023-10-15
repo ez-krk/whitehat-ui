@@ -55,6 +55,8 @@ import { sendTx } from '@/utils/api/send'
 import { SOLANA_RPC_ENDPOINT } from '@/constants'
 import { Connection, PublicKey, TransactionSignature } from '@solana/web3.js'
 import { PROTOCOL_PDA } from '@/types'
+import { Program } from '@coral-xyz/anchor'
+import { IDL } from '@/idl'
 
 export type ChatRoom = {
   id: string
@@ -75,7 +77,9 @@ const schema = z.object({
 type Inputs = z.infer<typeof schema>
 
 type Props = {
+  program: Program<IDL>
   programs: PROTOCOL_PDA[] | null
+  setPrograms: React.Dispatch<React.SetStateAction<PROTOCOL_PDA[] | null>>
   setSelectedProgram: React.Dispatch<React.SetStateAction<PROTOCOL_PDA | null>>
   isNewChatModalOpen: boolean
   setNewChatModalOpen: (_value: boolean) => void
@@ -90,7 +94,9 @@ type Props = {
 }
 
 export default function DashboardMenu({
+  program,
   programs,
+  setPrograms,
   setSelectedProgram,
   isNewChatModalOpen,
   setNewChatModalOpen,
@@ -121,10 +127,6 @@ export default function DashboardMenu({
     defaultValues: {
       name: '',
       percent: 10,
-      // temperature: 1,
-      // systemContent: isJapanese
-      //   ? 'あなたは、親切で、創造的で、賢く、とてもフレンドリーなアシスタントです。'
-      //   : 'You are the assistant who is helpful, creative, clever, and very friendly.',
     },
   })
 
@@ -208,12 +210,6 @@ export default function DashboardMenu({
     }
   }, [queryMore, chatMenuRefMobile, reachLast])
 
-  useEffect(() => {
-    if (programs) {
-      console.log(programs)
-    }
-  }, [programs])
-
   const isDisabled = useMemo(() => {
     return isCreateLoading || errors.name != null || errors.percent != null
   }, [isCreateLoading, errors.name, errors.percent])
@@ -244,7 +240,19 @@ export default function DashboardMenu({
             title: t(':programCreatedSuccessTitle'),
             description: t('dashboard:programCreatedSuccessBody'),
           })
+
+          const protocol = PublicKey.findProgramAddressSync(
+            [Buffer.from('protocol'), publicKey.toBytes()],
+            program.programId
+          )[0]
+
+          // @ts-ignore
+          const { account } = await program.account.protocol.fetch(protocol)
+          console.log(account)
           // setCurrentChatRoomId(docRef.id)
+          // setPrograms((prevState) => ({
+          //   ...prevState,
+          // }))
         }
       } catch (err) {
         console.error(err)

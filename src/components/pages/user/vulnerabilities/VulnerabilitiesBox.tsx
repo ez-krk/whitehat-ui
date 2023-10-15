@@ -50,6 +50,7 @@ import { IDL } from '@/idl'
 import { Address, Program, BN } from '@coral-xyz/anchor'
 import type { PROTOCOL_PDA, SOL_HACK_PDA, VULNERABILITY_PDA } from '@/types'
 import { approveVulnerability } from '@/utils/api/instructions/approveVulnerability'
+import Spinner from '@/components/utils/Spinner'
 
 type ChatMessage = {
   id: string
@@ -66,20 +67,17 @@ const schema = z.object({
 type Inputs = z.infer<typeof schema>
 
 type Props = {
-  setNewChatModalOpen: (_value: boolean) => void
   currentChatRoomId: string | null
-  getChatRooms: () => void
 }
 
-export default function DashboardBox({
-  setNewChatModalOpen,
-  currentChatRoomId,
-  getChatRooms,
-}: Props) {
+export default function VulnerabilitiesBox({ currentChatRoomId }: Props) {
   const { t } = useTranslation()
   const user = useRecoilValue(userState)
   const { publicKey, sendTransaction } = useWallet()
   const connection = useConnection()
+
+  const [loading, setLoading] = useState(true)
+
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([])
   const [programs, setPrograms] = useState<PROTOCOL_PDA[] | null>(null)
   const [vulnerabilities, setVulnerabilities] = useState<
@@ -194,6 +192,7 @@ export default function DashboardBox({
           console.log('sol hacks', hacksMap)
           setSolHacks(hacksMap)
         })
+        .finally(() => setLoading(false))
         .catch((error) => console.log(error))
     }
   }, [publicKey, connection])
@@ -223,8 +222,6 @@ export default function DashboardBox({
     return (chatContent.match(/\n/g) || []).length + 1
   }, [chatContent])
 
-  const [isFirstMessage, setFirstMessage] = useState(true)
-
   const [isSending, setSending] = useState(false)
 
   useEffect(() => {
@@ -253,91 +250,96 @@ export default function DashboardBox({
             t('vulnerabilities:vulnerabilityVerificationSuccessBody') +
             `https://explorer.solana.com/tx/${signature}?cluster=devnet`,
         })
+        handleDelete(id)
       } catch (error) {
         console.log(error)
       }
   }
 
+  const handleDelete = (pda: VULNERABILITY_PDA) => {
+    setVulnerabilities(
+      vulnerabilities && vulnerabilities.filter((item) => item.id !== pda.id)
+    )
+  }
+
   return (
     <>
       <div className="content-height-mobile sm:content-height w-full overflow-y-auto pt-4 sm:flex-1 sm:px-4 sm:pt-0">
-        {!currentChatRoomId && (
-          <div className="flex h-full w-full flex-col items-center justify-center bg-gray-50 dark:bg-gray-800">
-            <div className="flex w-full max-w-md flex-col items-center justify-center gap-6 p-4">
-              {!publicKey && programs && programs.length > 0 ? (
-                <>
-                  <h2 className="text-2xl font-bold text-gray-700 dark:text-gray-200">
-                    {t('dashboard:connectWallet')}
-                  </h2>
-                  <WalletMultiButton />
-                </>
-              ) : (
-                <div className="flex flex-col">
-                  <div className="mx-auto my-8 flex flex-col">
-                    {vulnerabilities && vulnerabilities.length > 0 ? (
-                      <>
-                        {pendingHacks == 0 ? (
-                          <p className="mb-2 flex w-full items-center justify-center text-center">
-                            {t('vulnerabilities:pleaseReview')}{' '}
-                            <ShieldExclamationIcon className="ml-1 h-8 w-8" />
-                          </p>
-                        ) : (
-                          <p className="flex w-full items-center justify-center text-center">
-                            {t('vulnerabilities:allClear')}{' '}
-                            <ShieldCheckIcon className="h-8 w-8" />
-                          </p>
-                        )}
+        <div className="flex h-full w-full flex-col items-center justify-center bg-gray-50 dark:bg-gray-800">
+          <div className="flex w-full max-w-md flex-col items-center justify-center gap-6 p-4">
+            {!publicKey && programs && programs.length > 0 ? (
+              <>
+                <h2 className="text-2xl font-bold text-gray-700 dark:text-gray-200">
+                  {t('dashboard:connectWallet')}
+                </h2>
+                <WalletMultiButton />
+              </>
+            ) : (
+              <div className="flex flex-col">
+                <div className="mx-auto my-8 flex flex-col">
+                  {vulnerabilities && vulnerabilities.length > 0 ? (
+                    <>
+                      {pendingVulnerabilities == 0 ? (
+                        <p className="mb-2 flex w-full items-center justify-center text-center text-gray-700 dark:text-gray-200">
+                          {t('vulnerabilities:pleaseReview')}{' '}
+                          <ShieldExclamationIcon className="ml-1 h-8 w-8" />
+                        </p>
+                      ) : (
+                        <p className="flex w-full items-center justify-center text-center text-gray-700 dark:text-gray-200">
+                          {t('vulnerabilities:allClear')}{' '}
+                          <ShieldCheckIcon className="h-8 w-8" />
+                        </p>
+                      )}
 
-                        {vulnerabilities.map((vulnerability) => {
-                          console.log('id : ', vulnerability.id.toString())
-                          console.log('seed', vulnerability.seed.toString())
-                          if (!vulnerability.reviewed)
-                            return (
-                              <div
-                                className="card w-96 bg-base-100 shadow-xl"
-                                key={vulnerability.id}
-                              >
-                                <div className="card-body w-full">
-                                  <p className="text-center">
-                                    {vulnerability.message.toString()}
-                                  </p>
-                                  <div className="card-actions justify-center">
-                                    <button
-                                      className="btn-success btn-sm"
-                                      onClick={() =>
-                                        onClick(
-                                          vulnerability.id,
-                                          vulnerability.seed
-                                        )
-                                      }
-                                    >
-                                      approve
-                                    </button>
-                                  </div>
+                      {vulnerabilities.map((vulnerability) => {
+                        console.log('id : ', vulnerability.id.toString())
+                        console.log('seed', vulnerability.seed.toString())
+                        if (!vulnerability.reviewed)
+                          return (
+                            <div
+                              className="card w-96 bg-base-100 shadow-xl"
+                              key={vulnerability.id}
+                            >
+                              <div className="card-body w-full">
+                                <p className="text-center">
+                                  {vulnerability.message.toString()}
+                                </p>
+                                <div className="card-actions justify-center">
+                                  <button
+                                    className="btn-success btn-sm"
+                                    onClick={() =>
+                                      onClick(
+                                        vulnerability.id,
+                                        vulnerability.seed
+                                      )
+                                    }
+                                  >
+                                    approve
+                                  </button>
                                 </div>
                               </div>
-                            )
-                        })}
-                      </>
-                    ) : (
-                      <p className="flex w-full items-center justify-center text-center">
-                        {t('vulnerabilities:allClear')}{' '}
-                        <ShieldCheckIcon className="h-8 w-8" />
-                      </p>
-                    )}
-                    <div className="w-96">
-                      <p className="my-4 w-[100%] text-center"></p>
-                      {/* <FundsReturns data={MOCK_DATA} /> */}
-                    </div>
-                    <div className="w-96">
-                      {/* <PaidHackers data={MOCK_DATA} /> */}
-                    </div>
+                            </div>
+                          )
+                      })}
+                    </>
+                  ) : (
+                    <p className="flex w-full items-center justify-center text-center text-gray-700 dark:text-gray-200">
+                      {t('vulnerabilities:allClear')}{' '}
+                      <ShieldCheckIcon className="h-8 w-8" />
+                    </p>
+                  )}
+                  <div className="w-96">
+                    <p className="my-4 w-[100%] text-center"></p>
+                    {/* <FundsReturns data={MOCK_DATA} /> */}
+                  </div>
+                  <div className="w-96">
+                    {/* <PaidHackers data={MOCK_DATA} /> */}
                   </div>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </>
   )

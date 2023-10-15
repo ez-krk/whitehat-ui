@@ -16,7 +16,7 @@ import { query } from '@/lib/skeet/firestore'
 import VulnerabilitiesBox from './VulnerabilitiesBox'
 import { PROTOCOL_PDA } from '@/types'
 
-export default function DashboardScreen() {
+export default function VulnerabilitiesScreen() {
   const { t } = useTranslation()
   const [isNewChatModalOpen, setNewChatModalOpen] = useState(false)
   const [currentChatRoomId, setCurrentChatRoomId] = useState<string | null>(
@@ -86,11 +86,7 @@ export default function DashboardScreen() {
   return (
     <>
       <div className="content-height flex w-full flex-col items-start justify-start overflow-auto sm:flex-row">
-        <VulnerabilitiesBox
-          setNewChatModalOpen={setNewChatModalOpen}
-          currentChatRoomId={currentChatRoomId}
-          getChatRooms={getChatRooms}
-        />
+        <VulnerabilitiesBox currentChatRoomId={currentChatRoomId} />
       </div>
     </>
   )

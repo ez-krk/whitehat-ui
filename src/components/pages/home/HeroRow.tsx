@@ -164,7 +164,7 @@ export default function HomeHeroRow() {
           <p className="mx-auto mt-1 max-w-2xl text-lg tracking-tight text-gray-700 dark:text-gray-200">
             {t('home:Analytics.hackers')}{' '}
             <span className="bg-gradient-to-tr from-[#9945FF] to-[#14F195] bg-clip-text font-bold text-transparent">
-              {solPaid / LAMPORTS_PER_SOL}
+              {solPaid / LAMPORTS_PER_SOL - solPaid / LAMPORTS_PER_SOL / 100}
             </span>{' '}
             sol {t('home:Analytics.safer')} *
           </p>

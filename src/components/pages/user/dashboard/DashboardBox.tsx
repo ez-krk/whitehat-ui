@@ -93,18 +93,16 @@ type Inputs = z.infer<typeof schema>
 type Props = {
   programs: PROTOCOL_PDA[] | null
   selectedProgram: PROTOCOL_PDA | null
-  vulnerabilities: VULNERABILITY_PDA[] | null
   pendingVulnerabilities: number
-  setNewChatModalOpen: (_value: boolean) => void
+  pendingHacks: number
   currentChatRoomId: string | null
 }
 
 export default function DashboardBox({
   programs,
   selectedProgram,
-  vulnerabilities,
   pendingVulnerabilities,
-  setNewChatModalOpen,
+  pendingHacks,
   currentChatRoomId,
 }: Props) {
   const { t } = useTranslation()
@@ -115,8 +113,6 @@ export default function DashboardBox({
   const [chatRoom, setChatRoom] = useState<ChatRoom | null>(null)
 
   const [solHacks, setSolHacks] = useState<SOL_HACK_PDA[] | null>(null)
-
-  const [pendingHacks, setPendingHacks] = useState<number>(0)
 
   const addToast = useToastMessage()
 
@@ -143,35 +139,6 @@ export default function DashboardBox({
   //       .catch((error) => console.log(error))
   //   }
   // }, [publicKey])
-
-  useEffect(() => {
-    if (publicKey && programs) {
-      const fetchHacks = async () => {
-        // @ts-ignore
-        return await program.account.solHack.all([
-          {
-            memcmp: {
-              offset: 8,
-              bytes: programs[0].pubkey.toBase58(),
-            },
-          },
-        ])
-      }
-      fetchHacks()
-        .then((response) => {
-          console.log(response)
-          // @ts-ignore
-          const hacksMap = response.map(({ account, publicKey }) => {
-            const result = account
-            account.pubkey = publicKey
-            return result
-          })
-          console.log('sol hacks', hacksMap)
-          setSolHacks(hacksMap)
-        })
-        .catch((error) => console.log(error))
-    }
-  }, [publicKey, connection])
 
   const chatContentRef = useRef<HTMLDivElement>(null)
   const scrollToEnd = useCallback(() => {
@@ -441,7 +408,7 @@ export default function DashboardBox({
 
   return (
     <>
-      <div className="content-height-mobile sm:content-height w-full overflow-y-auto pt-4 sm:flex-1 sm:px-4 sm:pt-0">
+      <div className="content-height-mobile sm:content-height w-full overflow-y-auto pt-4 text-gray-700 dark:text-gray-200 sm:flex-1 sm:px-4 sm:pt-0">
         {!currentChatRoomId && (
           <div className="flex h-full w-full flex-col items-center justify-center bg-gray-50 dark:bg-gray-800">
             <div className="flex w-full max-w-md flex-col items-center justify-center gap-6 p-4">
@@ -454,9 +421,9 @@ export default function DashboardBox({
                 </>
               ) : (
                 <div className="flex flex-col">
-                  {publicKey.toString() == ADMIN_PUBKEY && (
+                  {/* {publicKey.toString() == ADMIN_PUBKEY && (
                     <button onClick={onClick}>initialize</button>
-                  )}
+                  )} */}
                   {/* HEADER */}
                   <div className="flex space-x-4">
                     <Link href="/user/programs">
@@ -502,10 +469,9 @@ export default function DashboardBox({
                         <div className="flex grow flex-col">
                           <span className="grow">{t('dashboard:hacks')}</span>
                           <span>
-                            {/* {programs && programs[0]
+                            {programs && programs[0]
                               ? programs[0].hacks.toNumber()
-                              : 0} */}{' '}
-                            0
+                              : 0}
                           </span>
                           <span className="text-xs">
                             {t('dashboard:pendingReview')} : 0
