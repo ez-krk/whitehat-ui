@@ -21,8 +21,6 @@ export default function HomeHeroRow() {
 
   const [programs, setPrograms] = useState<PROTOCOL_PDA[] | null>(null)
 
-  const [clipboard, setClipboard] = useState<string>('')
-
   const program = useMemo(
     () => new Program(IDL, PROGRAM_ID as Address, connection),
     [connection]
@@ -83,6 +81,7 @@ export default function HomeHeroRow() {
                   {/* body */}
                   <tbody>
                     {programs.map((program: PROTOCOL_PDA) => {
+                      console.log('deposit vault :', program.vault.toString())
                       return (
                         <tr key={program.pubkey.toString()}>
                           <th className="text-center">

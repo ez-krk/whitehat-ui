@@ -1,6 +1,7 @@
 {
   "title": "Open AI Chat",
   "newChat": "New Chat",
+  "global": "global stats",
   "protocolName": "protocol name",
   "errorProtocolName": "error setting protocol name, max 50 characters",
   "errorPercent": "error setting percent paid to hackers",

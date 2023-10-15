@@ -2,6 +2,7 @@ import { useTranslation } from 'next-i18next'
 import clsx from 'clsx'
 import {
   ChatBubbleLeftIcon,
+  GlobeAltIcon,
   PlusCircleIcon,
   QueueListIcon,
   XMarkIcon,
@@ -14,6 +15,7 @@ import {
   useRef,
   useState,
   KeyboardEvent,
+  useEffect,
 } from 'react'
 import { useRecoilValue } from 'recoil'
 import { userState } from '@/store/user'
@@ -52,6 +54,7 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { sendTx } from '@/utils/api/send'
 import { SOLANA_RPC_ENDPOINT } from '@/constants'
 import { Connection, PublicKey, TransactionSignature } from '@solana/web3.js'
+import { PROTOCOL_PDA } from '@/types'
 
 export type ChatRoom = {
   id: string
@@ -72,6 +75,8 @@ const schema = z.object({
 type Inputs = z.infer<typeof schema>
 
 type Props = {
+  programs: PROTOCOL_PDA[] | []
+  setSelectedProgram: React.Dispatch<React.SetStateAction<PROTOCOL_PDA | null>>
   isNewChatModalOpen: boolean
   setNewChatModalOpen: (_value: boolean) => void
   currentChatRoomId: string | null
@@ -86,6 +91,8 @@ type Props = {
 }
 
 export default function DashboardMenu({
+  programs,
+  setSelectedProgram,
   isNewChatModalOpen,
   setNewChatModalOpen,
   currentChatRoomId,
@@ -203,6 +210,12 @@ export default function DashboardMenu({
     }
   }, [queryMore, chatMenuRefMobile, reachLast])
 
+  useEffect(() => {
+    if (programs) {
+      console.log(programs)
+    }
+  }, [programs])
+
   const isDisabled = useMemo(() => {
     return isCreateLoading || errors.name != null || errors.percent != null
   }, [isCreateLoading, errors.name, errors.percent])
@@ -213,7 +226,8 @@ export default function DashboardMenu({
         setCreateLoading(true)
         if (!isDisabled && db && publicKey) {
           const docSnap = await get(db, 'users', user.uid)
-          console.log(docSnap)
+          console.log(docSnap.publicKey)
+          if (!docSnap.publicKey) throw new Error('no firebase publickey')
           const tx = await registerProtocol(
             publicKey,
             new PublicKey(docSnap.publicKey),
@@ -226,18 +240,7 @@ export default function DashboardMenu({
           let signature: TransactionSignature = ''
           signature = await sendTransaction(tx, cnx)
           await cnx.confirmTransaction(signature, 'confirmed')
-          // const docRef = await add<UserChatRoom>(
-          //   db,
-          //   genUserChatRoomPath(user.uid),
-          //   {
-          //     title: '',
-          //     model: data.name,
-          //     context: data.systemContent,
-          //     maxTokens: data.maxTokens,
-          //     temperature: data.temperature,
-          //     stream: true,
-          //   }
-          // )
+
           addToast({
             type: 'success',
             title: t('dashboard:programCreatedSuccessTitle'),
@@ -301,7 +304,18 @@ export default function DashboardMenu({
             </button>
             <div className="flex-grow" />
             <h2 className="text-center font-bold">{t('dashboard:title')}</h2>
-            <div className="flex-grow" />
+            <button
+              onClick={() => {
+                setNewChatModalOpen(true)
+              }}
+              className={clsx('flex flex-row items-center justify-center')}
+            >
+              <PlusCircleIcon
+                className={clsx(
+                  'h-6 w-6 flex-shrink-0 text-gray-900 dark:text-white'
+                )}
+              />
+            </button>
             <button
               onClick={() => {
                 setNewChatModalOpen(true)
@@ -324,6 +338,19 @@ export default function DashboardMenu({
           <div className="flex w-full flex-col gap-6">
             <button
               onClick={() => {
+                setCurrentChatRoomId(null)
+              }}
+              className={clsx(
+                'flex w-full flex-row items-center justify-center bg-gray-900 px-3 py-2 dark:bg-gray-600'
+              )}
+            >
+              <GlobeAltIcon className="mr-3 h-6 w-6 flex-shrink-0 text-white" />
+              <span className="text-center text-lg font-bold text-white">
+                {t('dashboard:global')}
+              </span>
+            </button>
+            <button
+              onClick={() => {
                 setNewChatModalOpen(true)
               }}
               className={clsx(
@@ -336,29 +363,30 @@ export default function DashboardMenu({
               </span>
             </button>
             <div className="flex flex-col gap-3 pb-20">
-              {chatList.map((chat) => (
+              {programs.map((program) => (
                 <div
                   onClick={() => {
-                    setCurrentChatRoomId(chat.id)
+                    setCurrentChatRoomId(program.pubkey.toString())
+                    setSelectedProgram(program)
                   }}
-                  key={`ChatMenu Desktop ${chat.id}`}
+                  key={`ChatMenu Desktop ${program.pubkey.toString()}`}
                   className={clsx(
-                    currentChatRoomId === chat.id &&
+                    currentChatRoomId === program.pubkey.toString() &&
                       'border-2 border-gray-900 dark:border-gray-50',
-                    'flex flex-row items-start justify-start gap-2 bg-gray-50 p-2 hover:cursor-pointer dark:bg-gray-800'
+                    'flex flex-row items-center justify-center gap-2 bg-gray-50 p-2 text-center hover:cursor-pointer dark:bg-gray-800'
                   )}
                 >
-                  <ChatBubbleLeftIcon
+                  {/* <ChatBubbleLeftIcon
                     className={clsx(
                       'h-5 w-5 flex-shrink-0 text-gray-900 dark:text-white'
                     )}
-                  />
+                  /> */}
                   <div className="flex flex-col gap-2">
-                    {chat.title !== '' ? (
+                    {program.name !== '' ? (
                       <p className="font-medium text-gray-900 dark:text-white">
-                        {chat.title.length > 20
-                          ? `${chat.title.slice(0, 20)} ...`
-                          : chat.title}
+                        {program.name.length > 20
+                          ? `${program.name.slice(0, 20)} ...`
+                          : program.name}
                       </p>
                     ) : (
                       <p className="font-light italic text-gray-600 dark:text-gray-300">
@@ -366,7 +394,10 @@ export default function DashboardMenu({
                       </p>
                     )}
                     <p className="text-sm font-light text-gray-700 dark:text-gray-200">
-                      {format(chat.createdAt.toDate(), 'yyyy-MM-dd HH:mm')}
+                      {format(
+                        new Date(program.createdAt * 1000),
+                        'yyyy-MM-dd HH:mm'
+                      )}
                     </p>
                   </div>
                 </div>

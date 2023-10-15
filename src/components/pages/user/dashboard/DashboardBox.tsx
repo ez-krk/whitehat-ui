@@ -65,9 +65,15 @@ import {
 } from '@solana/web3.js'
 import { IDL } from '@/idl'
 import { Address, Program } from '@coral-xyz/anchor'
-import type { PROTOCOL_PDA, SOL_HACK_PDA, VULNERABILITY_PDA } from '@/types'
+import type {
+  ANALYTICS_PDA,
+  PROTOCOL_PDA,
+  SOL_HACK_PDA,
+  VULNERABILITY_PDA,
+} from '@/types'
 import { initialize } from '@/utils/api/instructions/initialize'
 import { PaidHackers } from '@/components/charts/PaidHackers'
+import { deleteProtocol } from '@/utils/api/instructions/deleteProtocol'
 
 type ChatMessage = {
   id: string
@@ -84,15 +90,17 @@ const schema = z.object({
 type Inputs = z.infer<typeof schema>
 
 type Props = {
+  programs: PROTOCOL_PDA[] | []
+  selectedProgram: PROTOCOL_PDA | null
   setNewChatModalOpen: (_value: boolean) => void
   currentChatRoomId: string | null
-  getChatRooms: () => void
 }
 
 export default function DashboardBox({
+  programs,
+  selectedProgram,
   setNewChatModalOpen,
   currentChatRoomId,
-  getChatRooms,
 }: Props) {
   const { t } = useTranslation()
   const user = useRecoilValue(userState)
@@ -100,7 +108,6 @@ export default function DashboardBox({
   const connection = useConnection()
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([])
   const [chatRoom, setChatRoom] = useState<ChatRoom | null>(null)
-  const [programs, setPrograms] = useState<PROTOCOL_PDA[] | null>(null)
   const [vulnerabilities, setVulnerabilities] = useState<
     VULNERABILITY_PDA[] | null
   >(null)
@@ -134,37 +141,6 @@ export default function DashboardBox({
   //       .catch((error) => console.log(error))
   //   }
   // }, [publicKey])
-
-  useEffect(() => {
-    if (publicKey && !programs) {
-      const fetchPrograms = async () => {
-        // @ts-ignore
-        return await program.account.protocol.all([
-          {
-            memcmp: {
-              offset: 8,
-              bytes: publicKey.toBase58(),
-            },
-          },
-        ])
-      }
-      fetchPrograms()
-        .then((response) => {
-          // console.log(response)
-          // @ts-ignore
-          const programsMap = response.map(({ account, publicKey }) => {
-            const result = account
-            account.pubkey = publicKey
-            return result
-          })
-          // console.log(programsMap)
-          setPrograms(programsMap)
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-    }
-  }, [publicKey])
 
   useEffect(() => {
     if (publicKey && programs) {
@@ -413,7 +389,6 @@ export default function DashboardBox({
 
           if (chatRoom && chatRoom.title == '') {
             await getChatRoom()
-            await getChatRooms()
           }
           await getUserChatRoomMessage()
           reset()
@@ -454,7 +429,6 @@ export default function DashboardBox({
       getUserChatRoomMessage,
       addToast,
       reset,
-      getChatRooms,
     ]
   )
 
@@ -473,6 +447,20 @@ export default function DashboardBox({
         const cnx = new Connection(SOLANA_RPC_ENDPOINT)
         let signature: TransactionSignature = ''
         const tx = await initialize(publicKey, connection)
+        signature = await sendTransaction(tx, cnx)
+        await cnx.confirmTransaction(signature, 'confirmed')
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }
+
+  const onClickDelete = async (pubkey: PublicKey) => {
+    if (publicKey && publicKey.toString() == ADMIN_PUBKEY) {
+      try {
+        const cnx = new Connection(SOLANA_RPC_ENDPOINT)
+        let signature: TransactionSignature = ''
+        const tx = await deleteProtocol(publicKey, pubkey, connection)
         signature = await sendTransaction(tx, cnx)
         await cnx.confirmTransaction(signature, 'confirmed')
       } catch (error) {
@@ -572,7 +560,7 @@ export default function DashboardBox({
             </div>
           </div>
         )}
-        {currentChatRoomId && (
+        {currentChatRoomId && selectedProgram && (
           <div className="flex h-full w-full flex-col justify-between gap-4">
             <div
               ref={chatContentRef}
@@ -593,162 +581,107 @@ export default function DashboardBox({
                 className={clsx('bg-gray-50 dark:bg-gray-800', 'w-full p-4')}
               >
                 <div className="mx-auto flex w-full max-w-3xl flex-row items-start justify-center gap-4 p-4 sm:p-6 md:gap-6">
-                  {chatRoom?.model === 'gpt-3.5-turbo' && (
-                    <Image
-                      src={
-                        'https://storage.googleapis.com/epics-bucket/BuidlersCollective/Jake.png'
-                      }
-                      alt="Jake icon"
-                      className="my-3 aspect-square h-6 w-6 rounded-full sm:h-10 sm:w-10"
-                      unoptimized
-                      width={40}
-                      height={40}
-                    />
-                  )}
-
-                  {chatRoom?.model === 'gpt-4' && (
-                    <Image
-                      src={
-                        'https://storage.googleapis.com/epics-bucket/BuidlersCollective/Legend.png'
-                      }
-                      alt="Legend icon"
-                      className="my-3 aspect-square h-6 w-6 rounded-full sm:h-10 sm:w-10"
-                      unoptimized
-                      width={40}
-                      height={40}
-                    />
-                  )}
                   <div className="flex w-full flex-col">
                     <div className="pb-2">
-                      <p className="text-base font-bold text-gray-900 dark:text-white">
-                        {chatRoom?.title ? chatRoom?.title : t('noTitle')}
+                      <p className="text-center text-base font-bold text-gray-900 dark:text-white">
+                        {selectedProgram.name
+                          ? selectedProgram.name
+                          : t('noTitle')}
                       </p>
-                      <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                      {/* <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
                         {chatRoom?.model}: {chatRoom?.maxTokens} {t('tokens')}
-                      </p>
+                      </p> */}
                     </div>
-                    <div className="prose w-full max-w-none dark:prose-invert lg:prose-lg">
+                    {/* <div className="prose w-full max-w-none dark:prose-invert lg:prose-lg">
                       {chatRoom?.context}
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>
-              {chatMessages.map((chatMessage) => (
-                <div
-                  key={chatMessage.id}
-                  className={clsx(
-                    chatMessage.role === 'system' &&
-                      'bg-gray-50 dark:bg-gray-800',
-                    chatMessage.role === 'assistant' &&
-                      'bg-gray-50 dark:bg-gray-800',
-                    'w-full p-4'
+              {!publicKey ? (
+                <>
+                  <h2 className="text-2xl font-bold text-gray-700 dark:text-gray-200">
+                    {t('dashboard:connectWallet')}
+                  </h2>
+                  <WalletMultiButton />
+                </>
+              ) : (
+                <div className="mt-4 flex flex-col">
+                  {/* HEADER */}
+                  {publicKey.toString() == ADMIN_PUBKEY && (
+                    <button
+                      onClick={() => onClickDelete(selectedProgram.pubkey)}
+                    >
+                      delete
+                    </button>
                   )}
-                >
-                  <div className="mx-auto flex w-full max-w-3xl flex-row items-start justify-center gap-4 p-4 sm:p-6 md:gap-6">
-                    {chatMessage.role === 'user' && (
-                      <Image
-                        src={user.iconUrl}
-                        alt="User icon"
-                        className="my-3 aspect-square h-6 w-6 rounded-full sm:h-10 sm:w-10"
-                        unoptimized
-                        width={40}
-                        height={40}
-                      />
-                    )}
-                    {(chatMessage.role === 'assistant' ||
-                      chatMessage.role === 'system') &&
-                      chatRoom?.model === 'gpt-3.5-turbo' && (
-                        <Image
-                          src={
-                            'https://storage.googleapis.com/epics-bucket/BuidlersCollective/Jake.png'
-                          }
-                          alt="Jake icon"
-                          className="my-3 aspect-square h-6 w-6 rounded-full sm:h-10 sm:w-10"
-                          unoptimized
-                          width={40}
-                          height={40}
-                        />
-                      )}
-                    {(chatMessage.role === 'assistant' ||
-                      chatMessage.role === 'system') &&
-                      chatRoom?.model === 'gpt-4' && (
-                        <Image
-                          src={
-                            'https://storage.googleapis.com/epics-bucket/BuidlersCollective/Legend.png'
-                          }
-                          alt="Legend icon"
-                          className="my-3 aspect-square h-6 w-6 rounded-full sm:h-10 sm:w-10"
-                          unoptimized
-                          width={40}
-                          height={40}
-                        />
-                      )}
-                    <div className="flex w-full flex-col">
-                      {chatMessage.role === 'system' && (
-                        <div className="pb-2">
-                          <p className="text-base font-bold text-gray-900 dark:text-white">
-                            {chatRoom?.title ? chatRoom?.title : t('noTitle')}
-                          </p>
-                          <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                            {chatRoom?.model}: {chatRoom?.maxTokens}{' '}
-                            {t('tokens')}
-                          </p>
+                  <div className="flex items-center justify-center space-x-4">
+                    {/* <Link href="/user/programs">
+                      <div className="flex w-72 items-center justify-center rounded-sm border p-4">
+                        <div className="flex grow flex-col">
+                          <span className="grow">
+                            {t('dashboard:programs')}
+                          </span>
+                          <span className="mb-[16px]">
+                            {programs && programs.length > 0
+                              ? programs.length
+                              : 0}
+                          </span>
                         </div>
-                      )}
-                      <div className="prose w-full max-w-none dark:prose-invert lg:prose-lg">
-                        <div
-                          className="w-full max-w-none"
-                          dangerouslySetInnerHTML={{
-                            __html: chatMessage.content,
-                          }}
-                        />
+                        <CpuChipIcon className="h-8 w-8" />
                       </div>
+                    </Link> */}
+                    <Link href="/user/vulnerabilities">
+                      <div className="flex w-72 items-center justify-center rounded-sm border p-4">
+                        <div className="flex grow flex-col">
+                          <span className="">
+                            {t('dashboard:vulnerabilities')}
+                          </span>
+                          <span>
+                            {selectedProgram.vulnerabilities.toNumber()
+                              ? selectedProgram.vulnerabilities.toNumber()
+                              : 0}
+                          </span>
+                          <span className="text-xs">
+                            {t('dashboard:pendingReview')} : 0
+                          </span>
+                        </div>
+                        <ShieldExclamationIcon className="h-8 w-8" />
+                      </div>
+                    </Link>
+                    <Link href="/user/hacks">
+                      <div className="flex w-72 items-center justify-center rounded-sm border p-4">
+                        <div className="flex grow flex-col">
+                          <span className="grow">{t('dashboard:hacks')}</span>
+                          <span>
+                            {selectedProgram
+                              ? selectedProgram.hacks.toNumber()
+                              : 0}
+                          </span>
+                          <span className="text-xs">
+                            {t('dashboard:pendingReview')} : 0
+                          </span>
+                        </div>
+                        <CommandLineIcon className="h-8 w-8" />
+                      </div>
+                    </Link>
+                  </div>
+                  <div className="mx-auto my-8 flex">
+                    <div className="h-96 w-96">
+                      <p className="my-4 w-[100%] text-center">
+                        {t('dashboard:fundsReturned')}
+                      </p>
+                      <FundsReturns data={MOCK_DATA} />
+                    </div>
+                    <div className="h-96 w-96">
+                      <p className="my-4 w-[100%] text-center">
+                        {t('dashboard:paidToHackers')}
+                      </p>
+                      <PaidHackers data={MOCK_DATA} />
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
-
-            <div className="flex w-full flex-row items-end gap-4">
-              <form onSubmit={handleSubmit(onSubmit)} className="w-full">
-                <div className="mx-auto flex w-full max-w-3xl flex-row items-end justify-between gap-4">
-                  <Controller
-                    name="chatContent"
-                    control={control}
-                    render={({ field }) => (
-                      <textarea
-                        {...field}
-                        onKeyDown={onKeyDown}
-                        className={clsx(
-                          chatContentLines > 4
-                            ? 'h-48'
-                            : chatContentLines == 4
-                            ? 'h-36'
-                            : chatContentLines == 3
-                            ? 'h-28'
-                            : chatContentLines == 2
-                            ? 'h-20'
-                            : `h-10`,
-                          'flex-1 border-2 border-gray-900 p-1 font-normal text-gray-900 dark:border-gray-50 dark:bg-gray-800 dark:text-white sm:text-lg'
-                        )}
-                      />
-                    )}
-                  />
-
-                  <button
-                    type="submit"
-                    disabled={isDisabled}
-                    className={clsx(
-                      'flex h-10 w-10 flex-row items-center justify-center',
-                      isDisabled
-                        ? 'bg-gray-300 hover:cursor-wait dark:bg-gray-800 dark:text-gray-400'
-                        : 'bg-gray-900 hover:cursor-pointer dark:bg-gray-600'
-                    )}
-                  >
-                    <PaperAirplaneIcon className="mx-3 h-6 w-6 flex-shrink-0 text-white" />
-                  </button>
-                </div>
-              </form>
+              )}
             </div>
           </div>
         )}

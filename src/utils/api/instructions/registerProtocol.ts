@@ -14,19 +14,25 @@ export const registerProtocol = async (
   const program = new Program(IDL, PROGRAM_ID as Address, connection)
 
   const protocol = PublicKey.findProgramAddressSync(
-    [Buffer.from('protocol'), owner.toBuffer()],
+    [Buffer.from('protocol'), owner.toBytes()],
     program.programId
   )[0]
+
+  console.log('protocol : ', protocol.toString())
 
   const auth = PublicKey.findProgramAddressSync(
     [Buffer.from('auth'), protocol.toBytes()],
     program.programId
   )[0]
 
+  console.log('auth : ', auth.toString())
+
   const vault = PublicKey.findProgramAddressSync(
     [Buffer.from('vault'), protocol.toBytes()],
     program.programId
   )[0]
+
+  console.log('vault : ', vault.toString())
 
   const analytics = PublicKey.findProgramAddressSync(
     [Buffer.from('analytics')],

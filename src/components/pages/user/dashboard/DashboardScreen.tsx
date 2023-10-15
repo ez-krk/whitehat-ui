@@ -1,6 +1,6 @@
 import ChatMenu, { ChatRoom } from '@/components/pages/user/chat/ChatMenu'
 import ChatBox from '@/components/pages/user/chat/ChatBox'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { userState } from '@/store/user'
 import { useRecoilValue } from 'recoil'
 import useToastMessage from '@/hooks/useToastMessage'
@@ -17,23 +17,37 @@ import { query } from '@/lib/skeet/firestore'
 import DashboardMenu from './DashboardMenu'
 import DashboardBox from './DashboardBox'
 import { PROTOCOL_PDA } from '@/types'
+import { useConnection, useWallet } from '@solana/wallet-adapter-react'
+import { Address, Program } from '@coral-xyz/anchor'
+import { IDL } from '@/idl'
+import { PROGRAM_ID } from '@/constants'
 
 export default function DashboardScreen() {
   const { t } = useTranslation()
+  const { publicKey } = useWallet()
+  const connection = useConnection()
+  const user = useRecoilValue(userState)
+  const addToast = useToastMessage()
+
   const [isNewChatModalOpen, setNewChatModalOpen] = useState(false)
   const [currentChatRoomId, setCurrentChatRoomId] = useState<string | null>(
     null
   )
 
-  const user = useRecoilValue(userState)
-
   const [programs, setPrograms] = useState<PROTOCOL_PDA[]>([])
+  const [selectedProgram, setSelectedProgram] = useState<PROTOCOL_PDA | null>(
+    null
+  )
   const [chatList, setChatList] = useState<ChatRoom[]>([])
 
   const [lastChat, setLastChat] =
     useState<QueryDocumentSnapshot<DocumentData> | null>(null)
   const [isDataLoading, setDataLoading] = useState(false)
-  const addToast = useToastMessage()
+
+  const program = useMemo(
+    () => new Program(IDL, PROGRAM_ID as Address, connection),
+    [connection]
+  )
 
   const getChatRooms = useCallback(async () => {
     if (db && user.uid) {
@@ -85,10 +99,43 @@ export default function DashboardScreen() {
     })()
   }, [getChatRooms])
 
+  useEffect(() => {
+    if (publicKey) {
+      const fetchPrograms = async () => {
+        // @ts-ignore
+        return await program.account.protocol.all([
+          {
+            memcmp: {
+              offset: 8,
+              bytes: publicKey.toBase58(),
+            },
+          },
+        ])
+      }
+      fetchPrograms()
+        .then((response) => {
+          // console.log(response)
+          // @ts-ignore
+          const programsMap = response.map(({ account, publicKey }) => {
+            const result = account
+            account.pubkey = publicKey
+            return result
+          })
+          console.log(programsMap)
+          setPrograms(programsMap)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    }
+  }, [publicKey])
+
   return (
     <>
       <div className="content-height flex w-full flex-col items-start justify-start overflow-auto sm:flex-row">
         <DashboardMenu
+          programs={programs}
+          setSelectedProgram={setSelectedProgram}
           isNewChatModalOpen={isNewChatModalOpen}
           setNewChatModalOpen={setNewChatModalOpen}
           currentChatRoomId={currentChatRoomId}
@@ -102,9 +149,10 @@ export default function DashboardScreen() {
           getChatRooms={getChatRooms}
         />
         <DashboardBox
+          programs={programs}
+          selectedProgram={selectedProgram}
           setNewChatModalOpen={setNewChatModalOpen}
           currentChatRoomId={currentChatRoomId}
-          getChatRooms={getChatRooms}
         />
       </div>
     </>
