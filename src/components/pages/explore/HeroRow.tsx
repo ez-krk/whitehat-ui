@@ -119,7 +119,7 @@ export default function HomeHeroRow() {
                               alert('Text copied')
                             }}
                           >
-                            {program.vault.toString()}
+                            {ellipsis(program.vault.toString())}
                           </td>
                           <td
                             className="cursor-pointer text-center"

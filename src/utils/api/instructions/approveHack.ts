@@ -4,7 +4,7 @@ import { Address, BN, Program } from '@coral-xyz/anchor'
 import { ConnectionContextState } from '@solana/wallet-adapter-react'
 import { PublicKey, SystemProgram, Transaction } from '@solana/web3.js'
 
-export const registerProtocol = async (
+export const approveHack = async (
   owner: PublicKey,
   amount: number,
   connection: ConnectionContextState
