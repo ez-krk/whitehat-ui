@@ -1,10 +1,12 @@
-export const PROGRAM_ID = 'WHATtP4qZ6GCva5NafqLaTKozQqr9VjL6SXWwCFvvyp'
+export const PROGRAM_ID = 'HATNBZtwk8uLUZeSuYK8QYwWzk1kT5didcGFs9a6GtTW'
 
 export const SOLANA_RPC_ENDPOINT =
   (process.env.NEXT_PUBLIC_SOLANA_RPC_ENDPOINT as string) ||
   'https://api.devnet.solana.com'
 
-export const ANALYTICS_PUBKEY = 'DoW9fvxcmKmNCsLTCf9HCzDhU4hR6xTPtXDpis66CdwL'
+export const ANALYTICS_PUBKEY = 'UcQggzdJ6oQeXDwSrjuhWfG75mC8fBNCmJfE4AwH5j3'
+
+export const ADMIN_PUBKEY = '7sydHcmax59DZJ523tFQEakwkJ3vBDWUE64auHy7yn1N'
 
 export const MOCK_DATA = [
   {

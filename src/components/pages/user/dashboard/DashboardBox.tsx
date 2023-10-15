@@ -50,7 +50,12 @@ import { get, query } from '@/lib/skeet/firestore'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import { FundsReturns } from '@/components/charts/FundsReturned'
-import { MOCK_DATA, PROGRAM_ID, SOLANA_RPC_ENDPOINT } from '@/constants'
+import {
+  ADMIN_PUBKEY,
+  MOCK_DATA,
+  PROGRAM_ID,
+  SOLANA_RPC_ENDPOINT,
+} from '@/constants'
 import Link from '@/components/routing/Link'
 import {
   PublicKey,
@@ -111,6 +116,25 @@ export default function DashboardBox({
     [connection]
   )
 
+  // useEffect(() => {
+  //   if (publicKey) {
+  //     const fetchAnalytics = async () => {
+  //       const analytics = PublicKey.findProgramAddressSync(
+  //         [Buffer.from('analytics')],
+  //         program.programId
+  //       )[0]
+  //       console.log(analytics.toString())
+  //       //@ts-ignore
+  //       return await program.account.analytics.fetch(analytics)
+  //     }
+  //     fetchAnalytics()
+  //       .then((response) => {
+  //         console.log(response)
+  //       })
+  //       .catch((error) => console.log(error))
+  //   }
+  // }, [publicKey])
+
   useEffect(() => {
     if (publicKey && !programs) {
       const fetchPrograms = async () => {
@@ -126,14 +150,14 @@ export default function DashboardBox({
       }
       fetchPrograms()
         .then((response) => {
-          console.log(response)
+          // console.log(response)
           // @ts-ignore
           const programsMap = response.map(({ account, publicKey }) => {
             const result = account
             account.pubkey = publicKey
             return result
           })
-          console.log(programsMap)
+          // console.log(programsMap)
           setPrograms(programsMap)
         })
         .catch((error) => {
@@ -443,6 +467,20 @@ export default function DashboardBox({
     [handleSubmit, onSubmit]
   )
 
+  const onClick = async () => {
+    if (publicKey && publicKey.toString() == ADMIN_PUBKEY) {
+      try {
+        const cnx = new Connection(SOLANA_RPC_ENDPOINT)
+        let signature: TransactionSignature = ''
+        const tx = await initialize(publicKey, connection)
+        signature = await sendTransaction(tx, cnx)
+        await cnx.confirmTransaction(signature, 'confirmed')
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }
+
   return (
     <>
       <div className="content-height-mobile sm:content-height w-full overflow-y-auto pt-4 sm:flex-1 sm:px-4 sm:pt-0">
@@ -458,6 +496,9 @@ export default function DashboardBox({
                 </>
               ) : (
                 <div className="flex flex-col">
+                  {publicKey.toString() == ADMIN_PUBKEY && (
+                    <button onClick={onClick}>initialize</button>
+                  )}
                   {/* HEADER */}
                   <div className="flex space-x-4">
                     <Link href="/user/programs">
@@ -467,7 +508,9 @@ export default function DashboardBox({
                             {t('dashboard:programs')}
                           </span>
                           <span className="mb-[16px]">
-                            {programs && programs.length ? programs.length : 0}
+                            {programs && programs.length > 0
+                              ? programs.length
+                              : 0}
                           </span>
                         </div>
                         <CpuChipIcon className="h-8 w-8" />
@@ -480,9 +523,10 @@ export default function DashboardBox({
                             {t('dashboard:vulnerabilities')}
                           </span>
                           <span>
-                            {programs && programs[0].vulnerabilities.toNumber()
+                            {/* {programs && programs[0].vulnerabilities.toNumber()
                               ? programs[0].vulnerabilities.toNumber()
-                              : 0}
+                              : 0} */}{' '}
+                            0
                           </span>
                           <span className="text-xs">
                             {t('dashboard:pendingReview')} : 0
@@ -496,9 +540,10 @@ export default function DashboardBox({
                         <div className="flex grow flex-col">
                           <span className="grow">{t('dashboard:hacks')}</span>
                           <span>
-                            {programs && programs[0].hacks.toNumber()
+                            {/* {programs && programs[0]
                               ? programs[0].hacks.toNumber()
-                              : 0}
+                              : 0} */}{' '}
+                            0
                           </span>
                           <span className="text-xs">
                             {t('dashboard:pendingReview')} : 0

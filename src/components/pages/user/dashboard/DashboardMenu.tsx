@@ -51,7 +51,7 @@ import { registerProtocol } from '@/utils/api/instructions/registerProtocol'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { sendTx } from '@/utils/api/send'
 import { SOLANA_RPC_ENDPOINT } from '@/constants'
-import { Connection, TransactionSignature } from '@solana/web3.js'
+import { Connection, PublicKey, TransactionSignature } from '@solana/web3.js'
 
 export type ChatRoom = {
   id: string
@@ -216,7 +216,7 @@ export default function DashboardMenu({
           console.log(docSnap)
           const tx = await registerProtocol(
             publicKey,
-            docSnap.publicKey,
+            new PublicKey(docSnap.publicKey),
             data.name,
             data.percent,
             connection
@@ -240,8 +240,8 @@ export default function DashboardMenu({
           // )
           addToast({
             type: 'success',
-            title: t('chat:chatRoomCreatedSuccessTitle'),
-            description: t('chat:chatRoomCreatedSuccessBody'),
+            title: t('dashboard:programCreatedSuccessTitle'),
+            description: t('dashboard:programCreatedSuccessBody'),
           })
           // setCurrentChatRoomId(docRef.id)
         }
