@@ -5,6 +5,7 @@
   "author": "ELSOUL LABO B.V.",
   "license": "Apache-2.0",
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "format": "prettier --write --ignore-unknown .",
     "lint": "eslint --ext .ts,.tsx --fix .",
     "test": "jest --coverage=false --detectOpenHandles --maxWorkers=1",
