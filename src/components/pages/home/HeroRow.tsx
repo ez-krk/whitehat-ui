@@ -129,13 +129,13 @@ export default function HomeHeroRow() {
             {t('getStarted')}
           </Button>
           <Button
-            href="https://github.com/elsoul/skeet-cli"
+            href="https://github.com/3uild-3thos/whitehat"
             variant="outline"
             className=""
             target="_blank"
             rel="noreferrer"
           >
-            gitHub
+            github
           </Button>
         </div>
         <div className="mt-6 lg:mt-8">

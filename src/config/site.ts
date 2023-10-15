@@ -14,7 +14,7 @@ const siteConfig = {
     'get hacked, get it back !\ndynamic bug bounty protocol for faster fund recovery and iteration.',
   xAccount: '@whitehatdefi',
   instagramAccount: 'elsoul_labo',
-  githubAccount: 'elsoul',
+  githubAccount: '3uild-3thos',
   discordInvitationLink: 'https://discord.gg/2a9hsfec',
 }
 
