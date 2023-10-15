@@ -23,33 +23,21 @@ import { z } from 'zod'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import useToastMessage from '@/hooks/useToastMessage'
-import { unified } from 'unified'
-import remarkParse from 'remark-parse'
-import remark2Rehype from 'remark-rehype'
-import rehypeHighlight from 'rehype-highlight'
-import rehypeStringify from 'rehype-stringify'
-import rehypeCodeTitles from 'rehype-code-titles'
-import remarkSlug from 'remark-slug'
-import remarkGfm from 'remark-gfm'
-import remarkDirective from 'remark-directive'
-import remarkExternalLinks from 'remark-external-links'
-import { UserChatRoomMessage, genUserChatRoomMessagePath } from '@/types/models'
 import { Timestamp } from '@skeet-framework/firestore'
-import { get, query } from '@/lib/skeet/firestore'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
-import { MOCK_DATA, PROGRAM_ID, SOLANA_RPC_ENDPOINT } from '@/constants'
+import { PROGRAM_ID, SOLANA_RPC_ENDPOINT } from '@/constants'
 import Link from '@/components/routing/Link'
 import {
-  PublicKey,
   TransactionSignature,
   Connection,
-  SystemProgram,
+  LAMPORTS_PER_SOL,
 } from '@solana/web3.js'
 import { IDL } from '@/idl'
 import { Address, Program, BN } from '@coral-xyz/anchor'
+import { approveHack } from '@/utils/api/instructions/approveHack'
+
 import type { PROTOCOL_PDA, SOL_HACK_PDA, VULNERABILITY_PDA } from '@/types'
-import { approveVulnerability } from '@/utils/api/instructions/approveVulnerability'
 
 type ChatMessage = {
   id: string
@@ -66,16 +54,10 @@ const schema = z.object({
 type Inputs = z.infer<typeof schema>
 
 type Props = {
-  setNewChatModalOpen: (_value: boolean) => void
   currentChatRoomId: string | null
-  getChatRooms: () => void
 }
 
-export default function DashboardBox({
-  setNewChatModalOpen,
-  currentChatRoomId,
-  getChatRooms,
-}: Props) {
+export default function HacksBox({ currentChatRoomId }: Props) {
   const { t } = useTranslation()
   const user = useRecoilValue(userState)
   const { publicKey, sendTransaction } = useWallet()
@@ -143,7 +125,6 @@ export default function DashboardBox({
       }
       fetchVulnerabilities()
         .then((response) => {
-          console.log(response)
           // @ts-ignore
           const vulnerabilitiesMap = response.map(({ account, publicKey }) => {
             const result = account
@@ -159,7 +140,6 @@ export default function DashboardBox({
 
   useEffect(() => {
     if (vulnerabilities && vulnerabilities.length > 0) {
-      console.log('hi there !')
       const pendingMap = vulnerabilities.map(({ reviewed }) => {
         if (reviewed == true) {
           return reviewed
@@ -184,7 +164,6 @@ export default function DashboardBox({
       }
       fetchHacks()
         .then((response) => {
-          console.log(response)
           // @ts-ignore
           const hacksMap = response.map(({ account, publicKey }) => {
             const result = account
@@ -197,6 +176,17 @@ export default function DashboardBox({
         .catch((error) => console.log(error))
     }
   }, [publicKey, connection])
+
+  useEffect(() => {
+    if (solHacks && solHacks.length > 0) {
+      const pendingMap = solHacks.map(({ reviewed }) => {
+        if (reviewed == true) {
+          return reviewed
+        } else return false
+      })
+      setPendingHacks(pendingMap.length)
+    }
+  }, [vulnerabilities])
 
   const chatContentRef = useRef<HTMLDivElement>(null)
   const scrollToEnd = useCallback(() => {
@@ -223,8 +213,6 @@ export default function DashboardBox({
     return (chatContent.match(/\n/g) || []).length + 1
   }, [chatContent])
 
-  const [isFirstMessage, setFirstMessage] = useState(true)
-
   const [isSending, setSending] = useState(false)
 
   useEffect(() => {
@@ -237,10 +225,10 @@ export default function DashboardBox({
     return isSending || errors.chatContent != null
   }, [isSending, errors.chatContent])
 
-  const onClick = async (id: BN, seed: BN) => {
+  const onClick = async (amount: BN) => {
     if (publicKey)
       try {
-        const tx = await approveVulnerability(publicKey, id, seed, connection)
+        const tx = await approveHack(publicKey, amount, connection)
 
         const cnx = new Connection(SOLANA_RPC_ENDPOINT)
         let signature: TransactionSignature = ''
@@ -274,42 +262,43 @@ export default function DashboardBox({
               ) : (
                 <div className="flex flex-col">
                   <div className="mx-auto my-8 flex flex-col">
-                    {vulnerabilities && vulnerabilities.length > 0 ? (
+                    {solHacks && solHacks.length > 0 ? (
                       <>
                         {pendingHacks == 0 ? (
                           <p className="mb-2 flex w-full items-center justify-center text-center">
-                            {t('vulnerabilities:pleaseReview')}{' '}
+                            {t('hacks:pleaseReview')}{' '}
                             <ShieldExclamationIcon className="ml-1 h-8 w-8" />
                           </p>
                         ) : (
                           <p className="flex w-full items-center justify-center text-center">
-                            {t('vulnerabilities:allClear')}{' '}
+                            {t('hacks:allClear')}{' '}
                             <ShieldCheckIcon className="h-8 w-8" />
                           </p>
                         )}
 
-                        {vulnerabilities.map((vulnerability) => {
-                          console.log('id : ', vulnerability.id.toString())
-                          console.log('seed', vulnerability.seed.toString())
-                          if (!vulnerability.reviewed)
+                        {solHacks.map((hack) => {
+                          console.log(hack)
+                          if (!hack.reviewed)
                             return (
                               <div
                                 className="card w-96 bg-base-100 shadow-xl"
-                                key={vulnerability.id}
+                                key={hack.pubkey.toString()}
                               >
                                 <div className="card-body w-full">
                                   <p className="text-center">
-                                    {vulnerability.message.toString()}
+                                    hacker returned{' '}
+                                    {parseInt(hack.amount.toString()) /
+                                      LAMPORTS_PER_SOL}{' '}
+                                    sol
+                                  </p>
+                                  <p className="mb-2 text-center text-xs">
+                                    only approve this hack if this matches the
+                                    amount your protocol got hacked for
                                   </p>
                                   <div className="card-actions justify-center">
                                     <button
                                       className="btn-success btn-sm"
-                                      onClick={() =>
-                                        onClick(
-                                          vulnerability.id,
-                                          vulnerability.seed
-                                        )
-                                      }
+                                      onClick={() => onClick(hack.amount)}
                                     >
                                       approve
                                     </button>
@@ -321,7 +310,7 @@ export default function DashboardBox({
                       </>
                     ) : (
                       <p className="flex w-full items-center justify-center text-center">
-                        {t('vulnerabilities:allClear')}{' '}
+                        {t('hacks:allClear')}{' '}
                         <ShieldCheckIcon className="h-8 w-8" />
                       </p>
                     )}

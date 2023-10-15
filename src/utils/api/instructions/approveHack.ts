@@ -46,7 +46,8 @@ export const approveHack = async (
     program.programId
   )[0]
 
-  const hackPda = await program.account.SolHack.fetch(hack)
+  // @ts-ignore
+  const hackPda = await program.account.solHack.fetch(hack)
 
   return await program.methods
     .approveSolHack()

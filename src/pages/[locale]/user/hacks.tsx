@@ -2,7 +2,7 @@ import { ReactElement } from 'react'
 import UserLayout from '@/layouts/user/UserLayout'
 import siteConfig from '@/config/site'
 import { getStaticPaths, makeStaticProps } from '@/lib/getStatic'
-import DashboardScreen from '@/components/pages/user/dashboard/DashboardScreen'
+import HacksScreen from '@/components/pages/user/hacks/HacksScreen'
 
 const seo = {
   pathname: '/user/hacks',
@@ -23,7 +23,7 @@ export { getStaticPaths, getStaticProps }
 export default function Dashboard() {
   return (
     <>
-      <DashboardScreen />
+      <HacksScreen />
     </>
   )
 }

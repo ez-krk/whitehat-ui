@@ -85,21 +85,17 @@ export type VULNERABILITY_PDA = {
 
 export type SOL_HACK_PDA = {
   // pub protocol: Pubkey,
-  // pub id: u64,
   // pub payout: Pubkey,
-  // pub message: Vec<u8>,
   // pub reviewed: bool,
+  // pub amount: u64,
   // pub created_at: i64,
   // pub bump: u8,
-  // pub seed: u64,
 
   pubkey: PublicKey
   protocol: PublicKey
-  id: number
   payout: PublicKey
-  message: PublicKey
   reviewed: boolean
-  createdAt: number
+  amount: BN
+  created_at: number
   bump: number
-  seed: number
 }
