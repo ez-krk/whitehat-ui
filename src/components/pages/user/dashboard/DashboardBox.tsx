@@ -112,8 +112,6 @@ export default function DashboardBox({
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([])
   const [chatRoom, setChatRoom] = useState<ChatRoom | null>(null)
 
-  const [solHacks, setSolHacks] = useState<SOL_HACK_PDA[] | null>(null)
-
   const addToast = useToastMessage()
 
   const program = useMemo(
@@ -448,7 +446,7 @@ export default function DashboardBox({
                             {t('dashboard:vulnerabilities')}
                           </span>
                           <span>
-                            {programs && programs[0].vulnerabilities.toNumber()
+                            {programs && programs.length > 0
                               ? programs[0].vulnerabilities.toNumber()
                               : 0}
                           </span>

@@ -99,8 +99,8 @@ export default function DashboardScreen() {
   }, [publicKey])
 
   useEffect(() => {
-    if (publicKey && programs && programs.length > 0) {
-      const fetchVulnerabilities = async () => {
+    const fetchVulnerabilities = async () => {
+      if (publicKey && programs && programs.length > 0) {
         // @ts-ignore
         return await program.account.vulnerability.all([
           {
@@ -110,9 +110,9 @@ export default function DashboardScreen() {
             },
           },
         ])
-        //
-        // ()
       }
+    }
+    if (publicKey && programs && programs.length > 0) {
       fetchVulnerabilities()
         .then((response) => {
           console.log(response)
