@@ -126,19 +126,21 @@ export default function DashboardScreen() {
           console.log('vulnerabilities', vulnerabilitiesMap)
           setVulnerabilities(vulnerabilitiesMap)
         })
-        .finally(() => {
-          if (vulnerabilities) {
-            const pendingMap = vulnerabilities.map(({ reviewed }) => {
-              if (reviewed == true) {
-                return reviewed
-              } else return false
-            })
-            setPendingVulnerabilities(pendingMap.length)
-          }
-        })
         .catch((error) => console.log(error))
     }
   }, [programs, publicKey])
+
+  useEffect(() => {
+    if (vulnerabilities) {
+      const pendingMap = vulnerabilities.map(({ reviewed }) => {
+        if (reviewed == true) {
+          return reviewed
+        } else return false
+      })
+      setPendingVulnerabilities(pendingMap.length)
+      console.log('pending vulnerabilities : ', pendingVulnerabilities)
+    }
+  }, [pendingVulnerabilities, vulnerabilities])
 
   useEffect(() => {
     if (publicKey && programs) {
@@ -165,19 +167,22 @@ export default function DashboardScreen() {
           console.log('sol hacks', hacksMap)
           setSolHacks(hacksMap)
         })
-        .finally(() => {
-          if (solHacks) {
-            const pendingMap = solHacks.map(({ reviewed }) => {
-              if (reviewed == true) {
-                return reviewed
-              } else return false
-            })
-            setPendingHacks(pendingMap.length)
-          }
-        })
+        .then(() => {})
         .catch((error) => console.log(error))
     }
   }, [publicKey, connection])
+
+  useEffect(() => {
+    if (solHacks) {
+      const pendingMap = solHacks.map(({ reviewed }) => {
+        if (reviewed == true) {
+          return reviewed
+        } else return false
+      })
+      setPendingHacks(pendingMap.length)
+      console.log('pending hacks : ', pendingHacks)
+    }
+  }, [pendingHacks, solHacks])
 
   return (
     <>

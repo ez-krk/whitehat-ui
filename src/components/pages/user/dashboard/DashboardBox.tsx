@@ -472,7 +472,7 @@ export default function DashboardBox({
                               : 0}
                           </span>
                           <span className="text-xs">
-                            {t('dashboard:pendingReview')} : 0
+                            {t('dashboard:pendingReview')} : {pendingHacks}
                           </span>
                         </div>
                         <CommandLineIcon className="h-8 w-8" />
@@ -598,7 +598,7 @@ export default function DashboardBox({
                               : 0}
                           </span>
                           <span className="text-xs">
-                            {t('dashboard:pendingReview')} : 0
+                            {t('dashboard:pendingReview')} : <span>1aaaaa</span>
                           </span>
                         </div>
                         <CommandLineIcon className="h-8 w-8" />

@@ -158,13 +158,16 @@ export default function VulnerabilitiesBox({ currentChatRoomId }: Props) {
 
   useEffect(() => {
     if (vulnerabilities && vulnerabilities.length > 0) {
-      console.log('hi there !')
-      const pendingMap = vulnerabilities.map(({ reviewed }) => {
-        if (reviewed == true) {
-          return reviewed
-        } else return false
-      })
-      setPendingVulnerabilities(pendingMap.length)
+      const pendingCount = vulnerabilities.reduce((count, { reviewed }) => {
+        if (reviewed === false) {
+          return count + 1
+        } else {
+          return count
+        }
+      }, 0)
+
+      setPendingVulnerabilities(pendingCount)
+      console.log('pending vulnerabilities : ', pendingCount)
     }
   }, [vulnerabilities])
 
@@ -276,7 +279,11 @@ export default function VulnerabilitiesBox({ currentChatRoomId }: Props) {
           title: t('vulnerabilities:vulnerabilityVerificationSuccessTitle'),
           description:
             t('vulnerabilities:vulnerabilityVerificationSuccessBody') +
-            `https://explorer.solana.com/tx/${signature}?cluster=devnet`,
+            (
+              <Link
+                href={`https://explorer.solana.com/tx/${signature}?cluster=devnet`}
+              >{`https://explorer.solana.com/tx/${signature}?cluster=devnet`}</Link>
+            ),
         })
         // handleDelete(vulnerability)
       } catch (error) {

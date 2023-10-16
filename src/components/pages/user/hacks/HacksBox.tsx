@@ -176,7 +176,8 @@ export default function HacksBox({ currentChatRoomId }: Props) {
           })
           console.log('sol hacks', hacksMap)
           setSolHacks(hacksMap)
-
+        })
+        .finally(() => {
           if (solHacks) {
             const pendingMap = solHacks.map(({ reviewed }) => {
               if (reviewed == true) {
@@ -185,8 +186,8 @@ export default function HacksBox({ currentChatRoomId }: Props) {
             })
             setPendingHacks(pendingMap.length)
           }
+          setLoading(false)
         })
-        .finally(() => setLoading(false))
         .catch((error) => console.log(error))
     }
   }, [publicKey, connection])
@@ -270,7 +271,7 @@ export default function HacksBox({ currentChatRoomId }: Props) {
                 <div className="mx-auto my-8 flex flex-col">
                   {solHacks && solHacks.length > 0 ? (
                     <>
-                      {pendingHacks == 0 ? (
+                      {pendingHacks > 0 ? (
                         <p className="mb-2 flex w-full items-center justify-center text-center text-gray-700 dark:text-gray-200">
                           {t('hacks:pleaseReview')}{' '}
                           <ShieldExclamationIcon className="ml-1 h-8 w-8" />
@@ -279,6 +280,7 @@ export default function HacksBox({ currentChatRoomId }: Props) {
                         <p className="flex w-full items-center justify-center text-center text-gray-700 dark:text-gray-200">
                           {t('hacks:allClear')}{' '}
                           <ShieldCheckIcon className="h-8 w-8" />
+                          aaa
                         </p>
                       )}
 
