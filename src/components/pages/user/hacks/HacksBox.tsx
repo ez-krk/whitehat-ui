@@ -144,12 +144,16 @@ export default function HacksBox({ currentChatRoomId }: Props) {
 
   useEffect(() => {
     if (vulnerabilities && vulnerabilities.length > 0) {
-      const pendingMap = vulnerabilities.map(({ reviewed }) => {
-        if (reviewed == true) {
-          return reviewed
-        } else return false
-      })
-      setPendingVulnerabilities(pendingMap.length)
+      const pendingCount = vulnerabilities.reduce((count, { reviewed }) => {
+        if (reviewed === false) {
+          return count + 1
+        } else {
+          return count
+        }
+      }, 0)
+
+      setPendingVulnerabilities(pendingCount)
+      console.log('pending vulnerabilities : ', pendingCount)
     }
   }, [vulnerabilities])
 
@@ -177,57 +181,24 @@ export default function HacksBox({ currentChatRoomId }: Props) {
           console.log('sol hacks', hacksMap)
           setSolHacks(hacksMap)
         })
-        .finally(() => {
-          if (solHacks) {
-            const pendingMap = solHacks.map(({ reviewed }) => {
-              if (reviewed == true) {
-                return reviewed
-              } else return false
-            })
-            setPendingHacks(pendingMap.length)
-          }
-          setLoading(false)
-        })
         .catch((error) => console.log(error))
     }
-  }, [publicKey, connection])
-
-  const chatContentRef = useRef<HTMLDivElement>(null)
-  const scrollToEnd = useCallback(() => {
-    if (currentChatRoomId && chatContentRef.current) {
-      chatContentRef.current.scrollTop = chatContentRef.current.scrollHeight
-    }
-  }, [chatContentRef, currentChatRoomId])
-
-  const {
-    handleSubmit,
-    formState: { errors },
-    control,
-    reset,
-    watch,
-  } = useForm<Inputs>({
-    resolver: zodResolver(schema),
-    defaultValues: {
-      chatContent: '',
-    },
-  })
-
-  const chatContent = watch('chatContent')
-  const chatContentLines = useMemo(() => {
-    return (chatContent.match(/\n/g) || []).length + 1
-  }, [chatContent])
-
-  const [isSending, setSending] = useState(false)
+  }, [publicKey])
 
   useEffect(() => {
-    if (chatMessages.length > 0) {
-      scrollToEnd()
-    }
-  }, [chatMessages, scrollToEnd])
+    if (solHacks && solHacks.length > 0) {
+      const pendingCount = solHacks.reduce((count, { reviewed }) => {
+        if (reviewed === false) {
+          return count + 1
+        } else {
+          return count
+        }
+      }, 0)
 
-  const isDisabled = useMemo(() => {
-    return isSending || errors.chatContent != null
-  }, [isSending, errors.chatContent])
+      setPendingHacks(pendingCount)
+      console.log('pending hacks : ', pendingCount)
+    }
+  }, [vulnerabilities])
 
   const onClick = async (amount: BN) => {
     if (publicKey)
@@ -280,7 +251,6 @@ export default function HacksBox({ currentChatRoomId }: Props) {
                         <p className="flex w-full items-center justify-center text-center text-gray-700 dark:text-gray-200">
                           {t('hacks:allClear')}{' '}
                           <ShieldCheckIcon className="h-8 w-8" />
-                          aaa
                         </p>
                       )}
 
