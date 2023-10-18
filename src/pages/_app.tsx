@@ -15,6 +15,7 @@ import { WalletContextProvider } from '@/contexts/WalletContextProvider'
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base'
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { clusterApiUrl } from '@solana/web3.js'
+import { WhitehatProvider } from '@/contexts/WhitehatContextProvider'
 require('@solana/wallet-adapter-react-ui/styles.css')
 
 export type NextPageWithLayout = NextPage & {
@@ -52,17 +53,19 @@ function MyApp({ Component, pageProps, router }: AppProps) {
         network={network}
         wallets={wallets}
       >
-        <RecoilRoot>
-          <ThemeProvider attribute="class">
-            <main className="min-h-screen scroll-smooth font-sans antialiased">
-              <Layout
-                Component={Component}
-                pageProps={pageProps}
-                router={router}
-              />
-            </main>
-          </ThemeProvider>
-        </RecoilRoot>
+        <WhitehatProvider>
+          <RecoilRoot>
+            <ThemeProvider attribute="class">
+              <main className="min-h-screen scroll-smooth font-sans antialiased">
+                <Layout
+                  Component={Component}
+                  pageProps={pageProps}
+                  router={router}
+                />
+              </main>
+            </ThemeProvider>
+          </RecoilRoot>
+        </WhitehatProvider>
       </WalletContextProvider>
     </>
   )

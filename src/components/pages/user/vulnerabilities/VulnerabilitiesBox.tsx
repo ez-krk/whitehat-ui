@@ -12,6 +12,7 @@ import {
   useRef,
   useState,
   KeyboardEvent,
+  useContext,
 } from 'react'
 import { useRecoilValue } from 'recoil'
 import { userState } from '@/store/user'
@@ -52,6 +53,7 @@ import type { PROTOCOL_PDA, SOL_HACK_PDA, VULNERABILITY_PDA } from '@/types'
 import { approveVulnerability } from '@/utils/api/instructions/approveVulnerability'
 import Spinner from '@/components/utils/Spinner'
 import { deleteVulnerability } from '@/utils/api/instructions/deleteVulnerability'
+import { WhitehatContext } from '@/contexts/WhitehatContextProvider'
 
 type ChatMessage = {
   id: string
@@ -80,126 +82,19 @@ export default function VulnerabilitiesBox({ currentChatRoomId }: Props) {
   const [loading, setLoading] = useState(true)
 
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([])
-  const [programs, setPrograms] = useState<PROTOCOL_PDA[] | null>(null)
-  const [vulnerabilities, setVulnerabilities] = useState<
-    VULNERABILITY_PDA[] | null
-  >(null)
-  const [pendingVulnerabilities, setPendingVulnerabilities] =
-    useState<number>(0)
-  const [solHacks, setSolHacks] = useState<SOL_HACK_PDA[] | null>(null)
-  const [pendingHacks, setPendingHacks] = useState<number>(0)
 
   const addToast = useToastMessage()
 
-  const program = useMemo(
-    () => new Program(IDL, PROGRAM_ID as Address, connection),
-    [connection]
-  )
-
-  useEffect(() => {
-    if (publicKey && !programs) {
-      const fetchPrograms = async () => {
-        // @ts-ignore
-        return await program.account.protocol.all([
-          {
-            memcmp: {
-              offset: 8,
-              bytes: publicKey.toBase58(),
-            },
-          },
-        ])
-      }
-      fetchPrograms()
-        .then((response) => {
-          console.log(response)
-          // @ts-ignore
-          const programsMap = response.map(({ account, publicKey }) => {
-            const result = account
-            account.pubkey = publicKey
-            return result
-          })
-          console.log(programsMap)
-          setPrograms(programsMap)
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-    }
-  }, [publicKey])
-
-  useEffect(() => {
-    if (publicKey && programs) {
-      const fetchVulnerabilities = async () => {
-        // @ts-ignore
-        return await program.account.vulnerability.all([
-          {
-            memcmp: {
-              offset: 8,
-              bytes: programs[0].pubkey.toBase58(),
-            },
-          },
-        ])
-      }
-      fetchVulnerabilities()
-        .then((response) => {
-          console.log(response)
-          // @ts-ignore
-          const vulnerabilitiesMap = response.map(({ account, publicKey }) => {
-            const result = account
-            account.pubkey = publicKey
-            return result
-          })
-          console.log('vulnerabilities', vulnerabilitiesMap)
-          setVulnerabilities(vulnerabilitiesMap)
-        })
-        .catch((error) => console.log(error))
-    }
-  }, [publicKey, programs])
-
-  useEffect(() => {
-    if (vulnerabilities && vulnerabilities.length > 0) {
-      const pendingCount = vulnerabilities.reduce((count, { reviewed }) => {
-        if (reviewed === false) {
-          return count + 1
-        } else {
-          return count
-        }
-      }, 0)
-
-      setPendingVulnerabilities(pendingCount)
-      console.log('pending vulnerabilities : ', pendingCount)
-    }
-  }, [vulnerabilities])
-
-  useEffect(() => {
-    if (publicKey && programs) {
-      const fetchHacks = async () => {
-        // @ts-ignore
-        return await program.account.solHack.all([
-          {
-            memcmp: {
-              offset: 8,
-              bytes: programs[0].pubkey.toBase58(),
-            },
-          },
-        ])
-      }
-      fetchHacks()
-        .then((response) => {
-          console.log(response)
-          // @ts-ignore
-          const hacksMap = response.map(({ account, publicKey }) => {
-            const result = account
-            account.pubkey = publicKey
-            return result
-          })
-          console.log('sol hacks', hacksMap)
-          setSolHacks(hacksMap)
-        })
-        .finally(() => setLoading(false))
-        .catch((error) => console.log(error))
-    }
-  }, [publicKey, connection])
+  const {
+    programs,
+    setPrograms,
+    vulnerability,
+    setVulnerability,
+    pendingVulnerability,
+    solHacks,
+    setSolHacks,
+    pendingHacks,
+  } = useContext(WhitehatContext)
 
   const chatContentRef = useRef<HTMLDivElement>(null)
   const scrollToEnd = useCallback(() => {
@@ -254,7 +149,6 @@ export default function VulnerabilitiesBox({ currentChatRoomId }: Props) {
             t('vulnerabilities:vulnerabilityVerificationSuccessBody') +
             `https://explorer.solana.com/tx/${signature}?cluster=devnet`,
         })
-        handleDelete(id)
       } catch (error) {
         console.log(error)
       }
@@ -291,12 +185,6 @@ export default function VulnerabilitiesBox({ currentChatRoomId }: Props) {
       }
   }
 
-  const handleDelete = (pda: VULNERABILITY_PDA) => {
-    setVulnerabilities(
-      vulnerabilities && vulnerabilities.filter((item) => item.id !== pda.id)
-    )
-  }
-
   return (
     <>
       <div className="content-height-mobile sm:content-height w-full overflow-y-auto pt-4 sm:flex-1 sm:px-4 sm:pt-0">
@@ -312,9 +200,9 @@ export default function VulnerabilitiesBox({ currentChatRoomId }: Props) {
             ) : (
               <div className="flex flex-col">
                 <div className="mx-auto my-8 flex flex-col">
-                  {vulnerabilities && vulnerabilities.length > 0 ? (
+                  {vulnerability && vulnerability.length > 0 ? (
                     <>
-                      {pendingVulnerabilities > 0 ? (
+                      {pendingVulnerability > 0 ? (
                         <p className="mb-2 flex w-full items-center justify-center text-center text-gray-700 dark:text-gray-200">
                           {t('vulnerabilities:pleaseReview')}{' '}
                           <ShieldExclamationIcon className="ml-1 h-8 w-8" />
@@ -326,34 +214,29 @@ export default function VulnerabilitiesBox({ currentChatRoomId }: Props) {
                         </p>
                       )}
 
-                      {vulnerabilities.map((vulnerability) => {
-                        console.log('id : ', vulnerability.id.toString())
-                        console.log('seed', vulnerability.seed.toString())
-                        if (!vulnerability.reviewed)
+                      {vulnerability.map((item) => {
+                        console.log('id : ', item.id.toString())
+                        console.log('seed', item.seed.toString())
+                        if (!item.reviewed)
                           return (
                             <div
                               className="card mt-2 w-96 bg-base-100 shadow-xl"
-                              key={vulnerability.id}
+                              key={item.id}
                             >
                               <div className="card-body w-full">
                                 <p className="text-center">
-                                  {vulnerability.message.toString()}
+                                  {item.message.toString()}
                                 </p>
                                 <div className="card-actions justify-center">
                                   <button
                                     className="btn-error btn-sm"
-                                    onClick={() => onClickClose(vulnerability)}
+                                    onClick={() => onClickClose(item)}
                                   >
                                     dispute
                                   </button>
                                   <button
                                     className="btn-success btn-sm"
-                                    onClick={() =>
-                                      onClick(
-                                        vulnerability.id,
-                                        vulnerability.seed
-                                      )
-                                    }
+                                    onClick={() => onClick(item.id, item.seed)}
                                   >
                                     approve
                                   </button>

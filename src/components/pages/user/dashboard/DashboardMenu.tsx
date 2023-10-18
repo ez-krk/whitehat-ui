@@ -51,7 +51,6 @@ import { UserChatRoom, genUserChatRoomPath } from '@/types/models'
 import { add, get, query } from '@/lib/skeet/firestore'
 import { registerProtocol } from '@/utils/api/instructions/registerProtocol'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
-import { sendTx } from '@/utils/api/send'
 import { SOLANA_RPC_ENDPOINT } from '@/constants'
 import { Connection, PublicKey, TransactionSignature } from '@solana/web3.js'
 import { PROTOCOL_PDA } from '@/types'
@@ -77,9 +76,11 @@ const schema = z.object({
 type Inputs = z.infer<typeof schema>
 
 type Props = {
-  program: Program<IDL>
+  program: Program<IDL> | null
   programs: PROTOCOL_PDA[] | null
-  setPrograms: React.Dispatch<React.SetStateAction<PROTOCOL_PDA[] | null>>
+  setPrograms: React.Dispatch<
+    React.SetStateAction<PROTOCOL_PDA[] | null>
+  > | null
   setSelectedProgram: React.Dispatch<React.SetStateAction<PROTOCOL_PDA | null>>
   isNewChatModalOpen: boolean
   setNewChatModalOpen: (_value: boolean) => void
@@ -218,7 +219,7 @@ export default function DashboardMenu({
     async (data: Inputs) => {
       try {
         setCreateLoading(true)
-        if (!isDisabled && db && publicKey) {
+        if (!isDisabled && db && publicKey && program) {
           const docSnap = await get(db, 'users', user.uid)
           console.log(docSnap.publicKey)
           if (!docSnap.publicKey) throw new Error('no firebase publickey')

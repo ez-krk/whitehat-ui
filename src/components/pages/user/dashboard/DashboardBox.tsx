@@ -93,7 +93,7 @@ type Inputs = z.infer<typeof schema>
 type Props = {
   programs: PROTOCOL_PDA[] | null
   selectedProgram: PROTOCOL_PDA | null
-  pendingVulnerabilities: number
+  pendingVulnerability: number
   pendingHacks: number
   currentChatRoomId: string | null
 }
@@ -101,7 +101,7 @@ type Props = {
 export default function DashboardBox({
   programs,
   selectedProgram,
-  pendingVulnerabilities,
+  pendingVulnerability,
   pendingHacks,
   currentChatRoomId,
 }: Props) {
@@ -113,11 +113,6 @@ export default function DashboardBox({
   const [chatRoom, setChatRoom] = useState<ChatRoom | null>(null)
 
   const addToast = useToastMessage()
-
-  const program = useMemo(
-    () => new Program(IDL, PROGRAM_ID as Address, connection),
-    [connection]
-  )
 
   // useEffect(() => {
   //   if (publicKey) {
@@ -452,10 +447,10 @@ export default function DashboardBox({
                           </span>
                           <span className="text-xs">
                             {t('dashboard:pendingReview')} :{' '}
-                            {pendingVulnerabilities}
+                            {pendingVulnerability}
                           </span>
                         </div>
-                        {pendingVulnerabilities > 0 ? (
+                        {pendingVulnerability > 0 ? (
                           <ShieldExclamationIcon className="h-8 w-8" />
                         ) : (
                           <ShieldCheckIcon className="h-8 w-8" />
@@ -582,7 +577,7 @@ export default function DashboardBox({
                           </span>
                           <span className="text-xs">
                             {t('dashboard:pendingReview')} :{' '}
-                            {pendingVulnerabilities}
+                            {pendingVulnerability}
                           </span>
                         </div>
                         <ShieldExclamationIcon className="h-8 w-8" />
@@ -598,7 +593,7 @@ export default function DashboardBox({
                               : 0}
                           </span>
                           <span className="text-xs">
-                            {t('dashboard:pendingReview')} : <span>1aaaaa</span>
+                            {t('dashboard:pendingReview')} : {pendingHacks}
                           </span>
                         </div>
                         <CommandLineIcon className="h-8 w-8" />

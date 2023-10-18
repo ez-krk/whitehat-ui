@@ -12,6 +12,7 @@ import {
   useRef,
   useState,
   KeyboardEvent,
+  useContext,
 } from 'react'
 import { useRecoilValue } from 'recoil'
 import { userState } from '@/store/user'
@@ -39,6 +40,7 @@ import { approveHack } from '@/utils/api/instructions/approveHack'
 
 import type { PROTOCOL_PDA, SOL_HACK_PDA, VULNERABILITY_PDA } from '@/types'
 import Spinner from '@/components/utils/Spinner'
+import { WhitehatContext } from '@/contexts/WhitehatContextProvider'
 
 type ChatMessage = {
   id: string
@@ -63,142 +65,20 @@ export default function HacksBox({ currentChatRoomId }: Props) {
   const user = useRecoilValue(userState)
   const { publicKey, sendTransaction } = useWallet()
   const connection = useConnection()
+  const {
+    programs,
+    setPrograms,
+    vulnerability,
+    setVulnerability,
+    pendingVulnerability,
+    solHacks,
+    setSolHacks,
+    pendingHacks,
+  } = useContext(WhitehatContext)
 
   const [loading, setLoading] = useState(true)
 
-  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([])
-  const [programs, setPrograms] = useState<PROTOCOL_PDA[] | null>(null)
-  const [vulnerabilities, setVulnerabilities] = useState<
-    VULNERABILITY_PDA[] | null
-  >(null)
-  const [pendingVulnerabilities, setPendingVulnerabilities] =
-    useState<number>(0)
-  const [solHacks, setSolHacks] = useState<SOL_HACK_PDA[] | null>(null)
-  const [pendingHacks, setPendingHacks] = useState<number>(0)
-
   const addToast = useToastMessage()
-
-  const program = useMemo(
-    () => new Program(IDL, PROGRAM_ID as Address, connection),
-    [connection]
-  )
-
-  useEffect(() => {
-    if (publicKey && !programs) {
-      const fetchPrograms = async () => {
-        // @ts-ignore
-        return await program.account.protocol.all([
-          {
-            memcmp: {
-              offset: 8,
-              bytes: publicKey.toBase58(),
-            },
-          },
-        ])
-      }
-      fetchPrograms()
-        .then((response) => {
-          console.log(response)
-          // @ts-ignore
-          const programsMap = response.map(({ account, publicKey }) => {
-            const result = account
-            account.pubkey = publicKey
-            return result
-          })
-          console.log(programsMap)
-          setPrograms(programsMap)
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-    }
-  }, [publicKey])
-
-  useEffect(() => {
-    if (publicKey && programs) {
-      const fetchVulnerabilities = async () => {
-        // @ts-ignore
-        return await program.account.vulnerability.all([
-          {
-            memcmp: {
-              offset: 8,
-              bytes: programs[0].pubkey.toBase58(),
-            },
-          },
-        ])
-      }
-      fetchVulnerabilities()
-        .then((response) => {
-          // @ts-ignore
-          const vulnerabilitiesMap = response.map(({ account, publicKey }) => {
-            const result = account
-            account.pubkey = publicKey
-            return result
-          })
-          console.log('vulnerabilities', vulnerabilitiesMap)
-          setVulnerabilities(vulnerabilitiesMap)
-        })
-        .catch((error) => console.log(error))
-    }
-  }, [publicKey, programs])
-
-  useEffect(() => {
-    if (vulnerabilities && vulnerabilities.length > 0) {
-      const pendingCount = vulnerabilities.reduce((count, { reviewed }) => {
-        if (reviewed === false) {
-          return count + 1
-        } else {
-          return count
-        }
-      }, 0)
-
-      setPendingVulnerabilities(pendingCount)
-      console.log('pending vulnerabilities : ', pendingCount)
-    }
-  }, [vulnerabilities])
-
-  useEffect(() => {
-    if (publicKey && programs) {
-      const fetchHacks = async () => {
-        // @ts-ignore
-        return await program.account.solHack.all([
-          {
-            memcmp: {
-              offset: 8,
-              bytes: programs[0].pubkey.toBase58(),
-            },
-          },
-        ])
-      }
-      fetchHacks()
-        .then((response) => {
-          // @ts-ignore
-          const hacksMap = response.map(({ account, publicKey }) => {
-            const result = account
-            account.pubkey = publicKey
-            return result
-          })
-          console.log('sol hacks', hacksMap)
-          setSolHacks(hacksMap)
-        })
-        .catch((error) => console.log(error))
-    }
-  }, [publicKey])
-
-  useEffect(() => {
-    if (solHacks && solHacks.length > 0) {
-      const pendingCount = solHacks.reduce((count, { reviewed }) => {
-        if (reviewed === false) {
-          return count + 1
-        } else {
-          return count
-        }
-      }, 0)
-
-      setPendingHacks(pendingCount)
-      console.log('pending hacks : ', pendingCount)
-    }
-  }, [vulnerabilities])
 
   const onClick = async (amount: BN) => {
     if (publicKey)
@@ -215,14 +95,9 @@ export default function HacksBox({ currentChatRoomId }: Props) {
             t('vulnerabilities:vulnerabilityVerificationSuccessBody') +
             `https://explorer.solana.com/tx/${signature}?cluster=devnet`,
         })
-        handleDelete(amount)
       } catch (error) {
         console.log(error)
       }
-  }
-
-  const handleDelete = (amount: BN) => {
-    setSolHacks(solHacks && solHacks.filter((item) => item.amount !== amount))
   }
 
   return (
