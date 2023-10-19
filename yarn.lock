@@ -4832,6 +4832,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/aes-js@npm:^3.1.3":
+  version: 3.1.3
+  resolution: "@types/aes-js@npm:3.1.3"
+  checksum: 2108fdea55c2e2dbf89908158f359538411fe6d60a8637932a02a602b8649812741ad38285965816a07f25bc8c7325974e93b98300c0ca59fa6f99873cbf6237
+  languageName: node
+  linkType: hard
+
 "@types/babel__core@npm:^7.1.14":
   version: 7.20.2
   resolution: "@types/babel__core@npm:7.20.2"
@@ -4976,6 +4983,15 @@ __metadata:
   dependencies:
     "@types/node": "*"
   checksum: 18d7afee6992e88d9c3de5d616a95ea3491dd883255475f045456b1e10cb3e14e50a8af5d07ce04b32f87e00268ad7e0ee04e7d4e7bb6bce666500f57c4cacfa
+  languageName: node
+  linkType: hard
+
+"@types/ed2curve@npm:^0.2.3":
+  version: 0.2.3
+  resolution: "@types/ed2curve@npm:0.2.3"
+  dependencies:
+    tweetnacl: ^1.0.0
+  checksum: 87bb0f39e8be3cf63741430f362a122fce3bc8701d267a0f89feb09e2d6ab74f366fc92d3b87fa45753bfb78838ed738d6bc805eb8ccbd9eab5d8102412bac76
   languageName: node
   linkType: hard
 
@@ -6001,6 +6017,13 @@ __metadata:
   bin:
     acorn: bin/acorn
   checksum: 538ba38af0cc9e5ef983aee196c4b8b4d87c0c94532334fa7e065b2c8a1f85863467bb774231aae91613fcda5e68740c15d97b1967ae3394d20faddddd8af61d
+  languageName: node
+  linkType: hard
+
+"aes-js@npm:^3.1.2":
+  version: 3.1.2
+  resolution: "aes-js@npm:3.1.2"
+  checksum: 062154d50b1e433cc8c3b8ca7879f3a6375d5e79c2a507b2b6c4ec920b4cd851bf2afa7f65c98761a9da89c0ab618cbe6529e8e9a1c71f93290b53128fb8f712
   languageName: node
   linkType: hard
 
@@ -8967,6 +8990,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ed2curve@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "ed2curve@npm:0.3.0"
+  dependencies:
+    tweetnacl: 1.x.x
+  checksum: 6dfbe2310aa5a47372c9dd2fd920be140c8d52aea5793d716a3e3865d2ceaeaf639a7653e5492dfe3b4910eaf65c09a1d5132580afe2fdca18a75ebb428a52f2
+  languageName: node
+  linkType: hard
+
 "ee-first@npm:1.1.1":
   version: 1.1.1
   resolution: "ee-first@npm:1.1.1"
@@ -11319,6 +11351,13 @@ __metadata:
     readable-stream: ^3.6.0
     safe-buffer: ^5.2.0
   checksum: 26b7e97ac3de13cb23fc3145e7e3450b0530274a9562144fc2bf5c1e2983afd0e09ed7cc3b20974ba66039fad316db463da80eb452e7373e780cbee9a0d2f2dc
+  languageName: node
+  linkType: hard
+
+"hash-wasm@npm:^4.10.0":
+  version: 4.10.0
+  resolution: "hash-wasm@npm:4.10.0"
+  checksum: 66e6d1d0ba64d928af85d8360f75a9407f0245089b77c451a637dbf2e868485c7b0a49eba55e68d91012a1bbae3ae5ca653984b4259979184dfd3ef8b02b6f61
   languageName: node
   linkType: hard
 
@@ -18998,6 +19037,8 @@ __metadata:
     "@solana/web3.js": ^1.87.1
     "@tailwindcss/forms": 0.5.3
     "@tailwindcss/typography": 0.5.9
+    "@types/aes-js": ^3.1.3
+    "@types/ed2curve": ^0.2.3
     "@types/github-slugger": 1.3.0
     "@types/glob": 8.1.0
     "@types/jest": 29.5.2
@@ -19008,12 +19049,14 @@ __metadata:
     "@types/text-encoding": 0.0.36
     "@typescript-eslint/eslint-plugin": 6.4.0
     "@typescript-eslint/parser": 6.4.0
+    aes-js: ^3.1.2
     autoprefixer: 10.4.14
     clsx: 1.2.1
     cssnano: 6.0.1
     daisyui: latest
     date-fns: 2.30.0
     dotenv: 16.3.1
+    ed2curve: ^0.3.0
     esbuild: 0.18.9
     eslint: 8.47.0
     eslint-config-next: 13.4.7
@@ -19026,6 +19069,7 @@ __metadata:
     github-slugger: 2.0.0
     glob: 8.1.0
     gray-matter: 4.0.3
+    hash-wasm: ^4.10.0
     highlight.js: 11.8.0
     i18next: 23.2.3
     intercept-stdout: 0.1.2
@@ -19074,6 +19118,7 @@ __metadata:
     ts-jest: 29.1.0
     ts-loader: 9.4.3
     tsconfig-paths: 4.2.0
+    tweetnacl: ^1.0.3
     typescript: 5.1.3
     unified: 10.1.2
     zod: 3.21.4
@@ -20355,6 +20400,13 @@ __metadata:
   dependencies:
     safe-buffer: ^5.0.1
   checksum: 05f6510358f8afc62a057b8b692f05d70c1782b70db86d6a1e0d5e28a32389e52fa6e7707b6c5ecccacc031462e4bc35af85ecfe4bbc341767917b7cf6965711
+  languageName: node
+  linkType: hard
+
+"tweetnacl@npm:1.x.x, tweetnacl@npm:^1.0.0, tweetnacl@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "tweetnacl@npm:1.0.3"
+  checksum: e4a57cac188f0c53f24c7a33279e223618a2bfb5fea426231991652a13247bea06b081fd745d71291fcae0f4428d29beba1b984b1f1ce6f66b06a6d1ab90645c
   languageName: node
   linkType: hard
 

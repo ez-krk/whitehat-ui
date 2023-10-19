@@ -25,7 +25,6 @@ export default function VulnerabilitiesScreen() {
 
   const user = useRecoilValue(userState)
 
-  const [programs, setPrograms] = useState<PROTOCOL_PDA[]>([])
   const [chatList, setChatList] = useState<ChatRoom[]>([])
 
   const [lastChat, setLastChat] =

@@ -5,6 +5,8 @@ export type UserState = {
   email: string
   username: string
   iconUrl: string
+  publicKey: string
+  secretKey: string
   emailVerified: boolean
 }
 
@@ -13,6 +15,8 @@ export const defaultUser = {
   email: '',
   username: '',
   iconUrl: '',
+  publicKey: '',
+  secretKey: '',
   emailVerified: false,
 }
 

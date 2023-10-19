@@ -1,0 +1,3 @@
+[submodule "src/lib/ed25519-ecies"]
+	path = src/lib/ed25519-ecies
+	url = https://github.com/deanmlittle/ed25519-ecies.git

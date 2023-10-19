@@ -11,6 +11,8 @@ export type User = {
   username: string
   email: string
   iconUrl: string
+  publicKey?: string
+  secretKey?: string
   userChatRoomIds?: string[]
   createdAt?: Timestamp | FieldValue
   updatedAt?: Timestamp | FieldValue

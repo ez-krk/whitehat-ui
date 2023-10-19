@@ -12,6 +12,7 @@ import { IDL } from '@/idl'
 import { PROGRAM_ID } from '@/constants'
 import { ellipsis } from '@/utils/ellipsis'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
+import { DocumentDuplicateIcon } from '@heroicons/react/24/outline'
 
 export default function HomeHeroRow() {
   const { t } = useTranslation()
@@ -64,7 +65,7 @@ export default function HomeHeroRow() {
               <div className="overflow-x-auto">
                 <table className="table">
                   {/* head */}
-                  <thead>
+                  <thead className="text-gray-900 dark:text-gray-50">
                     <tr>
                       <th className="text-center">%</th>
                       <th className="text-center">protocol name</th>
@@ -78,7 +79,7 @@ export default function HomeHeroRow() {
                     </tr>
                   </thead>
                   {/* body */}
-                  <tbody>
+                  <tbody className="text-gray-900 dark:text-gray-50">
                     {programs.map((program: PROTOCOL_PDA) => {
                       console.log('deposit vault :', program.vault.toString())
                       return (
@@ -87,49 +88,61 @@ export default function HomeHeroRow() {
                             {program.percent.toNumber()} %
                           </th>
                           <td className="text-center">{program.name}</td>
-                          <td
-                            className="cursor-pointer text-center"
-                            onClick={async () => {
-                              await navigator.clipboard.writeText(
-                                program.owner.toString()
-                              )
-                              alert('Text copied')
-                            }}
-                          >
-                            {ellipsis(program.owner.toString())}
+                          <td>
+                            <span className="flex items-center justify-center">
+                              {ellipsis(program.owner.toString())}{' '}
+                              <DocumentDuplicateIcon
+                                className="ml-1 h-4 w-4 cursor-pointer"
+                                onClick={async () => {
+                                  await navigator.clipboard.writeText(
+                                    program.owner.toString()
+                                  )
+                                  alert('Text copied')
+                                }}
+                              />
+                            </span>
                           </td>
-                          <td
-                            className="cursor-pointer text-center"
-                            onClick={async () => {
-                              await navigator.clipboard.writeText(
-                                program.pubkey.toString()
-                              )
-                              alert('Text copied')
-                            }}
-                          >
-                            {ellipsis(program.pubkey.toString())}
+                          <td>
+                            <span className="flex items-center justify-center">
+                              {ellipsis(program.pubkey.toString())}{' '}
+                              <DocumentDuplicateIcon
+                                className="ml-1 h-4 w-4 cursor-pointer"
+                                onClick={async () => {
+                                  await navigator.clipboard.writeText(
+                                    program.pubkey.toString()
+                                  )
+                                  alert('Text copied')
+                                }}
+                              />
+                            </span>
                           </td>
-                          <td
-                            className="cursor-pointer text-center"
-                            onClick={async () => {
-                              await navigator.clipboard.writeText(
-                                program.vault.toString()
-                              )
-                              alert('Text copied')
-                            }}
-                          >
-                            {ellipsis(program.vault.toString())}
+                          <td>
+                            <span className="flex items-center justify-center">
+                              {ellipsis(program.vault.toString())}{' '}
+                              <DocumentDuplicateIcon
+                                className="ml-1 h-4 w-4 cursor-pointer"
+                                onClick={async () => {
+                                  await navigator.clipboard.writeText(
+                                    program.vault.toString()
+                                  )
+                                  alert('Text copied')
+                                }}
+                              />
+                            </span>
                           </td>
-                          <td
-                            className="cursor-pointer text-center"
-                            onClick={async () => {
-                              await navigator.clipboard.writeText(
-                                program.encryption.toString()
-                              )
-                              alert('Text copied')
-                            }}
-                          >
-                            {ellipsis(program.encryption.toString())}
+                          <td>
+                            <span className="flex items-center justify-center">
+                              {ellipsis(program.encryption.toString())}{' '}
+                              <DocumentDuplicateIcon
+                                className="ml-1 h-4 w-4 cursor-pointer"
+                                onClick={async () => {
+                                  await navigator.clipboard.writeText(
+                                    program.encryption.toString()
+                                  )
+                                  alert('Text copied')
+                                }}
+                              />
+                            </span>
                           </td>
                           <td className="text-center">
                             {program.vulnerabilities.toNumber()}

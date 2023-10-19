@@ -81,8 +81,6 @@ export default function VulnerabilitiesBox({ currentChatRoomId }: Props) {
 
   const [loading, setLoading] = useState(true)
 
-  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([])
-
   const addToast = useToastMessage()
 
   const {
@@ -97,11 +95,6 @@ export default function VulnerabilitiesBox({ currentChatRoomId }: Props) {
   } = useContext(WhitehatContext)
 
   const chatContentRef = useRef<HTMLDivElement>(null)
-  const scrollToEnd = useCallback(() => {
-    if (currentChatRoomId && chatContentRef.current) {
-      chatContentRef.current.scrollTop = chatContentRef.current.scrollHeight
-    }
-  }, [chatContentRef, currentChatRoomId])
 
   const {
     handleSubmit,
@@ -122,12 +115,6 @@ export default function VulnerabilitiesBox({ currentChatRoomId }: Props) {
   }, [chatContent])
 
   const [isSending, setSending] = useState(false)
-
-  useEffect(() => {
-    if (chatMessages.length > 0) {
-      scrollToEnd()
-    }
-  }, [chatMessages, scrollToEnd])
 
   const isDisabled = useMemo(() => {
     return isSending || errors.chatContent != null
