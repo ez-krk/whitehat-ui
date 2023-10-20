@@ -15,6 +15,7 @@ const siteConfig = {
   xAccount: '@whitehatdefi',
   instagramAccount: 'elsoul_labo',
   githubAccount: '3uild-3thos',
+  githubRepository: 'whitehat',
   discordInvitationLink: 'https://discord.gg/2a9hsfec',
 }
 

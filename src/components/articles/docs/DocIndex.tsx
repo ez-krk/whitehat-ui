@@ -12,33 +12,33 @@ import clsx from 'clsx'
 
 const actions = [
   {
-    title: 'doc:actions.motivation.title',
-    body: 'doc:actions.motivation.body',
-    href: '/doc/general/motivation',
+    title: 'docs:actions.motivation.title',
+    body: 'docs:actions.motivation.body',
+    href: '/docs/general/motivation',
     icon: HeartIcon,
     iconForeground: 'text-pink-700',
     iconBackground: 'bg-pink-50',
   },
   {
-    title: 'doc:actions.quickstart.title',
-    body: 'doc:actions.quickstart.body',
-    href: '/doc/general/quickstart',
+    title: 'docs:actions.quickstart.title',
+    body: 'docs:actions.quickstart.body',
+    href: '/docs/general/quickstart',
     icon: RocketLaunchIcon,
     iconForeground: 'text-green-700',
     iconBackground: 'bg-green-50',
   },
   {
-    title: 'doc:actions.protocols.title',
-    body: 'doc:actions.quickstart.body',
-    href: '/doc/general/quickstart',
+    title: 'docs:actions.protocols.title',
+    body: 'docs:actions.quickstart.body',
+    href: '/docs/general/quickstart',
     icon: ShieldCheckIcon,
     iconForeground: 'text-blue-700',
     iconBackground: 'bg-blue-50',
   },
   {
-    title: 'doc:actions.hackers.title',
-    body: 'doc:actions.quickstart.body',
-    href: '/doc/general/quickstart',
+    title: 'docs:actions.hackers.title',
+    body: 'docs:actions.quickstart.body',
+    href: '/docs/general/quickstart',
     icon: CommandLineIcon,
     iconForeground: 'text-red-700',
     iconBackground: 'bg-red-50',
@@ -54,10 +54,10 @@ export default function DocIndex() {
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-50 sm:text-4xl">
-              {t('doc:title')}
+              {t('docs:title')}
             </h2>
             <p className="mt-2 text-lg leading-8 text-gray-600 dark:text-gray-300">
-              {t('doc:body')}
+              {t('docs:body')}
             </p>
           </div>
         </div>

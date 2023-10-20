@@ -1,11 +1,11 @@
 import type { GetStaticProps, InferGetStaticPropsType } from 'next'
 import type { ReactElement } from 'react'
-import DocLayout from '@/layouts/doc/DocLayout'
+import DocLayout from '@/layouts/docs/DocLayout'
 import { getStaticPaths } from '@/lib/getStatic'
 import { getI18nProps } from '@/lib/getStatic'
-import DocIndex from '@/components/articles/doc/DocIndex'
+import DocIndex from '@/components/articles/docs/DocIndex'
 
-const articleDirName = 'doc'
+const articleDirName = 'docs'
 
 const seo = {
   pathname: `/${articleDirName}`,

@@ -16,15 +16,15 @@ import remarkDirective from 'remark-directive'
 import remarkExternalLinks from 'remark-external-links'
 
 import { getAllArticles, getArticleBySlug } from '@/utils/article'
-import DocLayout from '@/layouts/doc/DocLayout'
+import DocLayout from '@/layouts/docs/DocLayout'
 import { getI18nProps } from '@/lib/getStatic'
-import DocContents from '@/components/articles/doc/DocContents'
+import DocContents from '@/components/articles/docs/DocContents'
 import youtubeTransformer from '@/lib/youtubeTransformer'
 import embedder from '@remark-embedder/core'
 
-const articleDirName = 'doc'
+const articleDirName = 'docs'
 
-export default function Doc({
+export default function Docs({
   article,
   articleHtml,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
@@ -35,7 +35,7 @@ export default function Doc({
   )
 }
 
-Doc.getLayout = function getLayout(page: ReactElement) {
+Docs.getLayout = function getLayout(page: ReactElement) {
   return <DocLayout>{page}</DocLayout>
 }
 

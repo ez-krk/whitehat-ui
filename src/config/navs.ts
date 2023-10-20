@@ -46,63 +46,63 @@ export const commonFooterNav = [
 ]
 
 export const docMenuNav = [
-  { name: 'doc:menuNav.home', href: '/doc/', icon: HomeIcon },
+  { name: 'docs:menuNav.home', href: '/doc/', icon: HomeIcon },
   {
-    name: 'doc:menuNav.general.groupTitle',
+    name: 'docs:menuNav.general.groupTitle',
     children: [
       {
-        name: 'doc:menuNav.general.motivation',
-        href: '/doc/general/motivation/',
+        name: 'docs:menuNav.general.motivation',
+        href: '/docs/general/motivation/',
         icon: HeartIcon,
       },
       {
-        name: 'doc:menuNav.general.quickstart',
-        href: '/doc/general/quickstart/',
+        name: 'docs:menuNav.general.quickstart',
+        href: '/docs/general/quickstart/',
         icon: RocketLaunchIcon,
       },
       {
-        name: 'doc:menuNav.general.readme',
-        href: '/doc/general/readme/',
+        name: 'docs:menuNav.general.readme',
+        href: '/docs/general/readme/',
         icon: BookOpenIcon,
       },
     ],
   },
   {
-    name: 'doc:menuNav.protocols.groupTitle',
+    name: 'docs:menuNav.protocols.groupTitle',
     children: [
       {
-        name: 'doc:menuNav.general.motivation',
-        href: '/doc/general/motivation/',
+        name: 'docs:menuNav.general.motivation',
+        href: '/docs/general/motivation/',
         icon: HeartIcon,
       },
       {
-        name: 'doc:menuNav.general.quickstart',
-        href: '/doc/general/quickstart/',
+        name: 'docs:menuNav.general.quickstart',
+        href: '/docs/general/quickstart/',
         icon: RocketLaunchIcon,
       },
       {
-        name: 'doc:menuNav.general.readme',
-        href: '/doc/general/readme/',
+        name: 'docs:menuNav.general.readme',
+        href: '/docs/general/readme/',
         icon: BookOpenIcon,
       },
     ],
   },
   {
-    name: 'doc:menuNav.hackers.groupTitle',
+    name: 'docs:menuNav.hackers.groupTitle',
     children: [
       {
-        name: 'doc:menuNav.general.motivation',
-        href: '/doc/general/motivation/',
+        name: 'docs:menuNav.general.motivation',
+        href: '/docs/general/motivation/',
         icon: HeartIcon,
       },
       {
-        name: 'doc:menuNav.general.quickstart',
-        href: '/doc/general/quickstart/',
+        name: 'docs:menuNav.general.quickstart',
+        href: '/docs/general/quickstart/',
         icon: RocketLaunchIcon,
       },
       {
-        name: 'doc:menuNav.general.readme',
-        href: '/doc/general/readme/',
+        name: 'docs:menuNav.general.readme',
+        href: '/docs/general/readme/',
         icon: BookOpenIcon,
       },
     ],
@@ -111,11 +111,11 @@ export const docMenuNav = [
 
 export const docHeaderNav = [
   {
-    name: 'doc:headerNav.home',
+    name: 'docs:headerNav.home',
     href: '/',
   },
   {
-    name: 'doc:headerNav.news',
+    name: 'docs:headerNav.news',
     href: '/news/',
   },
 ]

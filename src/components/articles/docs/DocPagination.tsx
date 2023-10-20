@@ -47,7 +47,7 @@ export default function DocPagination() {
                     <div className="relative p-4">
                       <p className="flex items-center text-sm font-light text-gray-900 group-hover:text-gray-600 dark:text-gray-50 dark:group-hover:text-gray-300">
                         <ArrowSmallLeftIcon className="mr-2 h-3 w-3" />
-                        {t('doc:previousPage')}
+                        {t('docs:previousPage')}
                       </p>
                       <h3 className="mt-2 font-semibold leading-6 text-gray-900 group-hover:text-gray-600 dark:text-gray-50 dark:group-hover:text-gray-300">
                         <span className="absolute inset-0" />
@@ -68,7 +68,7 @@ export default function DocPagination() {
                   <div className="w-full border hover:bg-gray-50 dark:hover:bg-gray-800">
                     <div className="relative p-4">
                       <p className="flex items-center justify-end text-sm font-light text-gray-900 group-hover:text-gray-600 dark:text-gray-50 dark:group-hover:text-gray-300">
-                        {t('doc:nextPage')}
+                        {t('docs:nextPage')}
                         <ArrowSmallRightIcon className="ml-2 h-3 w-3" />
                       </p>
                       <h3 className="text mt-2 text-right font-semibold leading-6 text-gray-900 group-hover:text-gray-600 dark:text-gray-50 dark:group-hover:text-gray-300">
