@@ -46,6 +46,7 @@ import {
   TransactionSignature,
   Connection,
   SystemProgram,
+  Keypair,
 } from '@solana/web3.js'
 import { IDL } from '@/idl'
 import { Address, Program, BN } from '@coral-xyz/anchor'
@@ -54,7 +55,7 @@ import { approveVulnerability } from '@/utils/api/instructions/approveVulnerabil
 import Spinner from '@/components/utils/Spinner'
 import { deleteVulnerability } from '@/utils/api/instructions/deleteVulnerability'
 import { WhitehatContext } from '@/contexts/WhitehatContextProvider'
-import { Ed25519Ecies } from '@/lib/ed25519-ecies/src'
+import { Ed25519Ecies } from '@/lib/ed25519-ecies/dist/index'
 
 type ChatMessage = {
   id: string
@@ -81,6 +82,9 @@ export default function VulnerabilitiesBox({ currentChatRoomId }: Props) {
   const connection = useConnection()
 
   const [loading, setLoading] = useState(true)
+
+  const [decrypted, setDecrypted] = useState('')
+  const [current, setCurrent] = useState<VULNERABILITY_PDA | null>(null)
 
   const addToast = useToastMessage()
 
@@ -174,6 +178,34 @@ export default function VulnerabilitiesBox({ currentChatRoomId }: Props) {
       }
   }
 
+  const decrypt = async (input: Uint8Array) => {
+    try {
+      if (!input || !secretKey) {
+        return
+      }
+
+      await fetch('/api/decrypt', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          input,
+          secretKey,
+        }),
+      })
+        .then((response) => {
+          return response.json()
+        })
+        .then((data) => {
+          console.log(data)
+          setDecrypted(data.message)
+        })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <>
       <div className="content-height-mobile sm:content-height w-full overflow-y-auto pt-4 sm:flex-1 sm:px-4 sm:pt-0">
@@ -214,9 +246,17 @@ export default function VulnerabilitiesBox({ currentChatRoomId }: Props) {
                             >
                               <div className="card-body w-full">
                                 <p className="text-center">
-                                  {/* {item.message.toString()} */}
+                                  {decrypted
+                                    ? decrypted
+                                    : item.message.toString()}
                                 </p>
                                 <div className="card-actions justify-center">
+                                  <button
+                                    className="btn-warning btn-sm"
+                                    onClick={() => decrypt(item.message)}
+                                  >
+                                    decrypt
+                                  </button>
                                   <button
                                     className="btn-error btn-sm"
                                     onClick={() => onClickClose(item)}

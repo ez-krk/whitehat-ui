@@ -295,7 +295,7 @@ export default function DashboardMenu({
       <div className="flex w-full flex-col items-center justify-start pb-4 sm:w-64 sm:pb-0">
         <div className="w-full sm:hidden">
           <div className="flex w-full flex-row items-center justify-center">
-            <button
+            {/* <button
               onClick={() => {
                 setChatListModalOpen(true)
               }}
@@ -305,9 +305,10 @@ export default function DashboardMenu({
                 className={clsx(
                   'h-6 w-6 flex-shrink-0 text-gray-900 dark:text-white'
                 )}
-              />
-            </button>
-            <div className="flex-grow" />
+              />{' '}
+              aaa
+            </button> */}
+            {/* <div className="flex-grow" />
             <h2 className="text-center font-bold">{t('dashboard:title')}</h2>
             <button
               onClick={() => {
@@ -332,7 +333,7 @@ export default function DashboardMenu({
                   'h-6 w-6 flex-shrink-0 text-gray-900 dark:text-white'
                 )}
               />
-            </button>
+            </button> */}
           </div>
         </div>
         <div

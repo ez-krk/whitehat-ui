@@ -418,7 +418,7 @@ export default function DashboardBox({
                     <button onClick={onClick}>initialize</button>
                   )} */}
                   {/* HEADER */}
-                  <div className="flex space-x-4">
+                  <div className="flex flex-col items-center justify-center space-y-4 md:flex-row md:space-y-0">
                     <Link href="/user/programs">
                       <div className="flex w-72 items-center justify-center rounded-sm border p-4">
                         <div className="flex grow flex-col">
@@ -474,7 +474,7 @@ export default function DashboardBox({
                       </div>
                     </Link>
                   </div>
-                  <div className="mx-auto my-8 flex">
+                  <div className="mx-auto my-8 hidden flex-col md:flex md:flex-row">
                     <div className="h-96 w-96">
                       <p className="my-4 w-[100%] text-center">
                         {t('dashboard:fundsReturned')}

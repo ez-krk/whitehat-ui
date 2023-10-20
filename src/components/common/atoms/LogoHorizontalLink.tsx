@@ -18,18 +18,22 @@ export default function LogoHorizontalLink({
     <>
       <Link href={href} {...rest}>
         <span className="sr-only">whitehat</span>
-        <Image
-          src={logoHorizontal}
-          alt="whitehat"
-          className={clsx('dark:hidden ', className)}
-          unoptimized
-        />
-        <Image
-          src={logoHorizontal}
-          alt="whitehat"
-          className={clsx('hidden dark:block', className)}
-          unoptimized
-        />
+        <div className="flex items-center">
+          <Image
+            src={logoHorizontal}
+            alt="Skeet Framework"
+            className={clsx('dark:hidden ', className)}
+            unoptimized
+          />
+        </div>
+        <div className="flex items-center">
+          <Image
+            src={logoHorizontal}
+            alt="Skeet Framework"
+            className={clsx('hidden dark:block', className)}
+            unoptimized
+          />
+        </div>
       </Link>
     </>
   )

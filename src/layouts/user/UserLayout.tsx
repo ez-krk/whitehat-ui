@@ -15,6 +15,8 @@ import LogoHorizontal from '@/components/common/atoms/LogoHorizontal'
 import Image from 'next/image'
 import { User as UserModel, genUserPath } from '@/types/models/userModels'
 import { get } from '@/lib/skeet/firestore'
+import LogoNavbarLink from '@/components/common/atoms/LogoNavbarLink'
+import LogoHorizontalLink from '@/components/common/atoms/LogoHorizontalLink'
 
 type Props = {
   children: ReactNode
@@ -147,7 +149,7 @@ export default function UserLayout({ children }: Props) {
                     </div>
                   </Transition.Child>
                   <div className="flex flex-shrink-0 items-center px-4">
-                    <LogoHorizontal className="h-8 w-auto sm:h-10" />
+                    <LogoNavbarLink href="/" className="h-8 w-auto sm:h-10" />
                   </div>
                   <div className="mt-5 h-0 flex-1 overflow-y-auto">
                     <nav className="space-y-1 px-2">
@@ -188,7 +190,7 @@ export default function UserLayout({ children }: Props) {
         <div className="z-10 hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
           <div className="flex flex-grow flex-col overflow-y-auto break-words bg-white pt-5 scrollbar-hide dark:bg-gray-900">
             <div className="flex flex-shrink-0 items-center px-4">
-              <LogoHorizontal className="h-8 w-auto sm:h-10" />
+              <LogoNavbarLink href="/" className="h-8 w-auto sm:h-10" />
             </div>
             <div className="mt-5 flex flex-1 flex-col">
               <nav className="flex-1 space-y-1 px-2 pb-4">
@@ -235,7 +237,7 @@ export default function UserLayout({ children }: Props) {
             <div className="flex flex-1 items-center justify-between pl-2 pr-4">
               <div className="flex flex-1">
                 <div className="md:hidden">
-                  <LogoHorizontal className="w-16" />
+                  <LogoHorizontalLink href="/" className="w-16" />
                 </div>
               </div>
 

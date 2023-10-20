@@ -99,7 +99,6 @@ export const WhitehatProvider = ({ children }: { children: ReactNode }) => {
             account.pubkey = publicKey
             return result
           })
-          console.log(programsMap)
           setPrograms(programsMap)
         })
         .catch((error) => {
@@ -145,7 +144,6 @@ export const WhitehatProvider = ({ children }: { children: ReactNode }) => {
           return count
         }
       }, 0)
-
       setPendingVulnerability(pendingCount)
       console.log('pending vulnerabilities : ', pendingCount)
     }
@@ -197,10 +195,12 @@ export const WhitehatProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (user && user.secretKey) {
       setSecretKey(
-        Uint8Array.from(
-          user.secretKey.split(',').map((item) => {
-            return parseInt(item)
-          })
+        Buffer.from(
+          Uint8Array.from(
+            user.secretKey.split(',').map((item) => {
+              return parseInt(item)
+            })
+          )
         )
       )
       // console.log(secretKey)
