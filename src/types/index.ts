@@ -76,7 +76,7 @@ export type VULNERABILITY_PDA = {
   protocol: PublicKey
   id: number
   payout: PublicKey
-  message: PublicKey
+  message: Uint8Array
   reviewed: boolean
   createdAt: number
   bump: number

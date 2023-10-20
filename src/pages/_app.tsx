@@ -53,8 +53,8 @@ function MyApp({ Component, pageProps, router }: AppProps) {
         network={network}
         wallets={wallets}
       >
-        <WhitehatProvider>
-          <RecoilRoot>
+        <RecoilRoot>
+          <WhitehatProvider>
             <ThemeProvider attribute="class">
               <main className="min-h-screen scroll-smooth font-sans antialiased">
                 <Layout
@@ -64,8 +64,8 @@ function MyApp({ Component, pageProps, router }: AppProps) {
                 />
               </main>
             </ThemeProvider>
-          </RecoilRoot>
-        </WhitehatProvider>
+          </WhitehatProvider>
+        </RecoilRoot>
       </WalletContextProvider>
     </>
   )

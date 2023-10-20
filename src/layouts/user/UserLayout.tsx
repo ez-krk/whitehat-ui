@@ -65,7 +65,7 @@ export default function UserLayout({ children }: Props) {
             username,
             iconUrl,
             publicKey: publicKey ?? '',
-            secretKey: secretKey ?? '',
+            secretKey: secretKey?.toString() ?? '',
             emailVerified: fbUser.emailVerified,
           })
         } catch (e) {

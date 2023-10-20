@@ -6,6 +6,10 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { Address, Program } from '@coral-xyz/anchor'
 import { IDL } from '@/idl'
 import { PROGRAM_ID } from '@/constants'
+import { useRecoilValue } from 'recoil'
+import { userState } from '@/store/user'
+import { Ed25519Ecies } from '@/lib/ed25519-ecies/src'
+import { bs58 } from '@coral-xyz/anchor/dist/cjs/utils/bytes'
 
 interface WhitehatContext {
   program: Program<IDL> | null
@@ -23,6 +27,7 @@ interface WhitehatContext {
     React.SetStateAction<SOL_HACK_PDA[] | null>
   > | null
   pendingHacks: number
+  secretKey: Uint8Array | null
 }
 
 export const WhitehatContext = createContext<WhitehatContext>({
@@ -35,11 +40,13 @@ export const WhitehatContext = createContext<WhitehatContext>({
   solHacks: null,
   setSolHacks: () => null,
   pendingHacks: 0,
+  secretKey: null,
 })
 
 export const WhitehatProvider = ({ children }: { children: ReactNode }) => {
   const { publicKey } = useWallet()
   const connection = useConnection()
+  const user = useRecoilValue(userState)
 
   const program = useMemo(
     () => new Program(IDL, PROGRAM_ID as Address, connection),
@@ -55,6 +62,8 @@ export const WhitehatProvider = ({ children }: { children: ReactNode }) => {
   const [solHacks, setSolHacks] = useState<SOL_HACK_PDA[] | null>(null)
   const [pendingHacks, setPendingHacks] = useState<number>(0)
 
+  const [secretKey, setSecretKey] = useState<Uint8Array | null>(null)
+
   const value = {
     program,
     programs,
@@ -65,6 +74,7 @@ export const WhitehatProvider = ({ children }: { children: ReactNode }) => {
     solHacks,
     setSolHacks,
     pendingHacks,
+    secretKey,
   }
 
   useEffect(() => {
@@ -183,6 +193,19 @@ export const WhitehatProvider = ({ children }: { children: ReactNode }) => {
       console.log('pending hacks : ', pendingCount)
     }
   }, [solHacks])
+
+  useEffect(() => {
+    if (user && user.secretKey) {
+      setSecretKey(
+        Uint8Array.from(
+          user.secretKey.split(',').map((item) => {
+            return parseInt(item)
+          })
+        )
+      )
+      // console.log(secretKey)
+    }
+  }, [user])
 
   return (
     <WhitehatContext.Provider value={value}>

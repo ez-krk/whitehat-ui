@@ -54,6 +54,7 @@ import { approveVulnerability } from '@/utils/api/instructions/approveVulnerabil
 import Spinner from '@/components/utils/Spinner'
 import { deleteVulnerability } from '@/utils/api/instructions/deleteVulnerability'
 import { WhitehatContext } from '@/contexts/WhitehatContextProvider'
+import { Ed25519Ecies } from '@/lib/ed25519-ecies/src'
 
 type ChatMessage = {
   id: string
@@ -92,6 +93,7 @@ export default function VulnerabilitiesBox({ currentChatRoomId }: Props) {
     solHacks,
     setSolHacks,
     pendingHacks,
+    secretKey,
   } = useContext(WhitehatContext)
 
   const chatContentRef = useRef<HTMLDivElement>(null)
@@ -201,9 +203,9 @@ export default function VulnerabilitiesBox({ currentChatRoomId }: Props) {
                         </p>
                       )}
 
-                      {vulnerability.map((item) => {
-                        console.log('id : ', item.id.toString())
-                        console.log('seed', item.seed.toString())
+                      {vulnerability.map((item: VULNERABILITY_PDA) => {
+                        // console.log('id : ', item.id.toString())
+                        // console.log('seed', item.seed.toString())
                         if (!item.reviewed)
                           return (
                             <div
@@ -212,7 +214,7 @@ export default function VulnerabilitiesBox({ currentChatRoomId }: Props) {
                             >
                               <div className="card-body w-full">
                                 <p className="text-center">
-                                  {item.message.toString()}
+                                  {/* {item.message.toString()} */}
                                 </p>
                                 <div className="card-actions justify-center">
                                   <button

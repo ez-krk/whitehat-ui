@@ -12,7 +12,7 @@ export type User = {
   email: string
   iconUrl: string
   publicKey?: string
-  secretKey?: string
+  secretKey?: Uint8Array
   userChatRoomIds?: string[]
   createdAt?: Timestamp | FieldValue
   updatedAt?: Timestamp | FieldValue
