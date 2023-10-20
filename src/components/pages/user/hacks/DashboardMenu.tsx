@@ -49,7 +49,6 @@ import { UserChatRoom, genUserChatRoomPath } from '@/types/models'
 import { add, get, query } from '@/lib/skeet/firestore'
 import { registerProtocol } from '@/utils/api/instructions/registerProtocol'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
-import { sendTx } from '@/utils/api/send'
 import { SOLANA_RPC_ENDPOINT } from '@/constants'
 import { Connection, TransactionSignature } from '@solana/web3.js'
 

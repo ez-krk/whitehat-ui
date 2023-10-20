@@ -15,7 +15,6 @@ import {
   useRef,
   useState,
   KeyboardEvent,
-  useEffect,
 } from 'react'
 import { useRecoilValue } from 'recoil'
 import { userState } from '@/store/user'
