@@ -45,16 +45,15 @@ export default function AuthLayout({ children }: Props) {
     async (fbUser: User | null) => {
       if (auth && db && fbUser && fbUser.emailVerified) {
         try {
-          const { username, iconUrl } = await get<UserModel>(
-            db,
-            genUserPath(),
-            fbUser.uid
-          )
+          const { username, iconUrl, publicKey, secretKey } =
+            await get<UserModel>(db, genUserPath(), fbUser.uid)
           setUser({
             uid: fbUser.uid,
             email: fbUser.email ?? '',
             username,
             iconUrl,
+            publicKey: publicKey ?? '',
+            secretKey: secretKey?.toString() ?? '',
             emailVerified: fbUser.emailVerified,
           })
           await router.push('/user/dashboard')
