@@ -13,6 +13,7 @@ import { PROGRAM_ID } from '@/constants'
 import { ellipsis } from '@/utils/ellipsis'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { DocumentDuplicateIcon } from '@heroicons/react/24/outline'
+import Tooltip from '@/components/common/atoms/Tooltip'
 
 export default function HomeHeroRow() {
   const { t } = useTranslation()
@@ -90,58 +91,32 @@ export default function HomeHeroRow() {
                           <td className="text-center">{program.name}</td>
                           <td>
                             <span className="flex items-center justify-center">
-                              {ellipsis(program.owner.toString())}{' '}
-                              <DocumentDuplicateIcon
-                                className="ml-1 h-4 w-4 cursor-pointer"
-                                onClick={async () => {
-                                  await navigator.clipboard.writeText(
-                                    program.owner.toString()
-                                  )
-                                  alert('Text copied')
-                                }}
-                              />
+                              <Tooltip text={`${program.owner.toString()}`}>
+                                {ellipsis(program.owner.toString())}
+                              </Tooltip>
                             </span>
                           </td>
                           <td>
                             <span className="flex items-center justify-center">
-                              {ellipsis(program.pubkey.toString())}{' '}
-                              <DocumentDuplicateIcon
-                                className="ml-1 h-4 w-4 cursor-pointer"
-                                onClick={async () => {
-                                  await navigator.clipboard.writeText(
-                                    program.pubkey.toString()
-                                  )
-                                  alert('Text copied')
-                                }}
-                              />
+                              <Tooltip text={`${program.pubkey.toString()}`}>
+                                {ellipsis(program.pubkey.toString())}
+                              </Tooltip>
                             </span>
                           </td>
                           <td>
                             <span className="flex items-center justify-center">
-                              {ellipsis(program.vault.toString())}{' '}
-                              <DocumentDuplicateIcon
-                                className="ml-1 h-4 w-4 cursor-pointer"
-                                onClick={async () => {
-                                  await navigator.clipboard.writeText(
-                                    program.vault.toString()
-                                  )
-                                  alert('Text copied')
-                                }}
-                              />
+                              <Tooltip text={`${program.vault.toString()}`}>
+                                {ellipsis(program.vault.toString())}
+                              </Tooltip>
                             </span>
                           </td>
                           <td>
                             <span className="flex items-center justify-center">
-                              {ellipsis(program.encryption.toString())}{' '}
-                              <DocumentDuplicateIcon
-                                className="ml-1 h-4 w-4 cursor-pointer"
-                                onClick={async () => {
-                                  await navigator.clipboard.writeText(
-                                    program.encryption.toString()
-                                  )
-                                  alert('Text copied')
-                                }}
-                              />
+                              <Tooltip
+                                text={`${program.encryption.toString()}`}
+                              >
+                                {ellipsis(program.encryption.toString())}
+                              </Tooltip>
                             </span>
                           </td>
                           <td className="text-center">
