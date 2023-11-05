@@ -15,6 +15,9 @@ module.exports = {
         discord: '#5865f2',
         twitter: '#1da1f2',
       },
+      rotate: {
+        135: '135deg',
+      },
     },
   },
   plugins: [

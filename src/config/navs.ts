@@ -1,14 +1,23 @@
 import {
   AcademicCapIcon,
   BookOpenIcon,
+  BugAntIcon,
   ChatBubbleLeftRightIcon,
+  CheckBadgeIcon,
   Cog8ToothIcon,
   CommandLineIcon,
+  CurrencyDollarIcon,
+  EyeSlashIcon,
   HeartIcon,
   HomeIcon,
+  MagnifyingGlassIcon,
   PresentationChartLineIcon,
+  ReceiptPercentIcon,
   RocketLaunchIcon,
+  ShieldCheckIcon,
   ShieldExclamationIcon,
+  UserPlusIcon,
+  WrenchScrewdriverIcon,
 } from '@heroicons/react/24/outline'
 
 export const defaultMainNav = [
@@ -32,8 +41,16 @@ export const defaultMainNav = [
 
 export const commonFooterNav = [
   {
-    name: 'navs.commonFooterNav.news',
-    href: '/news/',
+    name: 'navs.defaultMainNav.home',
+    href: '/',
+  },
+  // {
+  //   name: 'navs.commonFooterNav.news',
+  //   href: '/news/',
+  // },
+  {
+    name: 'navs.defaultMainNav.explore',
+    href: '/explore/',
   },
   {
     name: 'navs.commonFooterNav.docs',
@@ -46,7 +63,7 @@ export const commonFooterNav = [
 ]
 
 export const docMenuNav = [
-  { name: 'docs:menuNav.home', href: '/doc/', icon: HomeIcon },
+  { name: 'docs:menuNav.home', href: '/docs/', icon: HomeIcon },
   {
     name: 'docs:menuNav.general.groupTitle',
     children: [
@@ -60,6 +77,16 @@ export const docMenuNav = [
         href: '/docs/general/quickstart/',
         icon: RocketLaunchIcon,
       },
+      // {
+      //   name: 'docs:menuNav.general.protocols',
+      //   href: '/docs/general/protocols/',
+      //   icon: ShieldCheckIcon,
+      // },
+      // {
+      //   name: 'docs:menuNav.general.hackers',
+      //   href: '/docs/general/hackers/',
+      //   icon: CommandLineIcon,
+      // },
       {
         name: 'docs:menuNav.general.readme',
         href: '/docs/general/readme/',
@@ -71,19 +98,19 @@ export const docMenuNav = [
     name: 'docs:menuNav.protocols.groupTitle',
     children: [
       {
-        name: 'docs:menuNav.general.motivation',
-        href: '/docs/general/motivation/',
-        icon: HeartIcon,
+        name: 'docs:menuNav.protocols.register',
+        href: '/docs/protocols/register/',
+        icon: UserPlusIcon,
       },
       {
-        name: 'docs:menuNav.general.quickstart',
-        href: '/docs/general/quickstart/',
-        icon: RocketLaunchIcon,
+        name: 'docs:menuNav.protocols.fees',
+        href: '/docs/protocols/fees/',
+        icon: ReceiptPercentIcon,
       },
       {
-        name: 'docs:menuNav.general.readme',
-        href: '/docs/general/readme/',
-        icon: BookOpenIcon,
+        name: 'docs:menuNav.protocols.payout',
+        href: '/docs/protocols/payout/',
+        icon: CurrencyDollarIcon,
       },
     ],
   },
@@ -91,19 +118,34 @@ export const docMenuNav = [
     name: 'docs:menuNav.hackers.groupTitle',
     children: [
       {
-        name: 'docs:menuNav.general.motivation',
-        href: '/docs/general/motivation/',
-        icon: HeartIcon,
+        name: 'docs:menuNav.hackers.explore',
+        href: '/docs/hackers/explore/',
+        icon: MagnifyingGlassIcon,
       },
       {
-        name: 'docs:menuNav.general.quickstart',
-        href: '/docs/general/quickstart/',
-        icon: RocketLaunchIcon,
+        name: 'docs:menuNav.hackers.vulnerability',
+        href: '/docs/hackers/vulnerability/',
+        icon: BugAntIcon,
       },
       {
-        name: 'docs:menuNav.general.readme',
-        href: '/docs/general/readme/',
-        icon: BookOpenIcon,
+        name: 'docs:menuNav.hackers.exploit',
+        href: '/docs/hackers/exploit/',
+        icon: CommandLineIcon,
+      },
+      {
+        name: 'docs:menuNav.hackers.tooling',
+        href: '/docs/hackers/tooling/',
+        icon: WrenchScrewdriverIcon,
+      },
+      {
+        name: 'docs:menuNav.hackers.legalDischarge',
+        href: '/docs/genera/legal-discharge/',
+        icon: CheckBadgeIcon,
+      },
+      {
+        name: 'docs:menuNav.hackers.anonymity',
+        href: '/docs/hackers/anonymity/',
+        icon: EyeSlashIcon,
       },
     ],
   },
@@ -123,17 +165,17 @@ export const docHeaderNav = [
 export const userMenuNav = [
   {
     name: 'user:menuNav.dashboard',
-    href: '/user/dashboard/',
+    href: '/dashboard/',
     icon: PresentationChartLineIcon,
   },
   {
     name: 'user:menuNav.vulnerabilities',
-    href: '/user/vulnerabilities/',
+    href: '/vulnerabilities/',
     icon: ShieldExclamationIcon,
   },
   {
     name: 'user:menuNav.hacks',
-    href: '/user/hacks/',
+    href: '/hacks/',
     icon: CommandLineIcon,
   },
   // {
@@ -148,7 +190,7 @@ export const userMenuNav = [
   // },
   {
     name: 'user:menuNav.settings',
-    href: '/user/settings/',
+    href: '/settings/',
     icon: Cog8ToothIcon,
   },
 ]
@@ -156,6 +198,6 @@ export const userMenuNav = [
 export const userHeaderNav = [
   {
     name: 'user:headerNav.settings',
-    href: '/user/settings/',
+    href: '/settings/',
   },
 ]

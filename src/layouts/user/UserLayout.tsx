@@ -7,16 +7,10 @@ import clsx from 'clsx'
 import { userHeaderNav, userMenuNav } from '@/config/navs'
 import { useTranslation } from 'next-i18next'
 import Link from '@/components/routing/Link'
-import { User, signOut } from 'firebase/auth'
-import { useRecoilState } from 'recoil'
-import { defaultUser, userState } from '@/store/user'
-import { auth, db } from '@/lib/firebase'
-import LogoHorizontal from '@/components/common/atoms/LogoHorizontal'
-import Image from 'next/image'
-import { User as UserModel, genUserPath } from '@/types/models/userModels'
-import { get } from '@/lib/skeet/firestore'
 import LogoNavbarLink from '@/components/common/atoms/LogoNavbarLink'
 import LogoHorizontalLink from '@/components/common/atoms/LogoHorizontalLink'
+import Wallet from '@/components/common/atoms/Wallet'
+import { useWallet } from '@solana/wallet-adapter-react'
 
 type Props = {
   children: ReactNode
@@ -28,6 +22,7 @@ export default function UserLayout({ children }: Props) {
   const router = useRouter()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const { t } = useTranslation()
+  const { publicKey } = useWallet()
 
   const asPathWithoutLang = useMemo(() => {
     return router.asPath.replace('/ja/', '/').replace('/en/', '/')
@@ -52,46 +47,6 @@ export default function UserLayout({ children }: Props) {
       }
     })()
   }, [router.asPath, resetWindowScrollPosition])
-
-  const [user, setUser] = useRecoilState(userState)
-
-  const onAuthStateChanged = useCallback(
-    async (fbUser: User | null) => {
-      if (auth && db && fbUser && fbUser.emailVerified) {
-        try {
-          const { username, iconUrl, publicKey, secretKey } =
-            await get<UserModel>(db, genUserPath(), fbUser.uid)
-          setUser({
-            uid: fbUser.uid,
-            email: fbUser.email ?? '',
-            username,
-            iconUrl,
-            publicKey: publicKey ?? '',
-            secretKey: secretKey?.toString() ?? '',
-            emailVerified: fbUser.emailVerified,
-          })
-        } catch (e) {
-          console.error(e)
-          setUser(defaultUser)
-          await signOut(auth)
-          await router.push('/auth/login')
-        }
-      } else {
-        setUser(defaultUser)
-        await router.push('/auth/login')
-      }
-    },
-    [setUser, router]
-  )
-
-  useEffect(() => {
-    let subscriber = () => {}
-
-    if (auth) {
-      subscriber = auth.onAuthStateChanged(onAuthStateChanged)
-    }
-    return () => subscriber()
-  }, [onAuthStateChanged])
 
   return (
     <>
@@ -189,7 +144,7 @@ export default function UserLayout({ children }: Props) {
 
         <div className="z-10 hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
           <div className="flex flex-grow flex-col overflow-y-auto break-words bg-white pt-5 scrollbar-hide dark:bg-gray-900">
-            <div className="flex flex-shrink-0 items-center px-4">
+            <div className="flex w-[100vw] items-center overflow-y-visible px-4">
               <LogoNavbarLink href="/" className="h-8 w-auto sm:h-10" />
             </div>
             <div className="mt-5 flex flex-1 flex-col">
@@ -225,6 +180,12 @@ export default function UserLayout({ children }: Props) {
         </div>
         <div className="flex flex-1 flex-col lg:pl-64">
           <div className="flex-shrink- sticky top-0 flex h-16 bg-white bg-opacity-90 dark:bg-gray-900 dark:bg-opacity-90">
+            {publicKey && (
+              <div className="flex w-full items-center justify-end px-6">
+                <Wallet />
+              </div>
+            )}
+
             <button
               type="button"
               className="px-4 text-gray-500 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-500 dark:text-gray-50 dark:hover:text-gray-200 lg:hidden"
@@ -240,76 +201,10 @@ export default function UserLayout({ children }: Props) {
                   <LogoHorizontalLink href="/" className="w-16" />
                 </div>
               </div>
-
-              <Menu as="div" className="lg:mt-2">
-                <Menu.Button className="flex max-w-xs items-center text-sm text-gray-700 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:text-gray-50 dark:hover:text-gray-200">
-                  <span className="sr-only">open other menu</span>
-                  {user.iconUrl && (
-                    <Image
-                      src={user.iconUrl}
-                      className="h-8 w-8 rounded-full lg:h-10 lg:w-10"
-                      unoptimized
-                      alt="User icon"
-                      width={32}
-                      height={32}
-                    />
-                  )}
-                </Menu.Button>
-
-                <Transition
-                  as={Fragment}
-                  enter="transition ease-out duration-100"
-                  enterFrom="transform opacity-0 scale-95"
-                  enterTo="transform opacity-100 scale-100"
-                  leave="transition ease-in duration-75"
-                  leaveFrom="transform opacity-100 scale-100"
-                  leaveTo="transform opacity-0 scale-95"
-                >
-                  <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-900">
-                    {userHeaderNav.map((item) => (
-                      <Menu.Item key={item.name}>
-                        {({ active }) => (
-                          <Link
-                            href={item.href ?? ''}
-                            className={clsx(
-                              active
-                                ? 'bg-gray-50 text-gray-900 dark:bg-gray-700 dark:text-white'
-                                : '',
-                              'block px-4 py-2 text-sm text-gray-700 dark:text-gray-50'
-                            )}
-                          >
-                            {t(item.name)}
-                          </Link>
-                        )}
-                      </Menu.Item>
-                    ))}
-                    <Menu.Item>
-                      {({ active }) => (
-                        <p
-                          onClick={async () => {
-                            if (auth) {
-                              setUser(defaultUser)
-                              await signOut(auth)
-                            }
-                          }}
-                          className={clsx(
-                            active
-                              ? 'bg-gray-50 text-gray-900 dark:bg-gray-700 dark:text-white'
-                              : '',
-                            'block px-4 py-2 text-sm text-gray-700 hover:cursor-pointer dark:text-gray-50'
-                          )}
-                        >
-                          {t('logout')}
-                        </p>
-                      )}
-                    </Menu.Item>
-                  </Menu.Items>
-                </Transition>
-              </Menu>
             </div>
           </div>
 
-          <div className="py-6">
+          <div className="">
             <div id={mainContentId} className="mx-auto px-4 sm:px-6 lg:px-8">
               {children}
             </div>

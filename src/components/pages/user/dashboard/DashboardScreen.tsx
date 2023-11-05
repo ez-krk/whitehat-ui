@@ -1,36 +1,20 @@
-import ChatMenu, { ChatRoom } from '@/components/pages/user/chat/ChatMenu'
-import ChatBox from '@/components/pages/user/chat/ChatBox'
+import { ChatRoom } from '@/components/pages/user/chat/ChatMenu'
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import { userState } from '@/store/user'
-import { useRecoilValue } from 'recoil'
 import useToastMessage from '@/hooks/useToastMessage'
-import {
-  DocumentData,
-  QueryDocumentSnapshot,
-  limit,
-  orderBy,
-} from 'firebase/firestore'
-import { db } from '@/lib/firebase'
+import { DocumentData, QueryDocumentSnapshot } from 'firebase/firestore'
 import { useTranslation } from 'next-i18next'
-import { UserChatRoom, genUserChatRoomPath } from '@/types/models'
-import { query } from '@/lib/skeet/firestore'
 import DashboardMenu from './DashboardMenu'
 import DashboardBox from './DashboardBox'
 import { PROTOCOL_PDA, SOL_HACK_PDA, VULNERABILITY_PDA } from '@/types'
-import { useConnection, useWallet } from '@solana/wallet-adapter-react'
-import { Address, Program } from '@coral-xyz/anchor'
-import { IDL } from '@/idl'
-import { PROGRAM_ID } from '@/constants'
-import Spinner from '@/components/utils/Spinner'
 import { WhitehatContext } from '@/contexts/WhitehatContextProvider'
+import { useWallet } from '@solana/wallet-adapter-react'
 
 export default function DashboardScreen() {
   const { t } = useTranslation()
 
-  const user = useRecoilValue(userState)
   const addToast = useToastMessage()
 
-  const [loading, setLoading] = useState(true)
+  const { publicKey } = useWallet()
 
   const [isNewChatModalOpen, setNewChatModalOpen] = useState(false)
   const [currentChatRoomId, setCurrentChatRoomId] = useState<string | null>(
@@ -62,22 +46,25 @@ export default function DashboardScreen() {
   return (
     <>
       <div className="content-height flex w-full flex-col items-start justify-start overflow-auto sm:flex-row">
-        <DashboardMenu
-          program={program}
-          programs={programs}
-          setPrograms={setPrograms}
-          setSelectedProgram={setSelectedProgram}
-          isNewChatModalOpen={isNewChatModalOpen}
-          setNewChatModalOpen={setNewChatModalOpen}
-          currentChatRoomId={currentChatRoomId}
-          setCurrentChatRoomId={setCurrentChatRoomId}
-          chatList={chatList}
-          setChatList={setChatList}
-          lastChat={lastChat}
-          setLastChat={setLastChat}
-          isDataLoading={isDataLoading}
-          setDataLoading={setDataLoading}
-        />
+        {publicKey && (
+          <DashboardMenu
+            program={program}
+            programs={programs}
+            setPrograms={setPrograms}
+            setSelectedProgram={setSelectedProgram}
+            isNewChatModalOpen={isNewChatModalOpen}
+            setNewChatModalOpen={setNewChatModalOpen}
+            currentChatRoomId={currentChatRoomId}
+            setCurrentChatRoomId={setCurrentChatRoomId}
+            chatList={chatList}
+            setChatList={setChatList}
+            lastChat={lastChat}
+            setLastChat={setLastChat}
+            isDataLoading={isDataLoading}
+            setDataLoading={setDataLoading}
+          />
+        )}
+
         <DashboardBox
           programs={programs}
           selectedProgram={selectedProgram}

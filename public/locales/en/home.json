@@ -1,7 +1,10 @@
 {
   "HeroRow": {
     "line": "get hacked, get it back !",
-    "body": "dynamic bug bounty protocol for faster fund recovery and iteration."
+    "body": "bug bounty protocol : but anonymous, faster and fair.",
+    "bluePill": "get hacked, get it back",
+    "redPill": "hack with impunity",
+    "getHacked": "get hacked"
   },
   "Analytics": {
     "help": "we helped",
@@ -13,5 +16,8 @@
     "vulnerabilities": "vulnerabilities",
     "hackers": "hackers received",
     "safer": "for making the ecosystem safer 🙌"
+  },
+  "Technologies": {
+    "technologies": "technologies used :"
   }
 }

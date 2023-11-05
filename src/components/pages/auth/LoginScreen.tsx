@@ -6,14 +6,26 @@ import {
   signInWithEmailAndPassword,
   sendEmailVerification,
   signOut,
+  signInWithCustomToken,
 } from 'firebase/auth'
 import { emailSchema, passwordSchema } from '@/utils/form'
-import { auth } from '@/lib/firebase'
+import { auth, db, firebaseApp } from '@/lib/firebase'
 import clsx from 'clsx'
 import Link from '@/components/routing/Link'
 import { z } from 'zod'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useWallet } from '@solana/wallet-adapter-react'
+import {
+  SolanaSignInInput,
+  SolanaSignInOutput,
+} from '@solana/wallet-standard-features'
+import { User, genUserPath } from '@/types/models'
+import { useRecoilState } from 'recoil'
+import { defaultUser, userState } from '@/store/user'
+import { createUserDocumentFromAuth } from '@/components/utils/CreateUserDocumentFromAuth'
+import { get } from '@/lib/skeet/firestore'
+import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 
 const schema = z.object({
   email: emailSchema,
@@ -24,6 +36,8 @@ type Inputs = z.infer<typeof schema>
 
 export default function LoginScreen() {
   const { t } = useTranslation()
+  const { connected, signIn } = useWallet()
+  const [_user, setUser] = useRecoilState(userState)
   const addToast = useToastMessage()
   const [isLoading, setLoading] = useState(false)
 
@@ -89,6 +103,87 @@ export default function LoginScreen() {
     },
     [t, addToast]
   )
+
+  const signInWithSolana = useCallback(async () => {
+    try {
+      if (!signIn) {
+        throw new Error('signIn is not defined')
+      }
+      if (signIn && db && auth) {
+        const skeetToken = await auth?.currentUser?.getIdToken()
+        const signOptions = {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${skeetToken}`,
+          },
+          body: JSON.stringify({}),
+        }
+        const createResponse = await fetch('/api/sign', signOptions)
+        console.log(createResponse)
+        const signInResponse = await createResponse?.json()
+        const input: SolanaSignInInput = signInResponse?.signInData
+        const signInResult = await signIn(input)
+        const output: SolanaSignInOutput = {
+          ...signInResult,
+          account: {
+            address: signInResult.account.address,
+            publicKey: signInResult.account.publicKey,
+            chains: signInResult.account.chains,
+            features: signInResult.account.features,
+            label: signInResult.account.label,
+            icon: signInResult.account.icon,
+          },
+        }
+        const params = {
+          input,
+          output,
+        }
+        const verifyOptions = {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${skeetToken}`,
+          },
+          body: JSON.stringify(params),
+        }
+        const verifyResponse = await fetch('/api/verify', verifyOptions)
+        const success = await verifyResponse?.json()
+        const userCredential = await signInWithCustomToken(auth, success?.token)
+        const { email, username, iconUrl, publicKey, secretKey } =
+          await get<User>(db, genUserPath(), userCredential.user.uid)
+        const { user } = userCredential
+        await createUserDocumentFromAuth(user)
+        if (!publicKey || !secretKey) {
+          throw new Error('error generating keypairs')
+        }
+        setUser({
+          uid: userCredential.user.uid,
+          email,
+          username,
+          iconUrl,
+          publicKey,
+          secretKey: secretKey.toString(),
+          emailVerified: false,
+        })
+
+        return false
+      }
+    } catch (err) {
+      console.error(err)
+      if (err instanceof Error) {
+        addToast({
+          title: err.name,
+          description: err.message,
+          type: 'error',
+        })
+      }
+      if (auth) {
+        setUser(defaultUser)
+        await signOut(auth)
+      }
+    }
+  }, [addToast, signIn, setUser])
 
   const isDisabled = useMemo(
     () => isLoading || errors.email != null || errors.password != null,
@@ -187,6 +282,36 @@ export default function LoginScreen() {
               </div>
             </div>
           </form>
+          <div
+            className={clsx(
+              'flex flex-row items-center justify-center rounded-none bg-gray-900 hover:bg-gray-600 dark:bg-gray-800 dark:hover:bg-gray-700'
+            )}
+          >
+            <WalletMultiButton />
+          </div>
+          <div
+            className={clsx('flex flex-col items-center justify-center gap-2')}
+          >
+            <button
+              onClick={async () => {
+                await signInWithSolana()
+              }}
+              disabled={!connected}
+              className={clsx(
+                'px-6 py-2',
+                !connected
+                  ? 'bg-gray-300 text-white hover:cursor-not-allowed dark:bg-gray-800 dark:text-gray-400'
+                  : 'bg-green-700 text-white hover:cursor-pointer hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-800'
+              )}
+            >
+              {t('auth:signIn')}
+            </button>
+            {!connected && (
+              <p className="font-light text-gray-500">
+                {t('auth:pleaseConnectWallet')}
+              </p>
+            )}
+          </div>
         </div>
       </div>
     </>

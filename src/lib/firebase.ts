@@ -17,7 +17,7 @@ export const firebaseApp = !getApps().length
 
 export const platformDevIP = '127.0.0.1'
 
-const getFirebaseAuth = () => {
+export const getFirebaseAuth = () => {
   const firebaseAuth = getAuth(firebaseApp)
   // if (process.env.NODE_ENV !== 'production') {
   //   connectAuthEmulator(firebaseAuth, `http://${platformDevIP}:9099`, {

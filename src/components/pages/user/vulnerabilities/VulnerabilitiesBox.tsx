@@ -56,6 +56,7 @@ import Spinner from '@/components/utils/Spinner'
 import { deleteVulnerability } from '@/utils/api/instructions/deleteVulnerability'
 import { WhitehatContext } from '@/contexts/WhitehatContextProvider'
 import { Ed25519Ecies } from '@/lib/ed25519-ecies/dist/index'
+import Wallet from '@/components/common/atoms/Wallet'
 
 type ChatMessage = {
   id: string
@@ -211,13 +212,8 @@ export default function VulnerabilitiesBox({ currentChatRoomId }: Props) {
       <div className="content-height-mobile sm:content-height w-full overflow-y-auto pt-4 sm:flex-1 sm:px-4 sm:pt-0">
         <div className="flex h-full w-full flex-col items-center justify-center bg-gray-50 dark:bg-gray-800">
           <div className="flex w-full max-w-md flex-col items-center justify-center gap-6 p-4">
-            {!publicKey && programs && programs.length > 0 ? (
-              <>
-                <h2 className="text-2xl font-bold text-gray-700 dark:text-gray-200">
-                  {t('dashboard:connectWallet')}
-                </h2>
-                <WalletMultiButton />
-              </>
+            {!publicKey ? (
+              <Wallet />
             ) : (
               <div className="flex flex-col">
                 <div className="mx-auto my-8 flex flex-col">

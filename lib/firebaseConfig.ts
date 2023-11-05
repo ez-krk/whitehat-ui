@@ -5,6 +5,7 @@ const firebaseConfig = {
   storageBucket: 'whitehat-so.appspot.com',
   messagingSenderId: '563028197025',
   appId: '1:563028197025:web:6d61d73d543e0802afbae0',
+  serviceAccountId: 'whitehat-so@appspot.gserviceaccount.com',
 }
 
 export default firebaseConfig

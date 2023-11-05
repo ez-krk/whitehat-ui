@@ -73,3 +73,31 @@
   top: 50%;
   left: 50%;
 }
+/* @keyframes bluePill {
+  0% {
+    transform: rotate(-135deg);
+  }
+  50% {
+    transform: rotate(495deg);
+  }
+  100% {
+    transform: rotate(-135deg);
+  }
+}
+#bluePill {
+  animation: bluePill 1s linear;
+}
+@keyframes redPill {
+  0% {
+    transform: rotate(-45deg);
+  }
+  50% {
+    transform: rotate(-405deg);
+  }
+  100% {
+    transform: rotate(-45deg);
+  }
+}
+#redPill {
+  animation: bluePill 1s linear;
+} */

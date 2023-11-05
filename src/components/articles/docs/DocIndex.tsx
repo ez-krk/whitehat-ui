@@ -8,7 +8,10 @@ import {
   ShieldCheckIcon,
   CommandLineIcon,
 } from '@heroicons/react/24/outline'
+import bluepill from '@/assets/img/props/bluepill.svg'
+import redpill from '@/assets/img/props/redpill.svg'
 import clsx from 'clsx'
+import Image from 'next/image'
 
 const actions = [
   {
@@ -56,9 +59,33 @@ export default function DocIndex() {
             <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-50 sm:text-4xl">
               {t('docs:title')}
             </h2>
-            <p className="mt-2 text-lg leading-8 text-gray-600 dark:text-gray-300">
-              {t('docs:body')}
-            </p>
+            <div className="flex items-center justify-between space-x-4">
+              <Image
+                src={bluepill}
+                width={42}
+                height={42}
+                alt="pill"
+                className="-rotate-135"
+                id="bluePill"
+              />
+              <p className="mt-2 text-lg leading-8 text-gray-700 dark:text-gray-300">
+                {t('docs:bluePill')}
+              </p>
+              <span className="inline-block align-middle" aria-hidden="true">
+                &#8203;
+              </span>
+              <p className="mt-2 text-lg leading-8 text-gray-700 dark:text-gray-300">
+                {t('docs:redPill')}
+              </p>
+              <Image
+                src={redpill}
+                width={42}
+                height={42}
+                alt="pill"
+                className="-rotate-45"
+                id="redPill"
+              />
+            </div>
           </div>
         </div>
         <div className="py-12">
@@ -71,7 +98,7 @@ export default function DocIndex() {
                   actionIdx === 1 ? '' : '',
                   actionIdx === actions.length - 2 ? '' : '',
                   actionIdx === actions.length - 1 ? '' : '',
-                  'group relative bg-gray-50 p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-gray-500 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700'
+                  'group relative bg-gray-50 p-6 text-gray-700 focus-within:ring-2 focus-within:ring-inset focus-within:ring-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:bg-gray-800 dark:text-gray-50 dark:hover:bg-gray-700 dark:hover:text-gray-200'
                 )}
               >
                 <div>

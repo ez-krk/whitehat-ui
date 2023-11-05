@@ -3,8 +3,6 @@ import { useTranslation } from 'next-i18next'
 import {
   CommandLineIcon,
   CpuChipIcon,
-  PaperAirplaneIcon,
-  PlusCircleIcon,
   ShieldCheckIcon,
   ShieldExclamationIcon,
 } from '@heroicons/react/24/outline'
@@ -22,7 +20,6 @@ import { db } from '@/lib/firebase'
 import { orderBy } from 'firebase/firestore'
 import { chatContentSchema } from '@/utils/form'
 import { fetchSkeetFunctions } from '@/lib/skeet/functions'
-import Image from 'next/image'
 import { ChatRoom } from './DashboardMenu'
 import { AddStreamUserChatRoomMessageParams } from '@/types/http/skeet/addStreamUserChatRoomMessageParams'
 import { z } from 'zod'
@@ -64,8 +61,6 @@ import {
   Connection,
   SystemProgram,
 } from '@solana/web3.js'
-import { IDL } from '@/idl'
-import { Address, Program } from '@coral-xyz/anchor'
 import type {
   ANALYTICS_PDA,
   PROTOCOL_PDA,
@@ -75,6 +70,7 @@ import type {
 import { initialize } from '@/utils/api/instructions/initialize'
 import { PaidHackers } from '@/components/charts/PaidHackers'
 import { deleteProtocol } from '@/utils/api/instructions/deleteProtocol'
+import Wallet from '@/components/common/atoms/Wallet'
 
 type ChatMessage = {
   id: string
@@ -406,12 +402,7 @@ export default function DashboardBox({
           <div className="flex h-full w-full flex-col items-center justify-center bg-gray-50 dark:bg-gray-800">
             <div className="flex w-full max-w-md flex-col items-center justify-center gap-6 p-4">
               {!publicKey ? (
-                <>
-                  <h2 className="text-2xl font-bold text-gray-700 dark:text-gray-200">
-                    {t('dashboard:connectWallet')}
-                  </h2>
-                  <WalletMultiButton />
-                </>
+                <Wallet />
               ) : (
                 <div className="flex flex-col">
                   {/* {publicKey.toString() == ADMIN_PUBKEY && (
@@ -419,22 +410,20 @@ export default function DashboardBox({
                   )} */}
                   {/* HEADER */}
                   <div className="flex flex-col items-center justify-center space-y-4 md:flex-row md:space-y-0">
-                    <Link href="/user/programs">
-                      <div className="flex w-72 items-center justify-center rounded-sm border p-4">
-                        <div className="flex grow flex-col">
-                          <span className="grow">
-                            {t('dashboard:programs')}
-                          </span>
-                          <span className="mb-[16px]">
-                            {programs && programs.length > 0
-                              ? programs.length
-                              : 0}
-                          </span>
-                        </div>
-                        <CpuChipIcon className="h-8 w-8" />
+                    {/* <Link href="/programs"> */}
+                    <div className="flex w-72 items-center justify-center rounded-sm border p-4">
+                      <div className="flex grow flex-col">
+                        <span className="grow">{t('dashboard:programs')}</span>
+                        <span className="mb-[16px]">
+                          {programs && programs.length > 0
+                            ? programs.length
+                            : 0}
+                        </span>
                       </div>
-                    </Link>
-                    <Link href="/user/vulnerabilities">
+                      <CpuChipIcon className="h-8 w-8" />
+                    </div>
+                    {/* </Link> */}
+                    <Link href="/vulnerabilities">
                       <div className="flex w-72 items-center justify-center rounded-sm border p-4">
                         <div className="flex grow flex-col">
                           <span className="">
@@ -457,7 +446,7 @@ export default function DashboardBox({
                         )}
                       </div>
                     </Link>
-                    <Link href="/user/hacks">
+                    <Link href="/hacks">
                       <div className="flex w-72 items-center justify-center rounded-sm border p-4">
                         <div className="flex grow flex-col">
                           <span className="grow">{t('dashboard:hacks')}</span>
@@ -474,7 +463,7 @@ export default function DashboardBox({
                       </div>
                     </Link>
                   </div>
-                  <div className="mx-auto my-8 hidden flex-col md:flex md:flex-row">
+                  {/* <div className="mx-auto my-8 hidden flex-col md:flex md:flex-row">
                     <div className="h-96 w-96">
                       <p className="my-4 w-[100%] text-center">
                         {t('dashboard:fundsReturned')}
@@ -487,7 +476,7 @@ export default function DashboardBox({
                       </p>
                       <PaidHackers data={MOCK_DATA} />
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               )}
             </div>

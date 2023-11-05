@@ -1,24 +1,26 @@
 {
-  "title": "whitehat docs",
-  "body": "You can start creating documents compatible with syntax highlights immediately",
-  "previousPage": "Previous page",
-  "nextPage": "Next page",
+  "title": "whitehat",
+  "body": "get hacked, get it back !",
+  "bluePill": "get hacked, get it back",
+  "redPill": "hack with impunity",
+  "previousPage": "previous page",
+  "nextPage": "next page",
   "actions": {
     "motivation": {
       "title": "motivation",
-      "body": "Skeet allows you to get your app up and running quickly and maintain it for the long term at a low cost."
+      "body": "tired of usual bureaucratic and time-consuming bug bounty protocols ?"
     },
     "quickstart": {
       "title": "quickstart",
-      "body": "Describes the setup for getting started with the Skeet framework."
+      "body": "see how it works on both sides before hacking (or getting hacked) !"
     },
     "protocols": {
       "title": "protocols",
-      "body": "Describes the setup for getting started with the Skeet framework."
+      "body": "get hacked, get it back !"
     },
     "hackers": {
       "title": "hackers",
-      "body": "Describes the setup for getting started with the Skeet framework."
+      "body": "hack with impunity !"
     }
   },
   "menuNav": {
@@ -27,19 +29,26 @@
       "groupTitle": "general",
       "motivation": "motivation",
       "quickstart": "quickstart",
+      "protocols": "protocols",
+      "hackers": "hackers",
       "readme": "README"
     },
     "protocols": {
       "groupTitle": "protocols",
-      "motivation": "motivation",
-      "quickstart": "quickstart",
+      "register": "register",
+      "fees": "fees",
+      "payout": "payout",
       "readme": "README"
     },
     "hackers": {
       "groupTitle": "hackers",
-      "motivation": "motivation",
-      "quickstart": "quickstart",
-      "readme": "README"
+      "explore": "explore",
+      "vulnerability": "vulnerability",
+      "exploit": "exploit",
+      "tooling": "tooling",
+      "legalDischarge": "legal discharge",
+      "anonymity": "anonymity",
+      "payout": "payout"
     }
   },
   "headerNav": {

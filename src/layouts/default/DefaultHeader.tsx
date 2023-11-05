@@ -11,6 +11,7 @@ import { faDiscord, faGithub } from '@fortawesome/free-brands-svg-icons'
 import siteConfig from '@/config/site'
 import Button from '@/components/common/atoms/Button'
 import LogoNavbarLink from '@/components/common/atoms/LogoNavbarLink'
+import Wallet from '@/components/common/atoms/Wallet'
 
 export default function DefaultHeader() {
   const { t } = useTranslation()
@@ -77,11 +78,12 @@ export default function DefaultHeader() {
                   ))}
                 </Popover.Group>
                 <div className="hidden items-center justify-end gap-3 md:flex md:flex-1 lg:w-0">
-                  <Button href="/auth/login" variant="outline" className="">
+                  <Wallet />
+                  {/* <Button href="/auth/login" variant="outline" className="">
                     {t('login')}
-                  </Button>
-                  <Button href="/auth/register" className="">
-                    {t('register')}
+                  </Button> */}
+                  <Button href="/dashboard" className="">
+                    {t('dashboard')}
                   </Button>
                   <LanguageChanger />
                   <ColorModeChanger />

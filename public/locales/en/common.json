@@ -10,8 +10,9 @@
   "closeMenu": "Close menu",
   "aiChat": "AI Chat",
   "getStarted": "get started",
-  "login": "Sign in",
-  "register": "Sign up",
+  "login": "sign in",
+  "register": "sign up",
+  "dashboard": "dashboard",
   "navs": {
     "defaultMainNav": {
       "home": "home",
@@ -22,7 +23,7 @@
     "commonFooterNav": {
       "news": "news",
       "docs": "docs",
-      "privacy": "Privacy"
+      "privacy": "privacy"
     }
   },
   "AgreeToPolicy": {

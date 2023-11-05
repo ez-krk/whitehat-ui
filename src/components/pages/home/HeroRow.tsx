@@ -1,6 +1,11 @@
-import Container from '@/components/common/atoms/Container'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'next-i18next'
 import Image from 'next/image'
+import { Connection, LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js'
+import { useWallet } from '@solana/wallet-adapter-react'
+import clsx from 'clsx'
+import Container from '@/components/common/atoms/Container'
+import Button from '@/components/common/atoms/Button'
 import nextjsLogo from '@/assets/img/logo/projects/nextjs.svg'
 // import i18nextLogo from '@/assets/img/logo/projects/i18next.webp'
 // import recoilLogo from '@/assets/img/logo/projects/recoil.svg'
@@ -14,103 +19,13 @@ import anchorLogo from '@/assets/img/logo/projects/anchor.png'
 import heliusLogo from '@/assets/img/logo/projects/helius.png'
 import rustLogo from '@/assets/img/logo/projects/rust.svg'
 import skeetLogo from '@/assets/img/logo/projects/skeet.svg'
-import Button from '@/components/common/atoms/Button'
-import clsx from 'clsx'
-import { useEffect, useState } from 'react'
-import { Connection, LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js'
-import { ANALYTICS_PUBKEY, PROGRAM_ID, SOLANA_RPC_ENDPOINT } from '@/constants'
-import { useWallet } from '@solana/wallet-adapter-react'
+import bluepill from '@/assets/img/props/bluepill.svg'
+import redpill from '@/assets/img/props/redpill.svg'
+import AnalyticsRow from './AnalyticsRow'
 
 export default function HomeHeroRow() {
   const { t } = useTranslation()
   const { publicKey } = useWallet()
-
-  const [protocols, setProtocols] = useState<number>(0)
-  const [vulnerabilities, setVulnerabilities] = useState<number>(0)
-  const [hacks, setHacks] = useState<number>(0)
-  const [solRecovered, setSolRecovered] = useState<number>(0)
-  const [solPaid, setSolPaid] = useState<number>(0)
-
-  const connection = new Connection(SOLANA_RPC_ENDPOINT)
-
-  // const program = useMemo(
-  //   () => new Program(IDL, PROGRAM_ID as Address, connection),
-  //   [connection]
-  // )
-
-  useEffect(() => {
-    const fetchAnalytics = async () => {
-      return await connection.getAccountInfo(new PublicKey(ANALYTICS_PUBKEY))
-    }
-    fetchAnalytics()
-      .then((response) => {
-        if (response) {
-          console.log(response.data)
-          // pub admin: Pubkey, // 32
-          // pub protocols: u64,
-          // pub vulnerabilities: u64,
-          // pub hacks: u64,
-          // pub sol_recovered: u64,
-          // pub sol_paid: u64,
-          // pub fees: u64,
-          // pub created_at: i64,
-
-          // protocols
-          console.log(
-            'protocols : ',
-            parseInt(response.data.readBigInt64LE(8 + 32).toString())
-          )
-          setProtocols(
-            parseInt(response.data.readBigInt64LE(8 + 32).toString())
-          )
-          // vulnerabilities
-          console.log(
-            'vulnerabilities : ',
-            parseInt(response.data.readBigInt64LE(8 + 32 + 8).toString())
-          )
-          setVulnerabilities(
-            parseInt(response.data.readBigInt64LE(8 + 32 + 8).toString())
-          )
-          // hacks
-          console.log(
-            'hacks : ',
-            parseInt(response.data.readBigInt64LE(8 + 32 + 8 + 8).toString())
-          )
-          setHacks(
-            parseInt(response.data.readBigInt64LE(8 + 32 + 8 + 8).toString())
-          )
-          console.log(
-            'sol recovered : ',
-            parseInt(
-              response.data.readBigInt64LE(8 + 32 + 8 + 8 + 8).toString()
-            )
-          )
-          setSolRecovered(
-            parseInt(
-              response.data.readBigInt64LE(8 + 32 + 8 + 8 + 8).toString()
-            ) / LAMPORTS_PER_SOL
-          )
-          console.log(
-            'sol paid : ',
-            parseInt(
-              response.data.readBigInt64LE(8 + 32 + 8 + 8 + 8 + 8).toString()
-            )
-          )
-          setSolPaid(
-            parseInt(
-              response.data.readBigInt64LE(8 + 32 + 8 + 8 + 8 + 8).toString()
-            ) / LAMPORTS_PER_SOL
-          )
-        }
-        // const analyticsMap = response.map(({ account }) => {
-        //   return account
-        // })
-        // setAnalytics(analyticsMap)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-  }, [])
 
   return (
     <>
@@ -118,15 +33,42 @@ export default function HomeHeroRow() {
         <h1 className="font-display mx-auto max-w-4xl text-5xl font-bold tracking-tight text-gray-900 dark:text-gray-50 sm:text-7xl">
           whitehat.
         </h1>
-        <p className="mx-auto mt-6 max-w-2xl text-lg tracking-tight text-gray-700 dark:text-gray-200">
+        <div className="mx-auto mt-8 flex items-center justify-between md:w-[50%]">
+          <Image
+            src={bluepill}
+            width={42}
+            height={42}
+            alt="pill"
+            className="-rotate-135"
+            id="bluePill"
+          />
+          <p className="mt-2 text-lg leading-8 text-gray-700 dark:text-gray-300">
+            {t('home:HeroRow:bluePill')}
+          </p>
+          <span className="inline-block align-middle" aria-hidden="true">
+            &#8203;
+          </span>
+          <p className="mt-2 text-lg leading-8 text-gray-700 dark:text-gray-300">
+            {t('home:HeroRow:redPill')}
+          </p>
+          <Image
+            src={redpill}
+            width={42}
+            height={42}
+            alt="pill"
+            className="-rotate-45"
+            id="redPill"
+          />
+        </div>
+        {/* <p className="mx-auto mt-6 max-w-2xl text-lg tracking-tight text-gray-700 dark:text-gray-200">
           {t('home:HeroRow.line')}
-        </p>
-        <p className="mx-auto mt-1 max-w-2xl text-lg tracking-tight text-gray-700 dark:text-gray-200">
+        </p> */}
+        <p className="mx-auto mt-4 max-w-2xl text-xl font-bold tracking-tight text-gray-700 dark:text-gray-200">
           {t('home:HeroRow.body')}
         </p>
         <div className="mt-10 flex justify-center gap-x-6">
           <Button href="/auth/login" className="">
-            {t('getStarted')}
+            {t('home:HeroRow.getHacked')}
           </Button>
           <Button
             href="https://github.com/3uild-3thos/whitehat"
@@ -138,47 +80,14 @@ export default function HomeHeroRow() {
             github
           </Button>
         </div>
-        <div className="mt-6 lg:mt-8">
-          <p className="mx-auto mt-1 max-w-2xl text-lg tracking-tight text-gray-700 dark:text-gray-200">
-            {t('home:Analytics.help')}{' '}
-            <span className="bg-gradient-to-tr from-[#9945FF] to-[#14F195] bg-clip-text font-bold text-transparent">
-              {protocols}
-            </span>{' '}
-            {t('home:Analytics.protocols')} {t('home:Analytics.recover')}{' '}
-            <span className="bg-gradient-to-tr from-[#9945FF] to-[#14F195] bg-clip-text font-bold text-transparent">
-              {solRecovered}
-            </span>{' '}
-            sol {t('home:Analytics.across')}{' '}
-            <span className="bg-gradient-to-tr from-[#9945FF] to-[#14F195] bg-clip-text font-bold text-transparent">
-              {hacks}
-            </span>{' '}
-            {t('home:Analytics.hacks')} *
-          </p>
-          <p className="mx-auto mt-1 max-w-2xl text-lg tracking-tight text-gray-700 dark:text-gray-200">
-            {t('home:Analytics.help')} {t('home:Analytics.flag')}{' '}
-            <span className="bg-gradient-to-tr from-[#9945FF] to-[#14F195] bg-clip-text font-bold text-transparent">
-              {vulnerabilities}
-            </span>{' '}
-            {t('home:Analytics.vulnerabilities')} *
-          </p>
-          <p className="mx-auto mt-1 max-w-2xl text-lg tracking-tight text-gray-700 dark:text-gray-200">
-            {t('home:Analytics.hackers')}{' '}
-            <span className="bg-gradient-to-tr from-[#9945FF] to-[#14F195] bg-clip-text font-bold text-transparent">
-              {solPaid - solRecovered / 100}
-            </span>{' '}
-            sol {t('home:Analytics.safer')} *
-          </p>
-          <p className="mx-auto mt-2 max-w-2xl text-sm tracking-tight text-gray-700 dark:text-gray-200">
-            * devnet numbers for demonstration purposes
-          </p>
-        </div>
+        <AnalyticsRow />
         <div className="mt-8 lg:mt-10">
-          <p className="mx-auto mt-1 max-w-2xl text-lg tracking-tight text-gray-700 dark:text-gray-200">
-            our tech stack :
+          <p className="mx-auto mt-1 max-w-2xl text-2xl tracking-tight text-gray-700 dark:text-gray-200">
+            {t('home:Technologies.technologies')}
           </p>
           <ul
             role="list"
-            className="mt-8 flex flex-col items-center justify-center gap-x-8 gap-y-10 sm:gap-x-0 xl:flex-row xl:gap-x-12 xl:gap-y-0"
+            className="mt-4 flex flex-col items-center justify-center gap-x-8 gap-y-10 sm:gap-x-0 xl:flex-row xl:gap-x-12 xl:gap-y-0"
           >
             {[
               [
