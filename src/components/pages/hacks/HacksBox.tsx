@@ -1,30 +1,10 @@
-import clsx from 'clsx'
 import { useTranslation } from 'next-i18next'
 import {
-  PaperAirplaneIcon,
   ShieldCheckIcon,
   ShieldExclamationIcon,
 } from '@heroicons/react/24/outline'
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  KeyboardEvent,
-  useContext,
-} from 'react'
-import { useRecoilValue } from 'recoil'
-import { userState } from '@/store/user'
-import { db } from '@/lib/firebase'
-import { orderBy } from 'firebase/firestore'
-import { chatContentSchema } from '@/utils/form'
-import Image from 'next/image'
-import { z } from 'zod'
-import { useForm, Controller } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { useState, useContext } from 'react'
 import useToastMessage from '@/hooks/useToastMessage'
-import { Timestamp } from '@skeet-framework/firestore'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import { PROGRAM_ID, SOLANA_RPC_ENDPOINT } from '@/constants'
@@ -34,35 +14,12 @@ import {
   Connection,
   LAMPORTS_PER_SOL,
 } from '@solana/web3.js'
-import { IDL } from '@/idl'
-import { Address, Program, BN } from '@coral-xyz/anchor'
+import { BN } from '@coral-xyz/anchor'
 import { approveHack } from '@/utils/api/instructions/approveHack'
-
-import type { PROTOCOL_PDA, SOL_HACK_PDA, VULNERABILITY_PDA } from '@/types'
-import Spinner from '@/components/utils/Spinner'
 import { WhitehatContext } from '@/contexts/WhitehatContextProvider'
 
-type ChatMessage = {
-  id: string
-  role: string
-  createdAt: Timestamp | undefined
-  updatedAt: Timestamp | undefined
-  content: string
-}
-
-const schema = z.object({
-  chatContent: chatContentSchema,
-})
-
-type Inputs = z.infer<typeof schema>
-
-type Props = {
-  currentChatRoomId: string | null
-}
-
-export default function HacksBox({ currentChatRoomId }: Props) {
+export default function HacksBox() {
   const { t } = useTranslation()
-  const user = useRecoilValue(userState)
   const { publicKey, sendTransaction } = useWallet()
   const connection = useConnection()
   const {
