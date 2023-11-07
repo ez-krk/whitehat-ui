@@ -40,11 +40,7 @@ import { WhitehatContext } from '@/contexts/WhitehatContextProvider'
 import { Ed25519Ecies } from '@/lib/ed25519-ecies/dist/index'
 import Wallet from '@/components/common/atoms/Wallet'
 
-type Props = {
-  currentChatRoomId: string | null
-}
-
-export default function VulnerabilitiesBox({ currentChatRoomId }: Props) {
+export default function VulnerabilitiesBox() {
   const { t } = useTranslation()
   const user = useRecoilValue(userState)
   const { publicKey, sendTransaction } = useWallet()
@@ -66,7 +62,7 @@ export default function VulnerabilitiesBox({ currentChatRoomId }: Props) {
     solHacks,
     setSolHacks,
     pendingHacks,
-    secretKey,
+    keypair,
   } = useContext(WhitehatContext)
 
   const onClick = async (id: BN, seed: BN) => {
@@ -123,7 +119,7 @@ export default function VulnerabilitiesBox({ currentChatRoomId }: Props) {
 
   const decrypt = async (input: Uint8Array) => {
     try {
-      if (!input || !secretKey) {
+      if (!input || !keypair) {
         return
       }
 
@@ -134,7 +130,7 @@ export default function VulnerabilitiesBox({ currentChatRoomId }: Props) {
         },
         body: JSON.stringify({
           input,
-          secretKey,
+          keypair,
         }),
       })
         .then((response) => {

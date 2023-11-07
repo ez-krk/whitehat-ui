@@ -10,6 +10,7 @@ import { useRecoilValue } from 'recoil'
 import { userState } from '@/store/user'
 import { Ed25519Ecies } from '@/lib/ed25519-ecies/src'
 import { bs58 } from '@coral-xyz/anchor/dist/cjs/utils/bytes'
+import { Keypair } from '@solana/web3.js'
 
 interface WhitehatContext {
   program: Program<IDL> | null
@@ -27,7 +28,7 @@ interface WhitehatContext {
     React.SetStateAction<SOL_HACK_PDA[] | null>
   > | null
   pendingHacks: number
-  secretKey: Uint8Array | null
+  keypair: Keypair | null
 }
 
 export const WhitehatContext = createContext<WhitehatContext>({
@@ -40,11 +41,11 @@ export const WhitehatContext = createContext<WhitehatContext>({
   solHacks: null,
   setSolHacks: () => null,
   pendingHacks: 0,
-  secretKey: null,
+  keypair: null,
 })
 
 export const WhitehatProvider = ({ children }: { children: ReactNode }) => {
-  const { publicKey } = useWallet()
+  const { publicKey, signMessage } = useWallet()
   const connection = useConnection()
   const user = useRecoilValue(userState)
 
@@ -62,7 +63,7 @@ export const WhitehatProvider = ({ children }: { children: ReactNode }) => {
   const [solHacks, setSolHacks] = useState<SOL_HACK_PDA[] | null>(null)
   const [pendingHacks, setPendingHacks] = useState<number>(0)
 
-  const [secretKey, setSecretKey] = useState<Uint8Array | null>(null)
+  const [keypair, setKeypair] = useState<Keypair | null>(null)
 
   const value = {
     program,
@@ -74,7 +75,7 @@ export const WhitehatProvider = ({ children }: { children: ReactNode }) => {
     solHacks,
     setSolHacks,
     pendingHacks,
-    secretKey,
+    keypair,
   }
 
   useEffect(() => {
@@ -193,19 +194,23 @@ export const WhitehatProvider = ({ children }: { children: ReactNode }) => {
   }, [solHacks])
 
   useEffect(() => {
-    if (user && user.secretKey) {
-      setSecretKey(
-        Buffer.from(
-          Uint8Array.from(
-            user.secretKey.split(',').map((item) => {
-              return parseInt(item)
-            })
-          )
-        )
-      )
-      // console.log(secretKey)
+    if (publicKey && !keypair && signMessage) {
+      const buidlKeypair = async () => {
+        const enc = new TextEncoder()
+        const message = await signMessage(enc.encode('whitehat'))
+        console.log('signed message : ', message)
+        return message
+      }
+      buidlKeypair()
+        .then((message) => {
+          const kp = Keypair.fromSeed(message.slice(0, 32))
+          console.log(kp.publicKey.toBase58())
+          setKeypair(kp)
+        })
+        .catch((err) => console.log(err))
     }
-  }, [user])
+    console.log(keypair?.publicKey.toBase58())
+  }, [publicKey])
 
   return (
     <WhitehatContext.Provider value={value}>

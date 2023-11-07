@@ -1,5 +1,5 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import { Ed25519Ecies } from '@/lib/ed25519-ecies/src'
+import { Keypair } from '@solana/web3.js'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 type Data = {
@@ -9,7 +9,7 @@ type Data = {
 export interface DecryptRequest extends NextApiRequest {
   body: {
     input: Uint8Array
-    secretKey: Uint8Array
+    keypair: Keypair
   }
 }
 
@@ -19,12 +19,10 @@ export default async function handler(
 ) {
   if (req.method == 'POST') {
     try {
-      const { input, secretKey } = req.body
-      console.log('input from api : ', input)
-      console.log('secretKey from api : ', secretKey)
+      const { input, keypair } = req.body
       const output = await Ed25519Ecies.decrypt(
         Buffer.from(input),
-        Buffer.from(secretKey)
+        Buffer.from(keypair.secretKey)
       )
       console.log(output.toString())
       res.status(200).json({ message: output.toString() })
