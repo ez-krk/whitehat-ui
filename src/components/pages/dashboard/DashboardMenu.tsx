@@ -15,6 +15,7 @@ import {
   useRef,
   useState,
   KeyboardEvent,
+  useContext,
 } from 'react'
 import { useRecoilValue } from 'recoil'
 import { userState } from '@/store/user'
@@ -31,7 +32,6 @@ import { Dialog, Transition } from '@headlessui/react'
 import { z } from 'zod'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { UserChatRoom, genUserChatRoomPath } from '@/types/models'
 import { registerProtocol } from '@/utils/api/instructions/registerProtocol'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { SOLANA_RPC_ENDPOINT } from '@/constants'
@@ -39,6 +39,7 @@ import { Connection, PublicKey, TransactionSignature } from '@solana/web3.js'
 import { PROTOCOL_PDA } from '@/types'
 import { Program } from '@coral-xyz/anchor'
 import { IDL } from '@/idl'
+import { WhitehatContext } from '@/contexts/WhitehatContextProvider'
 
 export type ChatRoom = {
   id: string
@@ -94,7 +95,7 @@ export default function DashboardMenu({
   const addToast = useToastMessage()
   const { publicKey, sendTransaction } = useWallet()
   const connection = useConnection()
-
+  const { keypair } = useContext(WhitehatContext)
   const {
     handleSubmit,
     formState: { errors },
@@ -118,11 +119,10 @@ export default function DashboardMenu({
     async (data: Inputs) => {
       try {
         setCreateLoading(true)
-        if (!isDisabled && publicKey && program) {
+        if (!isDisabled && publicKey && program && keypair) {
           const tx = await registerProtocol(
             publicKey,
-            publicKey,
-            // new PublicKey(docSnap.publicKey),
+            keypair.publicKey,
             data.name,
             data.percent,
             connection
