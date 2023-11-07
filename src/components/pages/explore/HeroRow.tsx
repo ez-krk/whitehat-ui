@@ -1,8 +1,5 @@
 import Container from '@/components/common/atoms/Container'
 import { useTranslation } from 'next-i18next'
-import Image from 'next/image'
-import Button from '@/components/common/atoms/Button'
-import clsx from 'clsx'
 import { PROTOCOL_PDA } from '@/types'
 import { useEffect, useMemo, useState } from 'react'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
@@ -12,7 +9,6 @@ import { IDL } from '@/idl'
 import { PROGRAM_ID } from '@/constants'
 import { ellipsis } from '@/utils/ellipsis'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
-import { DocumentDuplicateIcon } from '@heroicons/react/24/outline'
 import Tooltip from '@/components/common/atoms/Tooltip'
 
 export default function HomeHeroRow() {

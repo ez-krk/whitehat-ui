@@ -1,7 +1,5 @@
 import { ReactElement, useMemo } from 'react'
 
-import ResetPasswordAction from '@/components/pages/action/ResetPasswordAction'
-import VerifyEmailAction from '@/components/pages/action/VerifyEmailAction'
 import InvalidParamsError from '@/components/error/InvalidParamsError'
 import { useRouter } from 'next/router'
 import siteConfig from '@/config/site'
@@ -42,8 +40,8 @@ export default function Action() {
 
   return (
     <>
-      {mode === 'resetPassword' && <ResetPasswordAction oobCode={oobCode} />}
-      {mode === 'verifyEmail' && <VerifyEmailAction oobCode={oobCode} />}
+      {/* {mode === 'resetPassword' && <ResetPasswordAction oobCode={oobCode} />}
+      {mode === 'verifyEmail' && <VerifyEmailAction oobCode={oobCode} />} */}
     </>
   )
 }
