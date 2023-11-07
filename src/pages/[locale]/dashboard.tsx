@@ -2,7 +2,7 @@ import { ReactElement } from 'react'
 import UserLayout from '@/layouts/user/UserLayout'
 import siteConfig from '@/config/site'
 import { getStaticPaths, makeStaticProps } from '@/lib/getStatic'
-import DashboardScreen from '@/components/pages/user/dashboard/DashboardScreen'
+import DashboardScreen from '@/components/pages/dashboard/DashboardScreen'
 
 const seo = {
   pathname: '/user/dashboard',

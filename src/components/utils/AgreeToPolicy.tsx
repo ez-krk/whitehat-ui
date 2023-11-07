@@ -1,18 +1,14 @@
 import { useCallback, useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
-import { Analytics, logEvent, getAnalytics } from 'firebase/analytics'
 import { useTranslation } from 'next-i18next'
 import { useRecoilState } from 'recoil'
 import { policyAgreedState } from '@/store/policy'
 import Link from '@/components/routing/Link'
 import Button from '@/components/common/atoms/Button'
-import { firebaseApp } from '@/lib/firebase'
 
 export default function AgreeToPolicy() {
   const [policyAgreed, setPolicyAgreed] = useRecoilState(policyAgreedState)
   const [open, setOpen] = useState(!policyAgreed)
-
-  const [analytics, setAnalytics] = useState<Analytics | undefined>(undefined)
 
   const router = useRouter()
   const { t } = useTranslation()
@@ -28,25 +24,11 @@ export default function AgreeToPolicy() {
 
   useEffect(() => {
     if (policyAgreed) {
-      if (firebaseApp && !analytics) {
-        if (
-          typeof window !== 'undefined' &&
-          process.env.NODE_ENV !== 'development'
-        ) {
-          setAnalytics(getAnalytics(firebaseApp))
-        }
-      }
-      if (firebaseApp && analytics) {
-        logEvent(analytics, 'page_view', {
-          page_title: document.title,
-          page_location: document.URL,
-          page_path: router.asPath,
-        })
-      }
+      setOpen(false)
     } else {
       setOpen(true)
     }
-  }, [setOpen, policyAgreed, router.asPath, analytics])
+  }, [setOpen, policyAgreed, router.asPath])
 
   return (
     <>

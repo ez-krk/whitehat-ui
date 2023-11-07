@@ -1,4 +1,3 @@
-import '@/lib/firebase'
 import { useMemo, type ReactElement, type ReactNode } from 'react'
 import type { NextPage } from 'next'
 import type { AppProps } from 'next/app'

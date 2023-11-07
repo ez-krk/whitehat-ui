@@ -188,11 +188,11 @@ export const userMenuNav = [
   //   href: '/user/chat/',
   //   icon: ChatBubbleLeftRightIcon,
   // },
-  {
-    name: 'user:menuNav.settings',
-    href: '/settings/',
-    icon: Cog8ToothIcon,
-  },
+  // {
+  //   name: 'user:menuNav.settings',
+  //   href: '/settings/',
+  //   icon: Cog8ToothIcon,
+  // },
 ]
 
 export const userHeaderNav = [

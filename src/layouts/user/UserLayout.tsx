@@ -185,7 +185,6 @@ export default function UserLayout({ children }: Props) {
                 <Wallet />
               </div>
             )}
-
             <button
               type="button"
               className="px-4 text-gray-500 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-500 dark:text-gray-50 dark:hover:text-gray-200 lg:hidden"

@@ -11,7 +11,6 @@ import nextjsLogo from '@/assets/img/logo/projects/nextjs.svg'
 // import recoilLogo from '@/assets/img/logo/projects/recoil.svg'
 // import eslintLogo from '@/assets/img/logo/projects/eslint.svg'
 // import prettierLogo from '@/assets/img/logo/projects/prettier.png'
-import firebaseLogo from '@/assets/img/logo/projects/Firebase.svg'
 import tailwindcssLogo from '@/assets/img/logo/projects/tailwindcss.svg'
 import typescriptLogo from '@/assets/img/logo/projects/TypeScriptHorizontal.svg'
 import solanaLogo from '@/assets/img/logo/projects/solana.svg'
@@ -127,11 +126,6 @@ export default function HomeHeroRow() {
                   name: 'Next.js',
                   logo: nextjsLogo,
                   link: 'https://nextjs.org/',
-                },
-                {
-                  name: 'Firebase',
-                  logo: firebaseLogo,
-                  link: 'https://firebase.google.com/',
                 },
                 {
                   name: 'TypeScript',

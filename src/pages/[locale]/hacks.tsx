@@ -2,7 +2,7 @@ import { ReactElement } from 'react'
 import UserLayout from '@/layouts/user/UserLayout'
 import siteConfig from '@/config/site'
 import { getStaticPaths, makeStaticProps } from '@/lib/getStatic'
-import HacksScreen from '@/components/pages/user/hacks/HacksScreen'
+import HacksScreen from '@/components/pages/hacks/HacksScreen'
 
 const seo = {
   pathname: '/user/hacks',

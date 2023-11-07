@@ -5,8 +5,7 @@ const siteConfig = {
   copyright: 'whitehat',
   sitenameJA: 'whitehat',
   sitenameEN: 'whitehat',
-  keywordsJA:
-    'Next.js, Firebase, SSG, テンプレート, SEO, 多言語対応, サーバーレス, TypeScript, PWA',
+  keywordsJA: 'whitehat, solana, defi, cybersec, cyber-security, web3, bitcoin',
   keywordsEN: 'whitehat, solana, defi, cybersec, cyber-security, web3, bitcoin',
   descriptionJA:
     'Next.jsのボイラープレート。SEO対応、多言語対応、SSG、PWA。WebAppをすぐに構築開始でき、そのデプロイは保証されています。',

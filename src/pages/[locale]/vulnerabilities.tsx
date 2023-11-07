@@ -2,7 +2,7 @@ import { ReactElement } from 'react'
 import UserLayout from '@/layouts/user/UserLayout'
 import siteConfig from '@/config/site'
 import { getStaticPaths, makeStaticProps } from '@/lib/getStatic'
-import Vulnerabilitiescreen from '@/components/pages/user/vulnerabilities/Vulnerabilitiescreen'
+import Vulnerabilitiescreen from '@/components/pages/vulnerabilities/Vulnerabilitiescreen'
 
 const seo = {
   pathname: '/user/vulnerabilities',
