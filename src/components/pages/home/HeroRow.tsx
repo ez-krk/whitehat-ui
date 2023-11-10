@@ -30,9 +30,9 @@ export default function HomeHeroRow() {
     <>
       <Container className="pb-40 pt-24 text-center lg:pb-64 lg:pt-40">
         <h1 className="font-display mx-auto max-w-4xl text-5xl font-bold tracking-tight text-gray-900 dark:text-gray-50 sm:text-7xl">
-          whitehat.
+          whitehat
         </h1>
-        <div className="mx-auto mt-8 flex items-center justify-between md:w-[50%]">
+        {/* <div className="mx-auto mt-8 flex items-center justify-between md:w-[50%]">
           <Image
             src={bluepill}
             width={42}
@@ -58,7 +58,7 @@ export default function HomeHeroRow() {
             className="-rotate-45"
             id="redPill"
           />
-        </div>
+        </div> */}
         {/* <p className="mx-auto mt-6 max-w-2xl text-lg tracking-tight text-gray-700 dark:text-gray-200">
           {t('home:HeroRow.line')}
         </p> */}
@@ -108,7 +108,7 @@ export default function HomeHeroRow() {
                 {
                   name: 'Rust',
                   logo: rustLogo,
-                  link: 'https://nextjs.org/',
+                  link: 'https://www.rust-lang.org/',
                 },
                 {
                   name: 'Skeet',
@@ -120,23 +120,6 @@ export default function HomeHeroRow() {
                 //   logo: wbaLogo,
                 //   link: 'https://web3builders.dev/',
                 // },
-              ],
-              [
-                {
-                  name: 'Next.js',
-                  logo: nextjsLogo,
-                  link: 'https://nextjs.org/',
-                },
-                {
-                  name: 'TypeScript',
-                  logo: typescriptLogo,
-                  link: 'https://www.typescriptlang.org/',
-                },
-                {
-                  name: 'Tailwind',
-                  logo: tailwindcssLogo,
-                  link: 'https://tailwindcss.com/',
-                },
               ],
             ].map((group, groupIndex) => (
               <li key={`HeroRowLogoCloudList${groupIndex}`}>

@@ -31,7 +31,7 @@ export default function Home({
   return (
     <>
       <HeroRow />
-      {/* <TopNewsRow articles={articles} urls={urls} /> */}
+      <TopNewsRow articles={articles} urls={urls} />
       <DiscordRow />
     </>
   )

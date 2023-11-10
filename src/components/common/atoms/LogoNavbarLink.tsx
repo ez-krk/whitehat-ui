@@ -26,7 +26,7 @@ export default function LogoNavbarLink({
             unoptimized
           />
           <span className="ml-2 font-bold text-gray-700  hover:text-gray-900  dark:hidden  dark:text-gray-50 dark:hover:text-gray-200">
-            whitehat.
+            whitehat
           </span>
         </div>
         <div className="flex items-center">
@@ -37,7 +37,7 @@ export default function LogoNavbarLink({
             unoptimized
           />
           <span className="ml-2 hidden font-bold text-gray-700 hover:text-gray-900  dark:block  dark:text-gray-50 dark:hover:text-gray-200">
-            whitehat.
+            whitehat
           </span>
         </div>
       </Link>
